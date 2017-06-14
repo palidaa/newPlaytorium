@@ -14,7 +14,6 @@
       -o-background-size: cover;
       background-size: cover;
     }
-
   </style>
   <body>
     <div class="jumbotron" style="background-color: rgba(192, 192, 192, 0.3); !important; margin-top: 50vh;">
@@ -51,6 +50,5 @@
         </div>
       </div>
     </div>
-
   </body>
 </html>

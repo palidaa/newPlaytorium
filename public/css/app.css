@@ -1792,6 +1792,7 @@ ul,
 ol {
   margin-top: 0;
   margin-bottom: 11px;
+  padding-left:0;
 }
 
 ul ul,
