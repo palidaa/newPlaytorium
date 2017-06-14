@@ -1468,7 +1468,7 @@ hr {
   margin-top: 22px;
   margin-bottom: 22px;
   border: 0;
-  border-top: 1px solid #000;
+  border-top: 1px solid #eeeeee;
 }
 
 .sr-only {
@@ -6307,8 +6307,8 @@ a.thumbnail.active {
 }
 
 .alert {
-  padding: 15px;
-  margin-bottom: 22px;
+  padding: 6px;
+  margin-bottom: 15px;
   border: 1px solid transparent;
   border-radius: 4px;
 }

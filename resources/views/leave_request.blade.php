@@ -1,7 +1,6 @@
 @extends('layout.app')
 
 @section('title', 'Leave Request')
-
 @section('content')
 <div class="container">
   <div class="row">
