@@ -29,3 +29,8 @@ Route::get('/project', function () {
 Route::post('/submit' , 'MessagesController@submit');
 
 Route::get('/export' , 'MessagesController@export');
+
+Route::get('/report', function () {
+    return view('report');
+});
+

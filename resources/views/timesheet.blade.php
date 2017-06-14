@@ -15,7 +15,9 @@
         <div class="row">
           <div class="form-group col-md-3">
             <label for="date">Date</label>
-            <div id="sandbox-container" class="input-group date" data-provide="datepicker" data-date-autoclose="true">
+
+            <div class="input-group date" data-provide="datepicker" data-date-autoclose="true">
+
               <input type="text" class="form-control ">
               <div class="input-group-addon">
                 <span class="glyphicon glyphicon-th"></span>

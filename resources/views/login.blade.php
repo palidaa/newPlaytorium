@@ -20,14 +20,17 @@
       <div class="container">
         <div class="row">
           <div class="col-md-4 col-md-offset-4">
+
             <form action="/submit" method="post">
               {{ csrf_field() }}
+
               <div class="form-group">
                 <input type="email" class="form-control" id="email" placeholder="E-mail" name="email">
               </div>
               <div class="form-group">
                 <input type="password" class="form-control" id="pwd" placeholder="Password" name="pwd">
               </div>
+
               <div class="row">
                 <div class="col-md-12">
                   @if(count($errors) > 0)
@@ -44,6 +47,7 @@
             <form action="/export">
               <button type="export" class="btn btn-primary btn-block">EXPORT</button>
             </form>
+
 
           </div>
         </div>
