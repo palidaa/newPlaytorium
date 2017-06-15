@@ -12,7 +12,14 @@
     </div>
     <div class="collapse navbar-collapse" id="myNavbar">
       <ul class="nav navbar-nav">
-        <li><a href="/timesheet">Timesheet</a></li>
+        <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">
+          Timesheet
+          <span class="caret"></span></a>
+          <ul class="dropdown-menu">
+            <li><a href="/add_task">Add Task</a></li>
+            <li><a href="/report">Report</a></li>
+          </ul>
+        </li>
         <li><a href="/leave_request">Leave Request</a></li>
         <li><a href="/project">Project</a></li>
       </ul>
