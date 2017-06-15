@@ -33,3 +33,6 @@ Route::get('/export' , 'MessagesController@export');
 Route::get('/report', function () {
     return view('report');
 });
+Route::get('/project_detail', function () {
+    return view('project_detail');
+});

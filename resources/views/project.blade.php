@@ -30,7 +30,26 @@
                 <h4 class="modal-title">Add a project</h4>
               </div>
               <div class="modal-body">
-                <p>Some text in the modal.</p>
+                <div class="row">
+                  <div class="col-md-3">
+                    <label for="">Prj.No.</label>
+                    <input type="text" class="form-control" name="" value="">
+                  </div>
+                  <div class="col-md-8">
+                    <label for="">Name</label>
+                    <input type="text" class="form-control" name="" value="">
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-3">
+                    <label for="">Quo.No</label>
+                    <input type="text" class="form-control" name="" value="">
+                  </div>
+                  <div class="col-md-8">
+                    <label for="">Customer</label>
+                    <input type="text" class="form-control" name="" value="">
+                  </div>
+                </div>
               </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
@@ -81,4 +100,3 @@
 
 
 @endsection
-
