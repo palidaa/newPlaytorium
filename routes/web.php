@@ -15,8 +15,8 @@ Route::get('/', function () {
     return view('login');
 });
 
-Route::get('/timesheet', function () {
-    return view('timesheet');
+Route::get('/add_task', function () {
+    return view('add_task');
 });
 
 Route::get('/leave_request', function () {
@@ -33,4 +33,6 @@ Route::get('/export' , 'MessagesController@export');
 Route::get('/report', function () {
     return view('report');
 });
-
+Route::get('/project_detail', function () {
+    return view('project_detail');
+});
