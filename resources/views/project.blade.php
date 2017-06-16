@@ -72,16 +72,16 @@
                <th>status</th>
              </tr>
 
-             @for ($i = 0;$i<=4;$i++)
-             <tr>
-               <td>PS170001</td>
-               <td>Function Lead Service for Project New Interaction Mgmt by Pega</td>
-               <td>MFEC</td>
-               <td>201701003</td>
-               <td style="color:#C4B20F;">In Progress</td>
-             </tr>
+             @for ($i = 0;$i<sizeof($project);$i++)
+              <tr>
+                <td>{{ $project[$i]->prj_no }}</td>
+                <td>{{ $project[$i]->prj_name }}</td>
+                <td>{{ $project[$i]->customer }}</td>
+                <td>{{ $project[$i]->quo_no }}</td>
+                <td style="color:#C4B20F;">{{ $project[$i]->status }}</td>
+              </tr>
              @endfor
-
+<!--
              @for ($i = 0;$i<=2;$i++)
              <tr>
                <td>PS170001</td>
@@ -91,12 +91,12 @@
                <td style="color:#0FC40F;">Done</td>
              </tr>
              @endfor
+-->
           </table>
 
 
       </div>
+
     </div>
-
-
 
 @endsection

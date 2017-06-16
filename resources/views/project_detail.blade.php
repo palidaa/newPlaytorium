@@ -108,12 +108,12 @@
                <th></th>
              </tr>
 
-             @for ($i = 0;$i<=4;$i++)
-             <tr>
-               <td>00001</td>
-               <td>Noppawit  Thairungroj</td>
-               <td>Tester</td>
-               <td>Software Quality Control Engineer</td>
+             @for ($i = 0;$i<sizeof($tables);$i++)
+            <tr>
+               <td>{{ $tables[$i]->id }}</td>
+               <td>{{ $tables[$i]->first_name." ".$tables[$i]->last_name }}</td>
+               <td>{{ $tables[$i]->position }}</td>
+               <td>{{ $tables[$i]->role }}</td>
                <td><a href=#>x</a></td>
              </tr>
              @endfor
