@@ -30,6 +30,8 @@ Route::post('/submit' , 'MessagesController@submit');
 
 Route::get('/export' , 'MessagesController@export');
 
+Route::get('/export2' , 'MessagesController@export2');
+
 Route::get('/report', function () {
     return view('report');
 });
