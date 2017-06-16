@@ -27,8 +27,8 @@ class MessagesController extends Controller
 
     public function export(){
         Excel::create('timesheet' , function ($excel) {
-
             $excel -> sheet('sheet' , function($sheet){
+
             $objDrawing = new PHPExcel_Worksheet_Drawing();
             $objDrawing->setPath('images/Logo_2.png');
             $objDrawing->setResizeProportional(true);
