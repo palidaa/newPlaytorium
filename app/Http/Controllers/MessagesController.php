@@ -5,7 +5,11 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
-
+use PHPExcel_Worksheet_Drawing;
+use mergeCells;
+use PHPExcel_Style_Border;
+use PHPExcel_Style_Font;
+use PHPExcel_Style_Protection;
 
 class MessagesController extends Controller
 {
@@ -24,12 +28,464 @@ class MessagesController extends Controller
     public function export(){
         Excel::create('timesheet' , function ($excel) {
             $excel -> sheet('sheet' , function($sheet){
+
+            $objDrawing = new PHPExcel_Worksheet_Drawing();
+            $objDrawing->setPath('images/Logo_2.png');
+            $objDrawing->setResizeProportional(true);
+            $objDrawing->setWidth(90);
+            $objDrawing->setHeight(52);
+            $objDrawing->setCoordinates('A1');
+            $objDrawing->setWorksheet($sheet);
+
+            $sheet->getStyle("A6:J7")->applyFromArray(
+            array(
+                'borders' => array(
+                    'allborders' => array(
+                        'style' => PHPExcel_Style_Border::BORDER_THIN,
+                        'color' => array('argb' => '000')
+                      )
+                  )
+              )
+          );
+          $sheet->getStyle("A1:J4")->applyFromArray(
+          array(
+              'borders' => array(
+                  'allborders' => array(
+                      'style' => PHPExcel_Style_Border::BORDER_THIN,
+                      'color' => array('argb' => '000')
+                    )
+                )
+            )
+        );
+        $sheet ->setcolumnFormat(array(
+                      'F' => '0.00',
+                      'G' => '0.00',
+                      'H' => '0.00',
+                      'I' => '0.00'
+                      ));
+
+        $sheet->cells('A2:A4' , function($cells){
+          $cells->setFontweight('bold');
+        });
+        $sheet->cells('D3' , function($cells){
+          $cells->setFontweight('bold');
+        });
+        $sheet->cells('A1:J1' , function($cells){
+          $cells->setFontWeight('bold');
+          $cells->setFontSize(30);
+        });
+        $sheet->cells('A6:J7' , function($cells){
+          $cells->setFontWeight('bold');
+        });
+
+
+
+            $sheet->setHeight(1, 40);
+            $sheet->setHeight(6, 20);
+            $sheet->setHeight(7, 20);
+
+            $sheet ->mergeCells('C1:J1');
+            $sheet ->mergeCells('B2:C2');
+            $sheet ->mergeCells('B3:C3');
+            $sheet ->mergeCells('A4:B4');
+            $sheet ->mergeCells('A6:A7');
+            $sheet ->mergeCells('B6:B7');
+            $sheet ->mergeCells('C6:C7');
+            $sheet ->mergeCells('D6:D7');
+            $sheet ->mergeCells('E6:E7');
+            $sheet ->mergeCells('F6:F7');
+            $sheet ->mergeCells('G6:I6');
+            $sheet ->mergeCells('J6:J7');
+
+            $sheet->cells('C1:J1' , function($cells){
+              $cells->setAlignment('center');
+              $cells->setValignment('center');
+            });
+            $sheet->cells('A6:J6' , function($cells){
+              $cells->setBackground('#00B0F0');
+            });
+            $sheet->cells('G7:I7' , function($cells){
+              $cells->setBackground('#00B0F0');
+            });
+            $sheet->cells('A6:A7' , function($cells){
+              $cells->setAlignment('center');
+              $cells->setValignment('center');
+            });
+            $sheet->cells('B6:B7' , function($cells){
+              $cells->setAlignment('center');
+              $cells->setValignment('center');
+            });
+            $sheet->cells('C6:C7' , function($cells){
+              $cells->setAlignment('center');
+              $cells->setValignment('center');
+            });
+            $sheet->cells('D6:D7' , function($cells){
+              $cells->setAlignment('center');
+              $cells->setValignment('center');
+            });
+            $sheet->cells('E6:E7' , function($cells){
+              $cells->setAlignment('center');
+              $cells->setValignment('center');
+            });
+            $sheet->cells('F6:F7' , function($cells){
+              $cells->setAlignment('center');
+              $cells->setValignment('center');
+            });
+            $sheet->cells('G6:I7' , function($cells){
+              $cells->setAlignment('center');
+              $cells->setValignment('center');
+            });
+            $sheet->cells('J6:J7' , function($cells){
+              $cells->setAlignment('center');
+              $cells->setValignment('center');
+            });
+
+                $users= DB::select('select first_name,last_name,role from employees where id = ? ' , ['00000']  );
+                $users2 = DB::select( 'select date_format(t.date, ? ) as date ,
+                  t.task_name,t.description,
+                  date_format(t.time_in,?) as time_in ,
+                  date_format(t.time_out,?) as time_out,
+                  TIME_to_sec(cal_works(t.time_in,t.time_out))/(60*60) as cal_works,
+                  TIME_to_sec(cal_ot_wk(t.date,t.time_in,time_out))/(60*60) as cal_ot_1,
+                  TIME_to_sec(cal_ot_holiday_wk(t.date,t.time_in,time_out))/(60*60) as cal_ot_2,
+                  TIME_to_sec(cal_ot_holiday_non_wk(t.date,t.time_in,time_out))/(60*60) as cal_ot_3
+                  from timesheets t where t.id= ? and date_format(t.time_in, ? )=? and t.prj_no=? ' ,
+                  ['%Y/%m/%d','%H:%i','%H:%i','00000' , '%Y-%m' ,'2017-02','PS170002'  ]);
+                $users3 = DB::select('select p.customer from projects p where p.prj_no=?' , ['PS170001']);
+                $users4 = DB::select('select SEC_TO_TIME(sum(TIME_TO_SEC(cal_works(t.time_in,t.time_out)))) as sum_wk,
+                SEC_TO_TIME(sum(TIME_TO_SEC(cal_ot_wk(t.date,t.time_in,time_out)))) as sum_ot_wk,
+                SEC_TO_TIME(sum(TIME_TO_SEC(cal_ot_holiday_wk(t.date,t.time_in,time_out)))) as sum_ot_hwk,
+                SEC_TO_TIME(sum(TIME_TO_SEC(cal_ot_holiday_non_wk(t.date,t.time_in,time_out)))) as sum_ot_hnwk,
+                SEC_TO_TIME(sum(TIME_TO_SEC(cal_ot_wk(t.date,t.time_in,time_out)))+sum(TIME_TO_SEC(cal_ot_holiday_wk(t.date,t.time_in,time_out)))+sum(TIME_TO_SEC(cal_ot_holiday_non_wk(t.date,t.time_in,time_out)))) as sum_ot from timesheets t
+                where t.id=? and date_format(t.time_in,?)=? and t.prj_no=?' , ['00000','%Y-%m','2017-01','PS170001']);
+                $total_work_day_per_month = DB::select('select sum(TIME_TO_SEC(cal_works(t.time_in,t.time_out)))/(8*60*60) as sum_wk
+                    from timesheets t
+                    where t.id=? and date_format(t.time_in,?)=? and t.prj_no=?' , ['00000','%Y-%m','2017-01','PS170001']);
+                $sick_leave = DB::select('select count(*) as sick_leave
+                    from leaverequest_of_employee l
+                    where l.id = ? and l.leave_type = ? and year(l.from)=? ' , ['00000' ,'Sick leave','2017' ]);
+                $private_leave = DB::select('select count(*) as private_leave
+                    from leaverequest_of_employee l
+                    where l.id = ? and l.leave_type = ? and year(l.from)= ? ' , ['00000' ,'Personal leave','2017' ]);
+                $public_holiday = DB::select('select count(*) as public_holiday
+                    from holidays h
+                    where year(h.holiday)=? and month(h.holiday)= ? ' , ['2017' , '4' ]);
+                $annual_leave = DB::select('select count(*) as annual_leave
+                    from leaverequest_of_employee l
+                    where l.id = ? and l.leave_type = ? and year(l.from)= ? ' , ['00000' ,'Annual leave','2017']);
+
                 $sheet ->fromArray(array(
-                  array ('data1' , 'data2','dataaaaaaaaaaaa'),
-                  array ('data3' , 'data4'),
-            ) , NULL , 'A1',false,false  );
-          });
-        }) -> export('xls');
+                 array (null , null,'TIMESHEET'),
+                 array ('Name:' , $users[0]->first_name." ".$users[0]->last_name),
+                 array ('Role:' , $users[0]->role , null,'Duration', 'xxx'),
+                 array ('Customer Site:',null , $users3[0]->customer),
+                 array (),
+                 array ('Date','Task Name' , 'Description' , 'Time In','Time Out',"Work\n(hours)" , "OT (hours)" , null , null , 'Remark'),
+                 array (null,null,null,null,null,null,'Working Day','Holiday Working','Holiday Non-Working' ),
+                ) , NULL , 'A1',false,false );
+
+           $sheet -> getStyle('F6') -> getAlignment() -> setWrapText(true);
+
+           $rowCount = 8 ;
+           $column = 'A';
+           $eiei = count($users2);
+             while($rowCount < (8+$eiei) ){
+               $sheet -> SetCellValue('A'.$rowCount, $users2[$rowCount-8]->date)
+                      -> SetCellValue('B'.$rowCount, $users2[$rowCount-8]->task_name)
+                      -> SetCellValue('C'.$rowCount, $users2[$rowCount-8]->description)
+                      -> SetCellValue('D'.$rowCount, $users2[$rowCount-8]->time_in)
+                      -> SetCellValue('E'.$rowCount, $users2[$rowCount-8]->time_out)
+                      -> SetCellValue('F'.$rowCount, $users2[$rowCount-8]->cal_works)
+                      -> SetCellValue('G'.$rowCount, $users2[$rowCount-8]->cal_ot_1)
+                      -> SetCellValue('H'.$rowCount, $users2[$rowCount-8]->cal_ot_2)
+                      -> SetCellValue('I'.$rowCount, $users2[$rowCount-8]->cal_ot_3);
+               $rowCount++;
+             }
+
+             $sheet->getStyle('A8'.':'.'J'.$rowCount)->applyFromArray(
+             array(
+                 'borders' => array(
+                     'allborders' => array(
+                         'style' => PHPExcel_Style_Border::BORDER_THIN,
+                         'color' => array('argb' => '000')
+                       )
+                   )
+               )
+           );
+           $sheet->getStyle('C'.($rowCount+1).':'.'C'.($rowCount+3))->applyFromArray(
+           array(
+               'borders' => array(
+                   'allborders' => array(
+                       'style' => PHPExcel_Style_Border::BORDER_THIN,
+                       'color' => array('argb' => '000')
+                     )
+                 )
+             )
+         );
+         $sheet->getStyle('F'.($rowCount+1).':'.'F'.($rowCount+3))->applyFromArray(
+         array(
+             'borders' => array(
+                 'allborders' => array(
+                     'style' => PHPExcel_Style_Border::BORDER_THIN,
+                     'color' => array('argb' => '000')
+                       )
+                   )
+               )
+           );
+           $sheet->getStyle('G'.($rowCount+1).':'.'I'.($rowCount+1))->applyFromArray(
+           array(
+                   'borders' => array(
+                       'allborders' => array(
+                           'style' => PHPExcel_Style_Border::BORDER_THIN,
+                           'color' => array('argb' => '000')
+                         )
+                     )
+                 )
+             );
+             $rowCount++;
+
+             $sheet -> SetCellValue('F'.$rowCount, '=SUM(F8:F'.($rowCount-2).')')
+                    -> SetCellValue('G'.$rowCount, '=SUM(G8:G'.($rowCount-2).')')
+                    -> SetCellValue('H'.$rowCount, '=SUM(H8:H'.($rowCount-2).')')
+                    -> SetCellValue('I'.$rowCount, '=SUM(I8:I'.($rowCount-2).')')
+                    -> SetCellValue('F'.($rowCount+1), '=G'.$rowCount.'+H'.$rowCount.'+I'.$rowCount)
+                    -> SetCellValue('F'.($rowCount+2), '=F'.$rowCount.'/8');
+
+             $sheet -> SetCellValue('C'.$rowCount, 'Total work hour/month');
+             $sheet->cells('C'.$rowCount , function($cells){
+               $cells->setFontWeight('bold');
+             });
+             $rowCount++;
+             $sheet -> SetCellValue('C'.$rowCount, 'Total OT hour/month');
+             $sheet->cells('C'.$rowCount , function($cells){
+               $cells->setFontWeight('bold');
+             });
+             $rowCount++;
+             $sheet -> SetCellValue('C'.$rowCount, 'Totlal work day/month');
+             $sheet->cells('C'.$rowCount , function($cells){
+               $cells->setFontWeight('bold');
+             });
+             $rowCount++;
+             $rowCount++;
+
+             $sheet ->mergeCells('A'.$rowCount.':'.'C'.$rowCount);
+             $sheet -> SetCellValue('A'.$rowCount, 'Sick Leave');
+             $sheet -> SetCellValue('D'.$rowCount, $sick_leave[0]->sick_leave );
+             $sheet->cells('A'.$rowCount.':'.'C'.$rowCount , function($cells){
+               $cells->setAlignment('center');
+               $cells->setValignment('center');
+               $cells->setFontWeight('bold');
+             });
+             $sheet->getStyle('A'.($rowCount).':'.'D'.($rowCount+3))->applyFromArray(
+             array(
+                 'borders' => array(
+                     'allborders' => array(
+                         'style' => PHPExcel_Style_Border::BORDER_THIN,
+                         'color' => array('argb' => '000')
+                       )
+                   )
+               )
+           );
+              $rowCount++;
+
+             $sheet ->mergeCells('A'.$rowCount.':'.'C'.$rowCount);
+             $sheet -> SetCellValue('A'.$rowCount, 'Annual Leave');
+             $sheet -> SetCellValue('D'.$rowCount, $annual_leave[0]->annual_leave );
+             $sheet->cells('A'.$rowCount.':'.'C'.$rowCount , function($cells){
+               $cells->setAlignment('center');
+               $cells->setValignment('center');
+                $cells->setFontWeight('bold');
+             });
+             $rowCount++;
+
+             $sheet ->mergeCells('A'.$rowCount.':'.'C'.$rowCount);
+             $sheet -> SetCellValue('A'.$rowCount, 'Private Leave');
+             $sheet -> SetCellValue('D'.$rowCount, $private_leave[0]->private_leave );
+             $sheet->cells('A'.$rowCount.':'.'C'.$rowCount , function($cells){
+               $cells->setAlignment('center');
+               $cells->setValignment('center');
+                $cells->setFontWeight('bold');
+             });
+             $rowCount++;
+
+             $sheet ->mergeCells('A'.$rowCount.':'.'C'.$rowCount);
+             $sheet -> SetCellValue('A'.$rowCount, 'Public Holiday');
+             $sheet -> SetCellValue('D'.$rowCount, $public_holiday[0]->public_holiday );
+             $sheet->cells('A'.$rowCount.':'.'C'.$rowCount , function($cells){
+               $cells->setAlignment('center');
+               $cells->setValignment('center');
+                $cells->setFontWeight('bold');
+             });
+
+             $rowCount++;
+             $rowCount++;
+
+             $sheet ->mergeCells('A'.$rowCount.':'.'G'.$rowCount);
+             $sheet -> SetCellValue('A'.$rowCount, 'OT Working Day = work on working day ( Mon-Fri )  after normal working hour ( 9:00-18:00 ), after 1 hour break');
+             $rowCount++;
+             $sheet ->mergeCells('A'.$rowCount.':'.'G'.$rowCount);
+             $sheet -> SetCellValue('A'.$rowCount, 'OT Holiday Working Hour = work on weekend and holiday in normal working hour ( 9:00-18:00 )');
+             $rowCount++;
+             $sheet ->mergeCells('A'.$rowCount.':'.'G'.$rowCount);
+             $sheet -> SetCellValue('A'.$rowCount, 'OT Holiday Non Working Hour = work on weekend and holiday after normal working hour ( 9:00-18:00 ) after 1 hour break');
+
+             $rowCount++;
+             $rowCount++;
+
+             $sheet ->mergeCells('A'.$rowCount.':'.'B'.($rowCount+1));
+             $sheet -> SetCellValue('A'.$rowCount, 'Prepared by');
+             $sheet->cells('A'.$rowCount.':'.'B'.($rowCount+1) , function($cells){
+               $cells->setAlignment('center');
+               $cells->setValignment('center');
+                $cells->setFontWeight('bold');
+             });
+
+             $sheet ->mergeCells('C'.$rowCount.':'.'D'.($rowCount+1));
+             $sheet -> SetCellValue('C'.$rowCount, '______________________________');
+             $sheet->cells('C'.$rowCount.':'.'D'.($rowCount+1) , function($cells){
+               $cells->setAlignment('center');
+               $cells->setValignment('center');
+                $cells->setFontWeight('bold');
+             });
+
+             $sheet ->mergeCells('E'.$rowCount.':'.'G'.($rowCount+1));
+             $sheet -> SetCellValue('E'.$rowCount, '____________________');
+             $sheet->cells('E'.$rowCount.':'.'G'.($rowCount+1) , function($cells){
+               $cells->setAlignment('center');
+               $cells->setValignment('center');
+                $cells->setFontWeight('bold');
+             });
+
+             $sheet->cells('C'.$rowCount.':'.'D'.($rowCount+1) , function($cells){
+               $cells->setAlignment('center');
+               $cells->setValignment('center');
+             });
+             $rowCount++;
+             $rowCount++;
+
+              $sheet ->mergeCells('C'.$rowCount.':'.'D'.$rowCount);
+              $sheet -> SetCellValue('C'.$rowCount, '(Your Name)');
+              $sheet->cells('C'.$rowCount.':'.'D'.$rowCount , function($cells){
+                $cells->setAlignment('center');
+                $cells->setValignment('center');
+              });
+
+              $sheet ->mergeCells('E'.$rowCount.':'.'G'.$rowCount);
+              $sheet -> SetCellValue('E'.$rowCount, '(Date)');
+              $sheet->cells('E'.$rowCount.':'.'G'.$rowCount , function($cells){
+                $cells->setAlignment('center');
+                $cells->setValignment('center');
+              });
+              $rowCount++;
+              $rowCount++;
+
+              $sheet ->mergeCells('A'.$rowCount.':'.'B'.($rowCount+1));
+              $sheet -> SetCellValue('A'.$rowCount, 'Approved by');
+              $sheet->cells('A'.$rowCount.':'.'B'.($rowCount+1) , function($cells){
+                $cells->setAlignment('center');
+                $cells->setValignment('center');
+                 $cells->setFontWeight('bold');
+              });
+
+              $sheet ->mergeCells('C'.$rowCount.':'.'D'.($rowCount+1));
+              $sheet -> SetCellValue('C'.$rowCount, '______________________________');
+              $sheet->cells('C'.$rowCount.':'.'D'.($rowCount+1) , function($cells){
+                $cells->setAlignment('center');
+                $cells->setValignment('center');
+                 $cells->setFontWeight('bold');
+              });
+
+              $sheet ->mergeCells('E'.$rowCount.':'.'G'.($rowCount+1));
+              $sheet -> SetCellValue('E'.$rowCount, '____________________');
+              $sheet->cells('E'.$rowCount.':'.'G'.($rowCount+1) , function($cells){
+                $cells->setAlignment('center');
+                $cells->setValignment('center');
+                 $cells->setFontWeight('bold');
+              });
+              $rowCount++;
+              $rowCount++;
+
+              $sheet ->mergeCells('C'.$rowCount.':'.'D'.$rowCount);
+              $sheet -> SetCellValue('C'.$rowCount, '(PM)');
+              $sheet->cells('C'.$rowCount.':'.'D'.$rowCount , function($cells){
+                $cells->setAlignment('center');
+                $cells->setValignment('center');
+              });
+
+              $sheet ->mergeCells('E'.$rowCount.':'.'G'.$rowCount);
+              $sheet -> SetCellValue('E'.$rowCount, '(Date)');
+              $sheet->cells('E'.$rowCount.':'.'G'.$rowCount , function($cells){
+                $cells->setAlignment('center');
+                $cells->setValignment('center');
+              });
+
+
+              $value =  $sheet->getCell('A4')->getValue();
+             $width = mb_strwidth ($value);
+             $sheet->setWidth('A' , $width + 5);
+             $value =  $sheet->getCell('B6')->getValue();
+             $width = mb_strwidth ($value);
+             $sheet->setWidth('B' , $width + 5);
+             //$value =  $sheet->getCell('C6')->getValue();
+             //$width = mb_strwidth ($value);
+
+             $rowCountdes = 0;
+               $maxlenC=$width + 15;
+             while($rowCountdes < $eiei ){
+                $currlen = mb_strwidth ($sheet->getCell('C'.($rowCountdes+8))->getValue());
+               if($maxlenC<$currlen)$maxlenC=$currlen;
+                $rowCountdes++;
+             }
+
+
+             $sheet->setWidth('C' , $maxlenC);
+             $value =  $sheet->getCell('D6')->getValue();
+             $width = mb_strwidth ($value);
+             $sheet->setWidth('D' , $width + 5);
+             $value =  $sheet->getCell('E6')->getValue();
+             $width = mb_strwidth ($value);
+             $sheet->setWidth('E' , $width + 5);
+             $value =  $sheet->getCell('F6')->getValue();
+             $width = mb_strwidth ($value);
+             $sheet->setWidth('F' , $width + 5);
+             $value =  $sheet->getCell('G7')->getValue();
+             $width = mb_strwidth ($value);
+             $sheet->setWidth('G' , $width + 5);
+             $value =  $sheet->getCell('H7')->getValue();
+             $width = mb_strwidth ($value);
+             $sheet->setWidth('H' , $width + 5);
+             $value =  $sheet->getCell('I7')->getValue();
+             $width = mb_strwidth ($value);
+             $sheet->setWidth('I' , $width + 5);
+
+
+
+          //   $sheet->getProtection()->setSheet(true);
+             $sheet->getProtection()->setObjects(true);
+          //   $sheet->getStyle('A8:J'.$rowCount)
+          //           ->getProtection()->setLocked(
+          //             PHPExcel_Style_Protection::PROTECTION_UNPROTECTED
+          //           );
+           });
+
+
+        }) -> export('xlsx');
+    }
+    public function export2(){
+        Excel::create('timesheet' , function ($excel) {
+
+            $excel -> sheet('sheet' , function($sheet){
+              $sheet ->mergeCells('E2:U2');
+              $sheet ->fromArray(array(
+               array (null , null, null , null , 'Effort (MD)'),
+
+              ) , NULL , 'A2',false,false );
+
+
+
+              });
+
+        }) -> export('xlsx');
     }
 
 }
