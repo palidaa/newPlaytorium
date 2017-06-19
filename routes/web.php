@@ -23,16 +23,21 @@ Route::get('/leave_request', function () {
     return view('leave_request');
 });
 
-Route::get('/project', function () {
-    return view('project');
+Route::get('/report', function () {
+    return view('report');
 });
+
+Route::get('/project' , 'projectList@showProjectList');
+
 Route::post('/submit' , 'MessagesController@submit');
 
 Route::get('/export' , 'MessagesController@export');
 
+
+Route::get('/project_detail', 'projectDetailList@showProjectDetailList');
+
+Route::get('/export2' , 'MessagesController@export2');
+
 Route::get('/report', function () {
     return view('report');
-});
-Route::get('/project_detail', function () {
-    return view('project_detail');
 });
