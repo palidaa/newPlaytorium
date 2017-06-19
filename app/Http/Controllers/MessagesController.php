@@ -29,6 +29,15 @@ class MessagesController extends Controller
         Excel::create('timesheet' , function ($excel) {
             $excel -> sheet('sheet' , function($sheet){
 
+              $employee = '00000';
+              $project = 'PS170002';
+              $year = '2017';
+              $month = '04';
+
+            $sheet->setFreeze('A8');
+            $sheet->setFontFamily('Arial');
+            $sheet->setFontSize(10);
+
             $objDrawing = new PHPExcel_Worksheet_Drawing();
             $objDrawing->setPath('images/Logo_2.png');
             $objDrawing->setResizeProportional(true);
@@ -145,34 +154,43 @@ class MessagesController extends Controller
                   t.task_name,t.description,
                   date_format(t.time_in,?) as time_in ,
                   date_format(t.time_out,?) as time_out,
-                  TIME_to_sec(cal_works(t.time_in,t.time_out))/(60*60) as cal_works,
+                  TIME_to_sec(cal_works(t.date,t.time_in,t.time_out))/(60*60) as cal_works,
                   TIME_to_sec(cal_ot_wk(t.date,t.time_in,time_out))/(60*60) as cal_ot_1,
                   TIME_to_sec(cal_ot_holiday_wk(t.date,t.time_in,time_out))/(60*60) as cal_ot_2,
                   TIME_to_sec(cal_ot_holiday_non_wk(t.date,t.time_in,time_out))/(60*60) as cal_ot_3
-                  from timesheets t where t.id= ? and date_format(t.time_in, ? )=? and t.prj_no=? ' ,
-                  ['%Y/%m/%d','%H:%i','%H:%i','00000' , '%Y-%m' ,'2017-02','PS170002'  ]);
-                $users3 = DB::select('select p.customer from projects p where p.prj_no=?' , ['PS170001']);
+                  from timesheets t where t.id= ? and date_format(t.date, ? )=? and t.prj_no=? ' ,
+                  ['%m/%d/%Y','%H:%i','%H:%i',$employee , '%Y-%m' ,$year.'-'.$month,$project  ]);
+                $users3 = DB::select('select p.customer from projects p where p.prj_no=?' , [$project]);
                 $users4 = DB::select('select SEC_TO_TIME(sum(TIME_TO_SEC(cal_works(t.time_in,t.time_out)))) as sum_wk,
                 SEC_TO_TIME(sum(TIME_TO_SEC(cal_ot_wk(t.date,t.time_in,time_out)))) as sum_ot_wk,
                 SEC_TO_TIME(sum(TIME_TO_SEC(cal_ot_holiday_wk(t.date,t.time_in,time_out)))) as sum_ot_hwk,
                 SEC_TO_TIME(sum(TIME_TO_SEC(cal_ot_holiday_non_wk(t.date,t.time_in,time_out)))) as sum_ot_hnwk,
                 SEC_TO_TIME(sum(TIME_TO_SEC(cal_ot_wk(t.date,t.time_in,time_out)))+sum(TIME_TO_SEC(cal_ot_holiday_wk(t.date,t.time_in,time_out)))+sum(TIME_TO_SEC(cal_ot_holiday_non_wk(t.date,t.time_in,time_out)))) as sum_ot from timesheets t
-                where t.id=? and date_format(t.time_in,?)=? and t.prj_no=?' , ['00000','%Y-%m','2017-01','PS170001']);
+                where t.id=? and date_format(t.time_in,?)=? and t.prj_no=?' , 
+                [$employee,'%Y-%m',$year.'-'.$month,$project]);
                 $total_work_day_per_month = DB::select('select sum(TIME_TO_SEC(cal_works(t.time_in,t.time_out)))/(8*60*60) as sum_wk
                     from timesheets t
-                    where t.id=? and date_format(t.time_in,?)=? and t.prj_no=?' , ['00000','%Y-%m','2017-01','PS170001']);
+                    where t.id=? and date_format(t.time_in,?)=? and t.prj_no=?' , 
+                    [$employee,'%Y-%m',$year.'-'.$month,$project]);
                 $sick_leave = DB::select('select count(*) as sick_leave
                     from leaverequest_of_employee l
-                    where l.id = ? and l.leave_type = ? and year(l.from)=? ' , ['00000' ,'Sick leave','2017' ]);
+                    where l.id = ? and l.leave_type = ? and year(l.from)=? ' , 
+                    [$employee ,'Sick leave',$year ]);
                 $private_leave = DB::select('select count(*) as private_leave
                     from leaverequest_of_employee l
-                    where l.id = ? and l.leave_type = ? and year(l.from)= ? ' , ['00000' ,'Personal leave','2017' ]);
+                    where l.id = ? and l.leave_type = ? and year(l.from)= ? ' , 
+                    [$employee ,'Personal leave',$year ]);
                 $public_holiday = DB::select('select count(*) as public_holiday
                     from holidays h
-                    where year(h.holiday)=? and month(h.holiday)= ? ' , ['2017' , '4' ]);
+                    where year(h.holiday)=? and month(h.holiday)= ? ' , 
+                    [$year , $month ]);
                 $annual_leave = DB::select('select count(*) as annual_leave
                     from leaverequest_of_employee l
-                    where l.id = ? and l.leave_type = ? and year(l.from)= ? ' , ['00000' ,'Annual leave','2017']);
+                    where l.id = ? and l.leave_type = ? and year(l.from)= ? ' , 
+                    [$employee ,'Annual leave',$year]);
+                $holiday = DB::select('select date_format(h.holiday,?) as holiday,h.date_name 
+                  from holidays h 
+                  where year(h.holiday)=? and month(h.holiday)= ?',['%m/%d/%Y',$year,$month]);
 
                 $sheet ->fromArray(array(
                  array (null , null,'TIMESHEET'),
@@ -186,21 +204,60 @@ class MessagesController extends Controller
 
            $sheet -> getStyle('F6') -> getAlignment() -> setWrapText(true);
 
+           $strStartDate = $month."/01/2017";
+           $strEndDate = date ("m/d/Y", strtotime("-1 day", strtotime(($month+1)."/01/2017")));
+
+           $intWorkDay = 0;
+           $intHoliday = 0;
+           $intTotalDay = ((strtotime($strEndDate) - strtotime($strStartDate))/  ( 60 * 60 * 24 )) + 1;
+
            $rowCount = 8 ;
-           $column = 'A';
+           $eiei2 = 0;
            $eiei = count($users2);
-             while($rowCount < (8+$eiei) ){
-               $sheet -> SetCellValue('A'.$rowCount, $users2[$rowCount-8]->date)
-                      -> SetCellValue('B'.$rowCount, $users2[$rowCount-8]->task_name)
-                      -> SetCellValue('C'.$rowCount, $users2[$rowCount-8]->description)
-                      -> SetCellValue('D'.$rowCount, $users2[$rowCount-8]->time_in)
-                      -> SetCellValue('E'.$rowCount, $users2[$rowCount-8]->time_out)
-                      -> SetCellValue('F'.$rowCount, $users2[$rowCount-8]->cal_works)
-                      -> SetCellValue('G'.$rowCount, $users2[$rowCount-8]->cal_ot_1)
-                      -> SetCellValue('H'.$rowCount, $users2[$rowCount-8]->cal_ot_2)
-                      -> SetCellValue('I'.$rowCount, $users2[$rowCount-8]->cal_ot_3);
-               $rowCount++;
+           $countholiday = 0;
+
+           while ($intTotalDay-- > 0) {
+            $DayOfWeek = date("w", strtotime($strStartDate));
+            $sheet -> SetCellValue('A'.$rowCount, $strStartDate);
+
+            if($DayOfWeek == 0 or $DayOfWeek ==6)  // 0 = Sunday, 6 = Saturday;
+            {
+             $intHoliday++;
+             $sheet->cells('A'.$rowCount.':'.'J'.$rowCount, function($cells){
+               $cells->setBackground('b8cce4');
+               $cells->setFontColor('8080a3');
+             });
+             //$sheet -> SetCellValue('A'.$rowCount, $strStartDate)
+              $sheet-> SetCellValue('B'.$rowCount, 'Holiday' )
+                    -> SetCellValue('C'.$rowCount, 'Weekend');
+             }else if(count($holiday)>0 and $countholiday<count($holiday) and  $holiday[$countholiday]->holiday==$strStartDate){
+              $sheet->cells('A'.$rowCount.':'.'J'.$rowCount, function($cells){
+               $cells->setBackground('b8cce4');
+               $cells->setFontColor('8080a3');
+              });
+             //$sheet -> SetCellValue('A'.$rowCount, $strStartDate)
+              $sheet-> SetCellValue('B'.$rowCount, 'Holiday' )
+                    -> SetCellValue('C'.$rowCount, $holiday[$countholiday]->date_name);
+              $countholiday++;
              }
+
+            if(count($users2)>0 and $eiei2<count($users2) and $users2[$eiei2]->date==$strStartDate){
+              //$sheet -> SetCellValue('A'.$rowCount, $users2[$eiei2]->date);
+              $sheet -> SetCellValue('B'.$rowCount, $users2[$eiei2]->task_name)
+                  -> SetCellValue('C'.$rowCount, $users2[$eiei2]->description)
+                  -> SetCellValue('D'.$rowCount, $users2[$eiei2]->time_in)
+                  -> SetCellValue('E'.$rowCount, $users2[$eiei2]->time_out);
+              if($users2[$eiei2]->cal_works != 0) $sheet -> SetCellValue('F'.$rowCount, $users2[$eiei2]->cal_works);
+              if($users2[$eiei2]->cal_ot_1!=0) $sheet -> SetCellValue('G'.$rowCount, $users2[$eiei2]->cal_ot_1);
+              if($users2[$eiei2]->cal_ot_2!=0) $sheet -> SetCellValue('H'.$rowCount, $users2[$eiei2]->cal_ot_2);
+              if($users2[$eiei2]->cal_ot_3!=0) $sheet -> SetCellValue('I'.$rowCount, $users2[$eiei2]->cal_ot_3);
+              $eiei2++;
+              //if(  $eiei2 >= (count($users2))  ) break;
+            }
+            $rowCount++;
+           //$DayOfWeek = date("l", strtotime($strStartDate)); // return Sunday, Monday,Tuesday....
+           $strStartDate = date ("m/d/Y", strtotime("+1 day", strtotime($strStartDate)));
+           }
 
              $sheet->getStyle('A8'.':'.'J'.$rowCount)->applyFromArray(
              array(
