@@ -599,7 +599,7 @@ class MessagesController extends Controller
 						
 						$sheet->SetCellValue('D'.$currentRow,$query1_v->prj_no)
 								->SetCellValue('E'.$currentRow,$query1_v->prj_name);
-						$query2 = DB::select('select month(date) as month,sum(TIME_TO_SEC(cal_works(t.time_in,t.time_out)))/(8*60*60) as effort
+						$query2 = DB::select('select month(date) as month,sum(TIME_TO_SEC(cal_works(t.date,t.time_in,t.time_out)))/(8*60*60) as effort
 							from employees e join works w on e.id=w.id join timesheets t on e.id= t.id and t.prj_no=w.prj_no
 							where year(date) = ? and e.id = ? and w.prj_no = ?
 							group by e.id,w.prj_no,month(date)
