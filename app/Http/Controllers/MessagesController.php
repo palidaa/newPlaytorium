@@ -342,7 +342,7 @@ class MessagesController extends Controller
                        )
                    )
                )
-           );
+			);
               $rowCount++;
 
              $sheet ->mergeCells('A'.$rowCount.':'.'C'.$rowCount);
@@ -529,16 +529,142 @@ class MessagesController extends Controller
         }) -> export('xlsx');
     }
     public function export2(){
+		
         Excel::create('timesheet' , function ($excel) {
 
-            $excel -> sheet('sheet' , function($sheet){
-              $sheet ->mergeCells('E2:U2');
-              $sheet ->fromArray(array(
-               array (null , null, null , null , 'Effort (MD)'),
-
-              ) , NULL , 'A2',false,false );
-
-
+            $excel -> sheet('Timesheet' , function($sheet){
+				$yeartest = '2017';
+				$sheet->setHeight(array(
+					2     =>  15,
+					3     =>  48
+				));
+				$sheet ->setcolumnFormat(array(
+                     'B' => '@',
+					 'F' => '0.00',
+					 'G' => '0.00',
+					 'H' => '0.00',
+					 'I' => '0.00',
+					 'J' => '0.00',
+					 'K' => '0.00',
+					 'L' => '0.00',
+					 'M' => '0.00',
+					 'N' => '0.00',
+					 'O' => '0.00',
+					 'P' => '0.00',
+					 'Q' => '0.00'
+                ));
+				$sheet ->mergeCells('F2:Q2');
+				$sheet->cell('F2',function($cell){
+					$cell->setFontFamily('Arial');
+					$cell->setFontSize(9);
+					$cell->setFontColor('#FFFFFF');
+					$cell->setBackground('#00B050');
+					$cell->setAlignment('center');
+					$cell->setValignment('center');
+					$cell->setFontWeight('bold');
+				});
+				$sheet->cells('B3:Q3',function($cells){
+					$cells->setFontFamily('Arial');
+					$cells->setFontSize(9);
+					$cells->setFontColor('#FFFFFF');
+					$cells->setAlignment('center');
+					$cells->setValignment('center');
+					$cells->setBackground('#00B050');
+					$cells->setFontWeight('bold');
+				});
+				$sheet->cells('B:B',function($cells){
+					$cells->setAlignment('center');
+					$cells->setValignment('center');
+				});
+				$query0= DB::select('select e.id,e.first_name,e.last_name
+					from employees e join works w on e.id=w.id join timesheets t on e.id= t.id and t.prj_no=w.prj_no
+					where year(date)= ?
+					group by e.id
+					order by e.id',[$yeartest]);	
+				
+				$sheet ->fromArray(array(
+				array (null , null, null , null ,null, 'Effort (MD)'),
+				array(null,'รหัสพนักงาน','Name-Surname','Project','Project Name','Jan-'.$yeartest,'Feb-'.$yeartest,'Mar-'.$yeartest,'Apr-'.$yeartest,'May-'.$yeartest,'Jun-'.$yeartest,'Jul-'.$yeartest,'Aug-'.$yeartest,'Sep-'.$yeartest,'Oct-'.$yeartest,'Nov-'.$yeartest,'Dec-'.$yeartest)
+				) , NULL , 'A2',false,false );
+				$currentRow = 4;
+				foreach($query0 as $query0_v){
+					$sheet->SetCellValue('B'.$currentRow,$query0_v->id)
+						->SetCellValue('C'.$currentRow,$query0_v->first_name.' '.$query0_v->last_name);
+					$currentRow++;
+					$query1 = DB::select('select w.prj_no,p.prj_name
+						from (employees e join works w on e.id=w.id join timesheets t on e.id= t.id and t.prj_no=w.prj_no) join projects p on p.prj_no=w.prj_no
+						where year(date)= ? and e.id = ?
+						group by w.prj_no',[$yeartest,$query0_v->id]);
+					foreach($query1 as $query1_v){
+						
+						$sheet->SetCellValue('D'.$currentRow,$query1_v->prj_no)
+								->SetCellValue('E'.$currentRow,$query1_v->prj_name);
+						$query2 = DB::select('select month(date) as month,sum(TIME_TO_SEC(cal_works(t.time_in,t.time_out)))/(8*60*60) as effort
+							from employees e join works w on e.id=w.id join timesheets t on e.id= t.id and t.prj_no=w.prj_no
+							where year(date) = ? and e.id = ? and w.prj_no = ?
+							group by e.id,w.prj_no,month(date)
+							order by e.id',[$yeartest,$query0_v->id,$query1_v->prj_no]);
+						foreach($query2 as $query2_v){
+							$sheet -> SetCellValue(chr(69+$query2_v->month).$currentRow,$query2_v->effort);
+						}
+						$currentRow++;
+					}
+					
+					
+				}
+				$currentRow++;
+				$sheet ->mergeCells('B'.$currentRow.':'.'E'.$currentRow);
+				$sheet->cell('B'.$currentRow,function($cell){
+					$cell->setAlignment('center');
+					$cell->setValignment('center');
+				});
+				$sheet ->SetCellValue('B'.$currentRow,'summary');
+				for($i = 70;$i<82;$i++){
+					$sheet->SetCellValue(chr($i).$currentRow,
+					"=SUM(".chr($i)."4:".chr($i).($currentRow-1).")"
+					);
+				}
+				$sheet->getStyle('F2')->applyFromArray(
+					array(
+					'borders' => array(
+						'allborders' => array(
+							'style' => PHPExcel_Style_Border::BORDER_THIN,
+							'color' => array('argb' => '000')
+						)
+					)
+					)
+				);
+				$sheet->getStyle('B3:Q'.($currentRow))->applyFromArray(
+					array(
+					'borders' => array(
+						'allborders' => array(
+							'style' => PHPExcel_Style_Border::BORDER_THIN,
+							'color' => array('argb' => '000')
+						)
+					)
+					)
+				);
+				$sheet->getStyle('B3:Q3')->applyFromArray(
+					array(
+					'borders' => array(
+						'bottom' => array(
+							'style' => PHPExcel_Style_Border::BORDER_NONE
+						)
+					)
+					)
+				);
+				$sheet->getStyle('B4:Q4')->applyFromArray(
+					array(
+					'borders' => array(
+						'top' => array(
+							'style' => PHPExcel_Style_Border::BORDER_NONE
+						)
+					)
+					)
+				);
+				$sheet->setFreeze('A4');
+				//$sheet ->fromArray()
+				//$sheet->setAllBorders('thin');
 
               });
 
