@@ -23,7 +23,7 @@
 
             <form action ="{{ route('login') }}" method="post">
               {{ csrf_field() }}
-              
+
               <div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
                 <input id="email" type="email" class="form-control" name="email" placeholder="E-mail" value="{{ old('email') }}" required autofocus>
                   @if ($errors->has('email'))
