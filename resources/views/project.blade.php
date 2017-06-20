@@ -1,7 +1,6 @@
-@extends('layout.app')
+@extends('layouts.app')
 
 @section('title', 'Project')
-
 
 @section('content')
 
@@ -96,7 +95,4 @@
 
       </div>
     </div>
-
-
-
 @endsection
