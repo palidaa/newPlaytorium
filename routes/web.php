@@ -11,14 +11,16 @@
 |
 */
 
+//timesheet route
 Route::get('/', function () {
-    return view('login');
+    return redirect()->route('timesheet');
 });
 
-Route::get('/add_task', function () {
-    return view('add_task');
-});
+Route::get('/timesheet', 'TimesheetController@index')->name('timesheet');
 
+Route::post('/timesheet/addTask', 'TimesheetController@addTask');
+
+//leave request route
 Route::get('/leave_request', function () {
     return view('leave_request');
 });
@@ -41,3 +43,10 @@ Route::get('/export2' , 'MessagesController@export2');
 Route::get('/report', function () {
     return view('report');
 });
+Route::get('/project_detail', function () {
+    return view('project_detail');
+});
+
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');
