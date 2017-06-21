@@ -788,7 +788,10 @@ window.Vue = __webpack_require__(37);
 Vue.component('example', __webpack_require__(34));
 
 var app = new Vue({
-  el: '#app'
+  el: '#app',
+  data: {
+    message: 'gg'
+  }
 });
 
 /***/ }),

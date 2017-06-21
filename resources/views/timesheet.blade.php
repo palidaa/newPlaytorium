@@ -70,11 +70,11 @@
                 <div class="form-group">
                   <div class="col-md-3">
                     <label class="control-label" for="timeIn">Time in</label>
-                    <input type="time" class="form-control" name="time_in" id="timeIn" value="9.00">
+                    <input type="time" class="form-control" name="time_in" id="timeIn" value="09:00">
                   </div>
                   <div class="col-md-3">
                     <label class="control-label" for="timeOut">Time out</label>
-                    <input type="time" class="form-control" name="time_out" id="timeOut" value="18.00">
+                    <input type="time" class="form-control" name="time_out" id="timeOut" value="18:00">
                   </div>
                 </div>
                 <div class="form-group">
