@@ -29,22 +29,21 @@ Route::get('/report', function () {
     return view('report');
 });
 
-Route::get('/project' , 'projectList@showProjectList');
+Route::get('/project' , 'ProjectController@showProjectList')->name('project');
+
+
+Route::post('/project/addProject' , 'ProjectController@addProject');
 
 Route::post('/submit' , 'MessagesController@submit');
 
 Route::get('/export' , 'MessagesController@export');
 
-
-Route::get('/project_detail', 'projectDetailList@showProjectDetailList');
+Route::get('/project/{id}', 'ProjectController@showProjectDetailList');
 
 Route::get('/export2' , 'MessagesController@export2');
 
 Route::get('/report', function () {
     return view('report');
-});
-Route::get('/project_detail', function () {
-    return view('project_detail');
 });
 
 Auth::routes();

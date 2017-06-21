@@ -7,7 +7,7 @@
         <span class="icon-bar"></span>
       </button>
       <div class="navbar-brand">
-        <img src="images/logo.png" style="max-width:120px; margin-top: -7px;">
+        <img src="{{URL::asset('/images/logo.png')}}" style="max-width:120px; margin-top: -7px;">
       </div>
     </div>
     <div class="collapse navbar-collapse" id="myNavbar">
