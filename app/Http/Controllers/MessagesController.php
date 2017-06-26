@@ -32,7 +32,7 @@ class MessagesController extends Controller
               $employee = '00000';
               $project = 'PS170002';
               $year = '2017';
-              $month = '04';
+              $month = '02';
 
             $sheet->setFreeze('A8');
             $sheet->setFontFamily('Arial');
@@ -191,6 +191,8 @@ class MessagesController extends Controller
                 $holiday = DB::select('select date_format(h.holiday,?) as holiday,h.date_name 
                   from holidays h 
                   where year(h.holiday)=? and month(h.holiday)= ?',['%m/%d/%Y',$year,$month]);
+                $leave = DB::select('select date_format(l.from, ? ) as from_date,date_format(l.to, ? ) as to_date,l.leave_type from leaverequest_of_employee l where id= ? and year(l.from)= ? and month(l.from)= ?',
+                  ['%m/%d/%Y','%m/%d/%Y',$employee,$year,$month]);
 
                 $sheet ->fromArray(array(
                  array (null , null,'TIMESHEET'),
@@ -215,6 +217,7 @@ class MessagesController extends Controller
            $eiei2 = 0;
            $eiei = count($users2);
            $countholiday = 0;
+           $countleave = 0;
 
            while ($intTotalDay-- > 0) {
             $DayOfWeek = date("w", strtotime($strStartDate));
@@ -239,7 +242,10 @@ class MessagesController extends Controller
               $sheet-> SetCellValue('B'.$rowCount, 'Holiday' )
                     -> SetCellValue('C'.$rowCount, $holiday[$countholiday]->date_name);
               $countholiday++;
+             }else if(count($leave)>0 and $countleave<count($leave) and $strStartDate>=$leave[$countleave]->from_date and $strStartDate<=$leave[$countleave]->to_date){
+                $sheet->SetCellValue('C'.$rowCount,$leave[$countleave]->leave_type);
              }
+             if(count($leave)>0 and $countleave<count($leave) and $strStartDate>$leave[$countleave]->to_date) $countleave++;
 
             if(count($users2)>0 and $eiei2<count($users2) and $users2[$eiei2]->date==$strStartDate){
               //$sheet -> SetCellValue('A'.$rowCount, $users2[$eiei2]->date);
