@@ -21,9 +21,11 @@ Route::get('/timesheet', 'TimesheetController@index')->name('timesheet');
 Route::post('/timesheet/addTask', 'TimesheetController@addTask');
 
 //leave request route
-Route::get('/leave_request', function () {
-    return view('leave_request');
-});
+// Route::get('/leave_request', function () {
+//     return view('leave_request');
+// });
+
+Route::get('/leave_request', 'LeaverequestController@leave_request')->name('leave_request');
 
 Route::get('/report', function () {
     return view('report');
@@ -50,3 +52,7 @@ Route::get('/project_detail', function () {
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
+
+Route::get('/leave_request_history', 'LeaverequestController@index')->name('leave_request_history');
+
+Route::post('/timesheet/addLeave', 'LeaverequestController@addLeave');
