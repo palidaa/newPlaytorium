@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layout.app')
 
 @section('title', 'Project Detail')
 
@@ -20,7 +20,7 @@
         <p style="font-size:18px; font-weight:bold;">Project Number</p>
       </div>
       <div class="col-md-9">
-        <p style="font-size:18px;">{{ $project[0]->prj_no}}</p>
+        <p style="font-size:18px;">PS170001</p>
       </div>
     </div>
     <div class="row">
@@ -28,7 +28,7 @@
         <p style="font-size:18px; font-weight:bold;">Project Name</p>
       </div>
       <div class="col-md-9">
-        <p style="font-size:18px;">{{ $project[0]->prj_name}}</p>
+        <p style="font-size:18px;">Function Lead Service for Project New Interaction Mgmt by Pega</p>
       </div>
     </div>
     <div class="row">
@@ -36,7 +36,7 @@
         <p style="font-size:18px; font-weight:bold;">Customer </p>
       </div>
       <div class="col-md-9">
-        <p style="font-size:18px;">{{ $project[0]->customer}}</p>
+        <p style="font-size:18px;">MFEC</p>
       </div>
     </div>
     <div class="row">
@@ -44,15 +44,12 @@
         <p style="font-size:18px; font-weight:bold;">Quotation number</p>
       </div>
       <div class="col-md-9">
-        <p style="font-size:18px;">{{ $project[0]->quo_no}}</p>
+        <p style="font-size:18px;">201701003</p>
       </div>
     </div>
     <div class="row">
       <div class="col-md-3">
         <p style="font-size:18px; font-weight:bold;">Description</p>
-      </div>
-      <div class="col-md-9">
-        <p style="font-size:18px;">{{ $project[0]->description}}</p>
       </div>
     </div>
     <br>
@@ -111,15 +108,15 @@
                <th></th>
              </tr>
 
-             @foreach($members as $member)
+             @for ($i = 0;$i<sizeof($tables);$i++)
             <tr>
-               <td>{{ $member->id }}</td>
-               <td>{{ $member->first_name." ".$member->last_name }}</td>
-               <td>{{ $member->position }}</td>
-               <td>{{ $member->role }}</td>
+               <td>{{ $tables[$i]->id }}</td>
+               <td>{{ $tables[$i]->first_name." ".$tables[$i]->last_name }}</td>
+               <td>{{ $tables[$i]->position }}</td>
+               <td>{{ $tables[$i]->role }}</td>
                <td><a href=#>x</a></td>
              </tr>
-             @endforeach
+             @endfor
           </table>
 
 
