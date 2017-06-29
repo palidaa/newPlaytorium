@@ -57,7 +57,7 @@ Auth::routes();
 Route::get('/home', 'HomeController@index')->name('home');
 
 
-Route::get('/sendbasicemail','MailController@html_email') ;
+//Route::get('/sendbasicemail','MailController@html_email') ;
 
 Route::get('/leave_request_history', 'LeaverequestController@index')->name('leave_request_history');
 

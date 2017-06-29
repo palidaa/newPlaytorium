@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Mail;
 use DB;
 
 class LeaverequestController extends Controller
@@ -37,6 +38,15 @@ class LeaverequestController extends Controller
       // $leave_request_history->leave_type = $request->input('leave_type');
       // $leave_request_history->status = $request->input('0');
       // $leave_request_history->save();
+
+      $data = array('name'=>"Virat Gandhi") ;
+      Mail::send('mail', $data, function($message) {
+         $message->to('miin2ht@gmail.com', 'Playtorium') ->subject
+            ('Leave Request') ;
+         $message->from('yudaqq@gmail.com','Palida') ;
+      });
+      echo "HTML Email Sent. Check your inbox.";
+
       return redirect()->route('leave_request');
   }
 
