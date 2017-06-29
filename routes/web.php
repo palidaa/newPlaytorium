@@ -35,7 +35,6 @@ Route::post('/submit' , 'MessagesController@submit');
 
 Route::get('/export' , 'MessagesController@export');
 
-
 Route::get('/project_detail', 'projectDetailList@showProjectDetailList');
 
 Route::get('/export2' , 'MessagesController@export2');
@@ -50,3 +49,5 @@ Route::get('/project_detail', function () {
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
+
+Route::get('/sendbasicemail','MailController@html_email') ;

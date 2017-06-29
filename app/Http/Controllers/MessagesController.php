@@ -166,30 +166,30 @@ class MessagesController extends Controller
                 SEC_TO_TIME(sum(TIME_TO_SEC(cal_ot_holiday_wk(t.date,t.time_in,time_out)))) as sum_ot_hwk,
                 SEC_TO_TIME(sum(TIME_TO_SEC(cal_ot_holiday_non_wk(t.date,t.time_in,time_out)))) as sum_ot_hnwk,
                 SEC_TO_TIME(sum(TIME_TO_SEC(cal_ot_wk(t.date,t.time_in,time_out)))+sum(TIME_TO_SEC(cal_ot_holiday_wk(t.date,t.time_in,time_out)))+sum(TIME_TO_SEC(cal_ot_holiday_non_wk(t.date,t.time_in,time_out)))) as sum_ot from timesheets t
-                where t.id=? and date_format(t.time_in,?)=? and t.prj_no=?' , 
+                where t.id=? and date_format(t.time_in,?)=? and t.prj_no=?' ,
                 [$employee,'%Y-%m',$year.'-'.$month,$project]);
                 $total_work_day_per_month = DB::select('select sum(TIME_TO_SEC(cal_works(t.time_in,t.time_out)))/(8*60*60) as sum_wk
                     from timesheets t
-                    where t.id=? and date_format(t.time_in,?)=? and t.prj_no=?' , 
+                    where t.id=? and date_format(t.time_in,?)=? and t.prj_no=?' ,
                     [$employee,'%Y-%m',$year.'-'.$month,$project]);
                 $sick_leave = DB::select('select count(*) as sick_leave
                     from leaverequest_of_employee l
-                    where l.id = ? and l.leave_type = ? and year(l.from)=? ' , 
+                    where l.id = ? and l.leave_type = ? and year(l.from)=? ' ,
                     [$employee ,'Sick leave',$year ]);
                 $private_leave = DB::select('select count(*) as private_leave
                     from leaverequest_of_employee l
-                    where l.id = ? and l.leave_type = ? and year(l.from)= ? ' , 
+                    where l.id = ? and l.leave_type = ? and year(l.from)= ? ' ,
                     [$employee ,'Personal leave',$year ]);
                 $public_holiday = DB::select('select count(*) as public_holiday
                     from holidays h
-                    where year(h.holiday)=? and month(h.holiday)= ? ' , 
+                    where year(h.holiday)=? and month(h.holiday)= ? ' ,
                     [$year , $month ]);
                 $annual_leave = DB::select('select count(*) as annual_leave
                     from leaverequest_of_employee l
-                    where l.id = ? and l.leave_type = ? and year(l.from)= ? ' , 
+                    where l.id = ? and l.leave_type = ? and year(l.from)= ? ' ,
                     [$employee ,'Annual leave',$year]);
-                $holiday = DB::select('select date_format(h.holiday,?) as holiday,h.date_name 
-                  from holidays h 
+                $holiday = DB::select('select date_format(h.holiday,?) as holiday,h.date_name
+                  from holidays h
                   where year(h.holiday)=? and month(h.holiday)= ?',['%m/%d/%Y',$year,$month]);
 
                 $sheet ->fromArray(array(
@@ -529,7 +529,7 @@ class MessagesController extends Controller
         }) -> export('xlsx');
     }
     public function export2(){
-		
+
         Excel::create('timesheet' , function ($excel) {
 
             $excel -> sheet('Timesheet' , function($sheet){
@@ -580,8 +580,8 @@ class MessagesController extends Controller
 					from employees e join works w on e.id=w.id join timesheets t on e.id= t.id and t.prj_no=w.prj_no
 					where year(date)= ?
 					group by e.id
-					order by e.id',[$yeartest]);	
-				
+					order by e.id',[$yeartest]);
+
 				$sheet ->fromArray(array(
 				array (null , null, null , null ,null, 'Effort (MD)'),
 				array(null,'รหัสพนักงาน','Name-Surname','Project','Project Name','Jan-'.$yeartest,'Feb-'.$yeartest,'Mar-'.$yeartest,'Apr-'.$yeartest,'May-'.$yeartest,'Jun-'.$yeartest,'Jul-'.$yeartest,'Aug-'.$yeartest,'Sep-'.$yeartest,'Oct-'.$yeartest,'Nov-'.$yeartest,'Dec-'.$yeartest)
@@ -596,7 +596,7 @@ class MessagesController extends Controller
 						where year(date)= ? and e.id = ?
 						group by w.prj_no',[$yeartest,$query0_v->id]);
 					foreach($query1 as $query1_v){
-						
+
 						$sheet->SetCellValue('D'.$currentRow,$query1_v->prj_no)
 								->SetCellValue('E'.$currentRow,$query1_v->prj_name);
 						$query2 = DB::select('select month(date) as month,sum(TIME_TO_SEC(cal_works(t.date,t.time_in,t.time_out)))/(8*60*60) as effort
@@ -609,8 +609,8 @@ class MessagesController extends Controller
 						}
 						$currentRow++;
 					}
-					
-					
+
+
 				}
 				$currentRow++;
 				$sheet ->mergeCells('B'.$currentRow.':'.'E'.$currentRow);
