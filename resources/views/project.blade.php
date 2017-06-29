@@ -29,30 +29,40 @@
                 <h4 class="modal-title">Add a project</h4>
               </div>
               <div class="modal-body">
-                <div class="row">
-                  <div class="col-md-3">
-                    <label for="">Prj.No.</label>
-                    <input type="text" class="form-control" name="" value="">
+                <form class="" id="form" action="/project/addProject" method="post">
+                  {{ csrf_field() }}
+
+                  <div class="row">
+                    <div class="col-md-3">
+                      <label for="">Prj.No.</label>
+                      <input type="text" class="form-control" name="prj_no" value="">
+                    </div>
+                    <div class="col-md-8">
+                      <label for="">Name</label>
+                      <input type="text" class="form-control" name="prj_name" value="">
+                    </div>
                   </div>
-                  <div class="col-md-8">
-                    <label for="">Name</label>
-                    <input type="text" class="form-control" name="" value="">
+                  <div class="row">
+                    <div class="col-md-3">
+                      <label for="">Quo.No</label>
+                      <input type="text" class="form-control" name="quo_no" value="">
+                    </div>
+                    <div class="col-md-8">
+                      <label for="">Customer</label>
+                      <input type="text" class="form-control" name="customer" value="">
+                    </div>
                   </div>
-                </div>
-                <div class="row">
-                  <div class="col-md-3">
-                    <label for="">Quo.No</label>
-                    <input type="text" class="form-control" name="" value="">
+                  <div class="row">
+                    <div class="col-md-11">
+                      <label for="">Description</label>
+                      <textarea class='form-control' style="resize: none" name="description" rows="4"></textarea>
+                    </div>
                   </div>
-                  <div class="col-md-8">
-                    <label for="">Customer</label>
-                    <input type="text" class="form-control" name="" value="">
-                  </div>
-                </div>
+                </form>
               </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-primary" data-dismiss="modal">Add</button>
+                <button type="submit" class="btn btn-primary" form="form">Add</button>
               </div>
             </div>
 
@@ -71,15 +81,15 @@
                <th>status</th>
              </tr>
 
-             @for ($i = 0;$i<sizeof($project);$i++)
-              <tr>
-                <td>{{ $project[$i]->prj_no }}</td>
-                <td>{{ $project[$i]->prj_name }}</td>
-                <td>{{ $project[$i]->customer }}</td>
-                <td>{{ $project[$i]->quo_no }}</td>
-                <td style="color:#C4B20F;">{{ $project[$i]->status }}</td>
+             @foreach($projects as $project)
+              <tr class="project" value="{{ $project->prj_no }}">
+                <td>{{ $project->prj_no }}</td>
+                <td>{{ $project->prj_name }}</td>
+                <td>{{ $project->customer }}</td>
+                <td>{{ $project->quo_no }}</td>
+                <td style="color:#C4B20F;">{{ $project->status }}</td>
               </tr>
-             @endfor
+             @endforeach
 <!--
              @for ($i = 0;$i<=2;$i++)
              <tr>
@@ -96,4 +106,20 @@
 
       </div>
     </div>
+@endsection
+
+@section('script')
+<script type="text/javascript">
+  $(document).ready(function(){
+    $('tr.project').each(function(){
+      $(this)
+      .hover(function(){
+        $(this).css( 'cursor', 'pointer' );
+      })
+      .click(function(){
+        window.location.href = '/project/' + $(this).attr('value');
+      });
+    });
+  });
+</script>
 @endsection
