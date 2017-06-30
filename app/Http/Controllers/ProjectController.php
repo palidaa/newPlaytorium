@@ -16,8 +16,9 @@ class ProjectController extends Controller
     }
 
     public function showProjectList(){
+    
       $users = DB::select('select * from projects');
-      return view('project')->with('projects',$users);
+      return view('project')->with('projects',$users)
 
     }
     public function addProject(Request $request)
@@ -61,18 +62,20 @@ class ProjectController extends Controller
       if($no!=""){
         $result = DB::table('projects')
            ->select(DB::raw("*"))
-           ->where('prj_no',$request->input('prj_no'))
-           ->where('prj_name', 'like','%' . $request->input('prj_name') . '%'  )
+           ->where('prj_no',$no)
+           ->where('prj_name', 'like','%' . $name . '%'  )
            ->get();
-      }
+         }
       else {
         $result = DB::table('projects')
              ->select(DB::raw("*"))
-             ->where('prj_no',$request->input('prj_no'))
-             ->orwhere('prj_name', 'like','%' . $request->input('prj_name') . '%'  )
+             ->where('prj_no',$no)
+             ->orwhere('prj_name', 'like','%' . $name . '%'  )
              ->get();
       }
-  
-       return view('project')->with('projects',$result);
+
+       return view('project')->with('projects',$result)
+       ->with('num',$no)
+       ->with('name',$name);
    }
 }
