@@ -7,6 +7,13 @@
   <div class="row">
     <!-- show Remaining Leave Day -->
     <div class="col-md-8 col-md-offset-2">
+
+      <div class="alert alert-success alert-dismissable">
+        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+        <strong>Success!</strong> Leave request has been sent. !!!
+      </div>
+
+
       <h2>Leave Request</h2>
       <hr>
 
@@ -39,6 +46,7 @@
           <!-- Dropdown -->
           <div class="form-group">
             <select class="form-control" id="sel1" name="leave_type">
+              <option selected="true" disabled="disabled">--------------------</option>
               <option>Annual Leave</option>
               <option>Personal Leave</option>
               <option>Sick Leave</option>
@@ -47,9 +55,25 @@
         </div>
       </div>
 
+      <!-- error -->
       <div class="row">
         <div class="form-group col-md-3">
-          <!-- datepicker From-->
+          @if ($errors->has('leave_type'))
+            <div class="alert alert-danger nopadding">
+              <strong>{{ $errors->first('leave_type') }}</strong>
+            </div>
+          @endif
+        </div>
+      </div>
+
+      <div class="row">
+        <!-- datepicker From-->
+        <div class="form-group col-md-3">
+          <!-- @if ($errors->has('from'))
+            <div class="alert alert-danger">
+              <strong>{{ $errors->first('from') }}</strong>
+            </div>
+          @endif -->
           <label for="date">From</label>
           <div class="input-group date" data-provide="datepicker"  data-date-format="yyyy-mm-dd" data-date-autoclose="true">
             <input type="text" class="form-control " name ="from">
@@ -60,6 +84,11 @@
         </div>
         <!-- datepicker To-->
         <div class="form-group col-md-3">
+          <!-- @if ($errors->has('to'))
+            <div class="alert alert-danger">
+              <strong>{{ $errors->first('to') }}</strong>
+            </div>
+          @endif -->
           <label for="date">To</label>
           <div class="input-group date" data-provide="datepicker"  data-date-format="yyyy-mm-dd" data-date-autoclose="true">
             <input type="text" class="form-control" name ="to">
@@ -69,15 +98,45 @@
           </div>
         </div>
       </div>
+
+      <!-- error -->
+      <div class="row">
+        <div class="form-group col-md-3">
+          @if ($errors->has('from'))
+            <div class="alert alert-danger nopadding">
+              <strong>{{ $errors->first('from') }}</strong>
+            </div>
+          @endif
+        </div>
+        <div class="form-group col-md-3">
+          @if ($errors->has('to'))
+            <div class="alert alert-danger nopadding">
+              <strong>{{ $errors->first('to') }}</strong>
+            </div>
+          @endif
+        </div>
+      </div>
+
       <div class="row">
         <div class="col-md-12">
           <label for="">Purpose</label>
           <textarea name ="purpose" class="form-control" name="name" rows="4" cols="80" style="resize: none"></textarea>
         </div>
       </div>
+      <br>
+      <!-- error -->
+      <div class="row">
+        <div class="form-group col-md-3">
+          @if ($errors->has('purpose'))
+            <div class="alert alert-danger nopadding">
+              <strong>{{ $errors->first('purpose') }}</strong>
+            </div>
+          @endif
+        </div>
+      </div>
+
       <div class="row">
         <div class="form-group col-md-12">
-          <br>
           <label for="Remark">Remark</label><br>
           1. พนักงานจะใช้สิทธิ์ลาได้ เมื่อผู้บังคับบัญชาอนุมัติก่อนเท่านั้น โดยต้องปฏิบัติตามระเบียบข้อบังคับของบริษัทอย่างเคร่งครัด<br>
           2. การลากิจทุกประเภทและลาพักร้อนต้องลาล่วงหน้าอย่างน้อย 3 วัน (ยกเว้นกรณีฉุกเฉิน คือ งานศพบิดา มารดา คู่สมรส บุตร ที่สามารถแจ้งขออนุมัติ

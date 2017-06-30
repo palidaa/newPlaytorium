@@ -56,10 +56,10 @@
               <button type="submit" class="btn btn-primary btn-block">Login</button>
             </form>
             <form action="/export">
-              <button type="submit" class="btn btn-primary btn-block">EXPORT</button>
+              <button type="export" class="btn btn-primary btn-block">EXPORT</button>
             </form>
             <form action="/export2">
-              <button type="submit" class="btn btn-primary btn-block">EXPORT2</button>
+              <button type="export2" class="btn btn-primary btn-block">EXPORT2</button>
             </form>
           </div>
         </div>
