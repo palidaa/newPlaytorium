@@ -13,6 +13,8 @@
       <p style="font-size:30px; font-weight:semibold;">Project</p>
       </div>
       <div class="col-md-6">
+
+
         <!-- add project button -->
         <button type="button" class="btn btn-default pull-right" data-toggle="modal" data-target="#myModal">
           <span class="glyphicon glyphicon-plus-sign"></span> Add project
@@ -60,6 +62,7 @@
                   </div>
                 </form>
               </div>
+
               <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
                 <button type="submit" class="btn btn-primary" form="form">Add</button>
@@ -71,7 +74,17 @@
       </div>
       </div>
 
+      <form method="GET" action="/project/search">
 
+        <label>Project number </label>
+        <input type="text" name ="prj_no">
+
+        <label>Name</label>
+        <input type="text" name="prj_name">
+
+        <button type="submit" class="btn btn-primary" >Search</button>
+      </form>
+      
           <table class="table table-hover table-striped">
             <tr style="font-size:20px;">
                <th>Prj.No.</th>
