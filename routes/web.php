@@ -38,19 +38,13 @@ Route::post('/project/addProject' , 'ProjectController@addProject');
 
 Route::post('/submit' , 'MessagesController@submit');
 
-Route::get('/export' , 'MessagesController@export');
+Route::post('/report/export' , 'MessagesController@export');
 
 
 Route::get('/project_detail', 'projectDetailList@showProjectDetailList');
 
 Route::get('/project/{id}', 'ProjectController@showProjectDetailList');
 
-
-Route::get('/export2' , 'MessagesController@export2');
-
-Route::get('/report', function () {
-    return view('report');
-});
 
 Auth::routes();
 

@@ -15,6 +15,7 @@
         <li><a href="/timesheet">Timesheet</a></li>
         <li><a href="/leave_request">Leave Request</a></li>
         <li><a href="/project">Project</a></li>
+		<li><a href="/report">Report</a></li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">

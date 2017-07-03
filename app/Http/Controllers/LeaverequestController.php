@@ -29,7 +29,7 @@ class LeaverequestController extends Controller
 
   public function addLeave(Request $request)
   {
-      DB::insert('insert into leaverequest_of_employee values (?, ?,?,?,?,?)', [(Auth::id()),$request->input('from'),$request->input('to'),$request->input('leave_type'),'0',$request->input('purpose')]);
+      DB::insert('insert into leaverequest_of_employee values (?,?,?,?,?,?)', [(Auth::id()),$request->input('from'),$request->input('to'),$request->input('leave_type'),'0',$request->input('purpose')]);
       // $leave_request_history = new leaverequest_of_employee;
       // $leave_request_history->id = Auth::id();
       // $leave_request_history->from = $request->input('from');
