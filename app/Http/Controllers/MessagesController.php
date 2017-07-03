@@ -33,16 +33,16 @@ class MessagesController extends Controller
         echo 'incorrect';
       else return view('/timesheet');
     }
+    
+ public function export(Request $request){
+    if($request->input('type')=="Timesheet"){
+      Excel::create('timesheet' , function ($excel)use ($request) {
+        $excel -> sheet('sheet' , function($sheet)use ($request){
 
-<<<<<<< HEAD
-    public function export(){
-        Excel::create('timesheet' , function ($excel) {
-            $excel -> sheet('sheet' , function($sheet){
-
-              $employee = '00000';
-              $project = 'PS170002';
-              $year = '2017';
-              $month = '02';
+          $employee = Auth::id();
+          $project = $request->input('project');
+          $year = $request->input('year');
+          $month = $request->input('month');
 
             $sheet->setFreeze('A8');
             $sheet->setFontFamily('Arial');
@@ -352,49 +352,6 @@ class MessagesController extends Controller
                        )
                    )
                )
-=======
-    public function export(Request $request){
-		if($request->input('type')=="Timesheet"){
-			Excel::create('timesheet' , function ($excel)use ($request) {
-				$excel -> sheet('sheet' , function($sheet)use ($request){
-
-				  $employee = Auth::id();
-				  $project = $request->input('project');
-				  $year = $request->input('year');
-				  $month = $request->input('month');
-
-				$sheet->setFreeze('A8');
-				$sheet->setFontFamily('Arial');
-				$sheet->setFontSize(10);
-
-				$objDrawing = new PHPExcel_Worksheet_Drawing();
-				$objDrawing->setPath('images/Logo_2.png');
-				$objDrawing->setResizeProportional(true);
-				$objDrawing->setWidth(90);
-				$objDrawing->setHeight(52);
-				$objDrawing->setCoordinates('A1');
-				$objDrawing->setWorksheet($sheet);
-
-				$sheet->getStyle("A6:J7")->applyFromArray(
-				array(
-					'borders' => array(
-						'allborders' => array(
-							'style' => PHPExcel_Style_Border::BORDER_THIN,
-							'color' => array('argb' => '000')
-						  )
-					  )
-				  )
-			  );
-			  $sheet->getStyle("A1:J4")->applyFromArray(
-			  array(
-				  'borders' => array(
-					  'allborders' => array(
-						  'style' => PHPExcel_Style_Border::BORDER_THIN,
-						  'color' => array('argb' => '000')
-						)
-					)
-				)
->>>>>>> master
 			);
 			$sheet ->setcolumnFormat(array(
 						  'F' => '0.00',
