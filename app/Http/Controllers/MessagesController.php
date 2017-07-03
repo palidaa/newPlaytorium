@@ -28,71 +28,71 @@ class MessagesController extends Controller
       $users= DB::select('select password from id where username = ? ' , [$request->input('email')]  );
       if( count($users) == 0 || $users[0]->password != $request->input('pwd') )
         echo 'incorrect';
-      else return view('/timesheet');
+		else return view('/timesheet');
     }
 
     public function export(Request $request){
 		if($request->input('type')=="Timesheet"){
-			Excel::create('timesheet' , function ($excel)use ($request) {
+			Excel::create('timesheet' , function ($excel)use ($request){
 				$excel -> sheet('sheet' , function($sheet)use ($request){
+					
+					$employee = Auth::id();
+					$project = $request->input('project');
+					$year = $request->input('year');
+					$month = $request->input('month');
 
-				  $employee = Auth::id();
-				  $project = $request->input('project');
-				  $year = $request->input('year');
-				  $month = $request->input('month');
+					$sheet->setFreeze('A8');
+					$sheet->setFontFamily('Arial');
+					$sheet->setFontSize(10);
 
-				$sheet->setFreeze('A8');
-				$sheet->setFontFamily('Arial');
-				$sheet->setFontSize(10);
+					$objDrawing = new PHPExcel_Worksheet_Drawing();
+					$objDrawing->setPath('images/Logo_2.png');
+					$objDrawing->setResizeProportional(true);
+					$objDrawing->setWidth(90);
+					$objDrawing->setHeight(52);
+					$objDrawing->setCoordinates('A1');
+					$objDrawing->setWorksheet($sheet);
 
-				$objDrawing = new PHPExcel_Worksheet_Drawing();
-				$objDrawing->setPath('images/Logo_2.png');
-				$objDrawing->setResizeProportional(true);
-				$objDrawing->setWidth(90);
-				$objDrawing->setHeight(52);
-				$objDrawing->setCoordinates('A1');
-				$objDrawing->setWorksheet($sheet);
-
-				$sheet->getStyle("A6:J7")->applyFromArray(
-				array(
-					'borders' => array(
-						'allborders' => array(
-							'style' => PHPExcel_Style_Border::BORDER_THIN,
-							'color' => array('argb' => '000')
-						  )
-					  )
-				  )
-			  );
-			  $sheet->getStyle("A1:J4")->applyFromArray(
-			  array(
-				  'borders' => array(
-					  'allborders' => array(
-						  'style' => PHPExcel_Style_Border::BORDER_THIN,
-						  'color' => array('argb' => '000')
+					$sheet->getStyle("A6:J7")->applyFromArray(
+						array(
+							'borders' => array(
+								'allborders' => array(
+									'style' => PHPExcel_Style_Border::BORDER_THIN,
+									'color' => array('argb' => '000')
+								)
+							)
+						)
+					);
+					$sheet->getStyle("A1:J4")->applyFromArray(
+					array(
+						'borders' => array(
+							'allborders' => array(
+								'style' => PHPExcel_Style_Border::BORDER_THIN,
+								'color' => array('argb' => '000')
+							)
 						)
 					)
-				)
-			);
-			$sheet ->setcolumnFormat(array(
+				);
+				$sheet ->setcolumnFormat(array(
 						  'F' => '0.00',
 						  'G' => '0.00',
 						  'H' => '0.00',
 						  'I' => '0.00'
-						  ));
+				));
 
-			$sheet->cells('A2:A4' , function($cells){
-			  $cells->setFontweight('bold');
-			});
-			$sheet->cells('D3' , function($cells){
-			  $cells->setFontweight('bold');
-			});
-			$sheet->cells('A1:J1' , function($cells){
-			  $cells->setFontWeight('bold');
-			  $cells->setFontSize(30);
-			});
-			$sheet->cells('A6:J7' , function($cells){
-			  $cells->setFontWeight('bold');
-			});
+				$sheet->cells('A2:A4' , function($cells){
+				  $cells->setFontweight('bold');
+				});
+				$sheet->cells('D3' , function($cells){
+				  $cells->setFontweight('bold');
+				});
+				$sheet->cells('A1:J1' , function($cells){
+				  $cells->setFontWeight('bold');
+				  $cells->setFontSize(30);
+				});
+				$sheet->cells('A6:J7' , function($cells){
+				  $cells->setFontWeight('bold');
+				});
 
 
 
@@ -156,7 +156,7 @@ class MessagesController extends Controller
 				  $cells->setValignment('center');
 				});
 
-					$users= DB::select('select first_name,last_name,role from employees where id = ? ' , ['00000']  );
+					$users= DB::select('select first_name,last_name,role from employees where id = ? ' , [$employee]  );
 					$users2 = DB::select( 'select date_format(t.date, ? ) as date ,
 					  t.task_name,t.description,
 					  date_format(t.time_in,?) as time_in ,
@@ -677,6 +677,7 @@ class MessagesController extends Controller
 		}else {
 			return redirect('report');
 		}
+		return view('report');
     }
 
 }
