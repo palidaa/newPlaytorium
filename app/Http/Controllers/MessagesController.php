@@ -10,6 +10,9 @@ use mergeCells;
 use PHPExcel_Style_Border;
 use PHPExcel_Style_Font;
 use PHPExcel_Style_Protection;
+use PHPExcel_IOFactory;
+use PHPExcel_Shared_Date;
+use PHPExcel_Style_NumberFormat;
 
 class MessagesController extends Controller
 {
@@ -172,22 +175,16 @@ class MessagesController extends Controller
                     from timesheets t
                     where t.id=? and date_format(t.time_in,?)=? and t.prj_no=?' , 
                     [$employee,'%Y-%m',$year.'-'.$month,$project]);
-                $sick_leave = DB::select('select count(*) as sick_leave
-                    from leaverequest_of_employee l
-                    where l.id = ? and l.leave_type = ? and year(l.from)=? ' , 
-                    [$employee ,'Sick leave',$year ]);
-                $private_leave = DB::select('select count(*) as private_leave
-                    from leaverequest_of_employee l
-                    where l.id = ? and l.leave_type = ? and year(l.from)= ? ' , 
-                    [$employee ,'Personal leave',$year ]);
+                $sick_leave = DB::select('select ifnull(sum(cal_days(l.from,l.to)),0) as sick_leave from leaverequest_of_employee l where l.id= ? and month(l.from)= ? and leave_type= ? ; ' , 
+                    [$employee ,$month,'Sick leave',$year ]);
+                $private_leave = DB::select('select ifnull(sum(cal_days(l.from,l.to)),0) as private_leave from leaverequest_of_employee l where l.id= ? and month(l.from)= ? and leave_type= ? and year(l.from)= ? ;' , 
+                    [$employee ,$month,'Personal leave',$year ]);
                 $public_holiday = DB::select('select count(*) as public_holiday
                     from holidays h
                     where year(h.holiday)=? and month(h.holiday)= ? ' , 
                     [$year , $month ]);
-                $annual_leave = DB::select('select count(*) as annual_leave
-                    from leaverequest_of_employee l
-                    where l.id = ? and l.leave_type = ? and year(l.from)= ? ' , 
-                    [$employee ,'Annual leave',$year]);
+                $annual_leave = DB::select('select ifnull(sum(cal_days(l.from,l.to)),0) as annual_leave from leaverequest_of_employee l where l.id= ? and month(l.from)= ? and leave_type= ? and year(l.from)= ? ;' , 
+                    [$employee ,$month,'Annual leave',$year]);
                 $holiday = DB::select('select date_format(h.holiday,?) as holiday,h.date_name 
                   from holidays h 
                   where year(h.holiday)=? and month(h.holiday)= ?',['%m/%d/%Y',$year,$month]);
@@ -675,6 +672,78 @@ class MessagesController extends Controller
               });
 
         }) -> export('xlsx');
+    }
+
+    public function import(){
+      /*$inputFileName = 'C:/Users/ice_2/OneDrive/Work/internship/Project/Timsheet/timesheet_Feb/Playtorium_Timesheet_2017_00012_Sunitee_GSB.xlsx';
+
+      $id = '00012';
+      $project = 'PS170003';
+
+      //  Read your Excel workbook
+      try {
+          $inputFileType = PHPExcel_IOFactory::identify($inputFileName);
+          $objReader = PHPExcel_IOFactory::createReader($inputFileType);
+          $objPHPExcel = $objReader->load($inputFileName);
+      } catch(Exception $e) {
+          die('Error loading file "'.pathinfo($inputFileName,PATHINFO_BASENAME).'": '.$e->getMessage());
+      }
+
+      //  Get worksheet dimensions
+      $sheet = $objPHPExcel->getSheet(0); 
+      $highestRow = $sheet->getHighestRow(); 
+      $highestColumn = $sheet->getHighestColumn();
+
+      //  Loop through each row of the worksheet in turn
+      for ($row = 8; $row <= $highestRow; $row++){ 
+          //  Read a row of data into an array
+          $rowData = $sheet->rangeToArray('A' . $row . ':' . $highestColumn . $row,
+                                          NULL,
+                                          TRUE,
+                                          FALSE);
+          //  Insert row data array into your database of choice here
+          if($rowData[0][1]!=NULL and $rowData[0][1] != 'Holiday'){
+            DB::insert('insert into timesheets  values ( ? , ?, ? , ? , ? , ? , ? )', 
+            [$id,$project,SEC_TO_TIME($rowData[0][0]),$rowData[0][1],$rowData[0][2],$rowData[0][3],$rowData[0][4]]);
+          }
+          
+      }*/
+
+      $inputFileName = 'C:/Users/ice_2/OneDrive/Work/internship/Project/Timsheet/timesheet_Feb/Playtorium_Timesheet_Anuchit_CPM.xlsx'; 
+      $sheetname = 'Feb 17'; 
+
+      $id = '10005';
+      $project = 'PS170006';
+
+      /**  Create a new Reader of the type defined in $inputFileType  **/ 
+      $inputFileType = PHPExcel_IOFactory::identify($inputFileName);
+      $objReader = PHPExcel_IOFactory::createReader($inputFileType);
+      /**  Advise the Reader of which WorkSheets we want to load  **/ 
+      $objReader->setLoadSheetsOnly($sheetname); 
+      /**  Load $inputFileName to a PHPExcel Object  **/ 
+      $objPHPExcel = $objReader->load($inputFileName); 
+      
+      $sheet = $objPHPExcel->getSheet(0); 
+      $highestRow = $sheet->getHighestRow(); 
+      $highestColumn = $sheet->getHighestColumn();
+
+      //  Loop through each row of the worksheet in turn
+      for ($row = 8; $row <= $highestRow; $row++){ 
+          //  Read a row of data into an array
+          $rowData = $sheet->rangeToArray('A' . $row . ':' . $highestColumn . $row,
+                                          NULL,
+                                          TRUE,
+                                          FALSE);
+          //  Insert row data array into your database of choice here
+          if($rowData[0][1]!=NULL and $rowData[0][1] != 'Holiday' and strrpos($rowData[0][2],"Leave")==false and $rowData[0][1] != 'ลาพักร้อน'){
+            DB::insert('insert into timesheets  values ( ? , ?, ? , ? , ? , ? , ? )', 
+            [$id,$project,date("Y-m-d", PHPExcel_Shared_Date::ExcelToPHP($rowData[0][0]))
+            ,$rowData[0][1],$rowData[0][2],PHPExcel_Style_NumberFormat::toFormattedString($rowData[0][3],'hh:mm:ss')
+            ,PHPExcel_Style_NumberFormat::toFormattedString($rowData[0][4]
+              ,'hh:mm:ss')] );
+          }
+          
+      }
     }
 
 }
