@@ -48,10 +48,6 @@ Route::post('/project/deleteMember' , 'ProjectController@deleteMember');
 
 Route::get('/export2' , 'MessagesController@export2');
 
-Route::get('/report', function () {
-    return view('mail');
-});
-
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
