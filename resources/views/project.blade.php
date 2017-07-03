@@ -13,6 +13,8 @@
       <p style="font-size:30px; font-weight:semibold;">Project</p>
       </div>
       <div class="col-md-6">
+
+
         <!-- add project button -->
         <button type="button" class="btn btn-default pull-right" data-toggle="modal" data-target="#myModal">
           <span class="glyphicon glyphicon-plus-sign"></span> Add project
@@ -60,6 +62,7 @@
                   </div>
                 </form>
               </div>
+
               <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
                 <button type="submit" class="btn btn-primary" form="form">Add</button>
@@ -71,6 +74,16 @@
       </div>
       </div>
 
+      <form method="GET" action="/project/search">
+
+        <label>Project number </label>
+        <input type="text" name ="prj_no" value = "{{ $num }}">
+
+        <label>Name</label>
+        <input type="text" name="prj_name" value = "{{ $name }}">
+
+        <button type="submit" class="btn btn-primary" >Search</button>
+      </form>
 
           <table class="table table-hover table-striped">
             <tr style="font-size:20px;">
@@ -81,15 +94,23 @@
                <th>status</th>
              </tr>
 
+             @if ( sizeof($projects) ==0)
+                <td> No result were found !!</td>
+
+             @else
+
              @foreach($projects as $project)
               <tr class="project" value="{{ $project->prj_no }}">
                 <td>{{ $project->prj_no }}</td>
-                <td>{{ $project->prj_name }}</td>
+                <td>{{ $project->prj_name  }}</td>
                 <td>{{ $project->customer }}</td>
                 <td>{{ $project->quo_no }}</td>
                 <td style="color:#C4B20F;">{{ $project->status }}</td>
               </tr>
              @endforeach
+
+             @endif
+
 <!--
              @for ($i = 0;$i<=2;$i++)
              <tr>

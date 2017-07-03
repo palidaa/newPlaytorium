@@ -27,30 +27,26 @@ Route::post('/timesheet/addTask', 'TimesheetController@addTask');
 
 Route::get('/leave_request', 'LeaverequestController@leave_request')->name('leave_request');
 
-Route::get('/report', function () {
-    return view('report');
-});
+Route::get('/report', 'ReportController@getdata');
 
 Route::get('/project' , 'ProjectController@showProjectList')->name('project');
-
+Route::get('/project/search','ProjectController@search');
 
 Route::post('/project/addProject' , 'ProjectController@addProject');
 
 Route::post('/submit' , 'MessagesController@submit');
 
-Route::get('/export' , 'MessagesController@export');
+Route::post('/report/export' , 'MessagesController@export');
 
 
 Route::get('/project_detail', 'projectDetailList@showProjectDetailList');
 
 Route::get('/project/{id}', 'ProjectController@showProjectDetailList');
+Route::post('/project/addProjectMember' , 'ProjectController@addProjectMember');
 
+Route::post('/project/deleteMember' , 'ProjectController@deleteMember');
 
 Route::get('/export2' , 'MessagesController@export2');
-
-Route::get('/report', function () {
-    return view('mail');
-});
 
 Auth::routes();
 
