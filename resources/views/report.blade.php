@@ -15,7 +15,7 @@
       {{ csrf_field() }}
 		  <div class="container-fluid">
 			<div class="row">
-			  <div class="form-group col-md-3">
+			  <div class="form-group col-md-4">
 				<label>Type</label>
 				<br>
 				<select class="form-control" name="type">
@@ -26,32 +26,32 @@
 			  </div>
 			</div>
 
-			<p>Select month and year to export a report</p>
+			<p>Select year and month to export a report.</p>
 			<div class="row">
-			  <div class="form-group col-md-2">
+			  <div class="form-group col-md-3">
 				  <select class="form-control" name="year">
-				   <option value="">YYYY</option>
+				   <option value="">Select Year</option>
 				   <option value="2018">2018</option>
 				   <option value="2017">2017</option>
 				   <option value="2016">2016</option>
 				  </select>
 			  </div>
 
-				<div class="form-group col-md-2">
+				<div class="form-group col-md-3">
 				  <select class="form-control" name="month">
-					<option value="">MM</option>
-					<option value="01">01</option>
-					<option value="02">02</option>
-					<option value="03">03</option>
-					<option value="04">04</option>
-					<option value="05">05</option>
-					<option value="06">06</option>
-					<option value="07">07</option>
-					<option value="08">08</option>
-					<option value="09">09</option>
-					<option value="10">10</option>
-					<option value="11">11</option>
-					<option value="12">12</option>
+					<option value="">Select Month</option>
+					<option value="01">January</option>
+					<option value="02">Febuary</option>
+					<option value="03">March</option>
+					<option value="04">April</option>
+					<option value="05">Mar</option>
+					<option value="06">June</option>
+					<option value="07">July</option>
+					<option value="08">August</option>
+					<option value="09">September</option>
+					<option value="10">October</option>
+					<option value="11">November</option>
+					<option value="12">December</option>
 				  </select>
 			  </div>
 
@@ -59,10 +59,10 @@
 			  <p>Project</p>
 
 			  <select class="form-control" name="project">
-			   <option value=""></option>
-			   <option value="Function Lead Service for Project New Interaction Mgmt by Pega">Function Lead Service for Project New Interaction Mgmt by Pega</option>
-			   <option value="Function Lead Service for Project New Interaction Mgmt by Pega">Function Lead Service for Project New Interaction Mgmt by Pega</option>
-			   <option value="Function Lead Service for Project New Interaction Mgmt by Pega">Function Lead Service for Project New Interaction Mgmt by Pega</option>
+			   <option value="">Select Project</option>
+			   @foreach($data as $eachdata)
+				<option value={{ $eachdata->prj_no }}>{{ $eachdata->prj_name }}</option>
+			   @endforeach
 			  </select>
 		  <br>
 		  <br>

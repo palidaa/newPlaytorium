@@ -31,14 +31,13 @@ class MessagesController extends Controller
       $users= DB::select('select password from id where username = ? ' , [$request->input('email')]  );
       if( count($users) == 0 || $users[0]->password != $request->input('pwd') )
         echo 'incorrect';
-      else return view('/timesheet');
+		else return view('/timesheet');
     }
     
  public function export(Request $request){
     if($request->input('type')=="Timesheet"){
       Excel::create('timesheet' , function ($excel)use ($request) {
         $excel -> sheet('sheet' , function($sheet)use ($request){
-
           $employee = Auth::id();
           $project = $request->input('project');
           $year = $request->input('year');
@@ -358,21 +357,21 @@ class MessagesController extends Controller
 						  'G' => '0.00',
 						  'H' => '0.00',
 						  'I' => '0.00'
-						  ));
+				));
 
-			$sheet->cells('A2:A4' , function($cells){
-			  $cells->setFontweight('bold');
-			});
-			$sheet->cells('D3' , function($cells){
-			  $cells->setFontweight('bold');
-			});
-			$sheet->cells('A1:J1' , function($cells){
-			  $cells->setFontWeight('bold');
-			  $cells->setFontSize(30);
-			});
-			$sheet->cells('A6:J7' , function($cells){
-			  $cells->setFontWeight('bold');
-			});
+				$sheet->cells('A2:A4' , function($cells){
+				  $cells->setFontweight('bold');
+				});
+				$sheet->cells('D3' , function($cells){
+				  $cells->setFontweight('bold');
+				});
+				$sheet->cells('A1:J1' , function($cells){
+				  $cells->setFontWeight('bold');
+				  $cells->setFontSize(30);
+				});
+				$sheet->cells('A6:J7' , function($cells){
+				  $cells->setFontWeight('bold');
+				});
 
 
 
@@ -436,7 +435,7 @@ class MessagesController extends Controller
 				  $cells->setValignment('center');
 				});
 
-					$users= DB::select('select first_name,last_name,role from employees where id = ? ' , ['00000']  );
+					$users= DB::select('select first_name,last_name,role from employees where id = ? ' , [$employee]  );
 					$users2 = DB::select( 'select date_format(t.date, ? ) as date ,
 					  t.task_name,t.description,
 					  date_format(t.time_in,?) as time_in ,
@@ -957,6 +956,7 @@ class MessagesController extends Controller
 		}else {
 			return redirect('report');
 		}
+		return view('report');
     }
 
     public function import(){
