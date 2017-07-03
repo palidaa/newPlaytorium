@@ -19,6 +19,8 @@ class ProjectController extends Controller
     
       $users = DB::select('select * from projects');
       return view('project')->with('projects',$users)
+      ->with('num',"")
+      ->with('name',"");
 
     }
     public function addProject(Request $request)
