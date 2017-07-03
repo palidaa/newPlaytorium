@@ -32,7 +32,7 @@ Route::get('/report', function () {
 });
 
 Route::get('/project' , 'ProjectController@showProjectList')->name('project');
-
+Route::get('/project/search','ProjectController@search');
 
 Route::post('/project/addProject' , 'ProjectController@addProject');
 
@@ -44,6 +44,9 @@ Route::post('/report/export' , 'MessagesController@export');
 Route::get('/project_detail', 'projectDetailList@showProjectDetailList');
 
 Route::get('/project/{id}', 'ProjectController@showProjectDetailList');
+Route::post('/project/addProjectMember' , 'ProjectController@addProjectMember');
+
+Route::post('/project/deleteMember' , 'ProjectController@deleteMember');
 
 
 Auth::routes();
