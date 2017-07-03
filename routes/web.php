@@ -27,9 +27,7 @@ Route::post('/timesheet/addTask', 'TimesheetController@addTask');
 
 Route::get('/leave_request', 'LeaverequestController@leave_request')->name('leave_request');
 
-Route::get('/report', function () {
-    return view('report');
-});
+Route::get('/report', 'ReportController@getdata');
 
 Route::get('/project' , 'ProjectController@showProjectList')->name('project');
 
