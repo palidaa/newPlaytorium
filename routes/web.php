@@ -38,7 +38,7 @@ Route::post('/project/addProject' , 'ProjectController@addProject');
 
 Route::post('/submit' , 'MessagesController@submit');
 
-Route::get('/export' , 'MessagesController@export');
+Route::post('/report/export' , 'MessagesController@export');
 
 
 Route::get('/project_detail', 'projectDetailList@showProjectDetailList');
@@ -48,12 +48,6 @@ Route::post('/project/addProjectMember' , 'ProjectController@addProjectMember');
 
 Route::post('/project/deleteMember' , 'ProjectController@deleteMember');
 
-
-Route::get('/export2' , 'MessagesController@export2');
-
-Route::get('/report', function () {
-    return view('report');
-});
 
 Auth::routes();
 
