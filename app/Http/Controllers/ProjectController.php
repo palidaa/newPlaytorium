@@ -17,7 +17,12 @@ class ProjectController extends Controller
 
     public function showProjectList(){
     
-      $users = DB::select('select * from projects');
+      $users = DB::table('projects')
+              ->select(DB::raw("*"))
+              ->orderBy('status','desc')
+              ->orderBy('prj_no','desc')
+              ->get();
+        
       return view('project')->with('projects',$users)
       ->with('num',"")
       ->with('name',"");
@@ -66,6 +71,8 @@ class ProjectController extends Controller
            ->select(DB::raw("*"))
            ->where('prj_no',$no)
            ->where('prj_name', 'like','%' . $name . '%'  )
+           ->orderBy('status','desc')
+           ->orderBy('prj_no','desc')
            ->get();
          }
       else {
@@ -73,6 +80,8 @@ class ProjectController extends Controller
              ->select(DB::raw("*"))
              ->where('prj_no',$no)
              ->orwhere('prj_name', 'like','%' . $name . '%'  )
+             ->orderBy('status','desc')
+             ->orderBy('prj_no','desc')
              ->get();
       }
 
