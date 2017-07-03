@@ -49,15 +49,14 @@ Route::get('/project/{id}', 'ProjectController@showProjectDetailList');
 Route::get('/export2' , 'MessagesController@export2');
 
 Route::get('/report', function () {
-    return view('report');
+    return view('mail');
 });
 
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 
-
-//Route::get('/sendbasicemail','MailController@html_email') ;
+Route::get('/sendbasicmail','MailController@html_email');
 
 Route::get('/leave_request_history', 'LeaverequestController@index')->name('leave_request_history');
 
