@@ -89,11 +89,11 @@ th, td {
     <td><font size="3" color = "#6E6E6E">:  {{$line1}}</font></td>
   </tr>
   <tr>
-    <td><font size="3" color = "#6E6E6E">ขอสิทธืไปแล้วโดยไม่รวมลาครั้งนี้</font></td>
+    <td><font size="3" color = "#6E6E6E">ขอสิทธิไปแล้วโดยไม่รวมลาครั้งนี้</font></td>
     <td><font size="3" color = "#6E6E6E">:  {{$line2}}</font></td>
   </tr>
   <tr>
-    <td><font size="3" color = "#6E6E6E">คงเหลือสิทธิที่ใช้ไดี้</font></td>
+    <td><font size="3" color = "#6E6E6E">คงเหลือสิทธิที่ใช้ได้ </font></td>
     <td><font size="3" color = "#6E6E6E">:  {{$line3}}</font></td>
   </tr>
 </table>
@@ -105,14 +105,18 @@ th, td {
   <table style="width:100%;"  >
     <tr>
       <th>
+        <form method="get" action= {{$accept_path}}>
         <button type="submit" class="btn btn-primary" style="background-color:#008CBA;padding:7px 100px;color:#FFF;font-weight:900; display:block; margin: auto; border-radius:10px" >
                 ACCEPT
         </button>
+        </form>
       </th>
       <td>
+        <form method="get" action= {{$reject_path}}>
         <button type="submit" class="btn btn-primary" style="background-color:#e6e6e6;padding:7px 100px;color:#000;font-weight:900; display:block; margin: auto; border-radius:10px" >
                 REJECT
         </button>
+        </form>
       </td>
     </tr>
     <tr>

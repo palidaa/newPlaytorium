@@ -57,3 +57,7 @@ Route::get('/sendbasicmail','MailController@html_email');
 Route::get('/leave_request_history', 'LeaverequestController@index')->name('leave_request_history');
 
 Route::post('/timesheet/addLeave', 'LeaverequestController@addLeave');
+
+Route::get('/verify/accept/{code}' , 'LeaverequestController@accept');
+
+Route::get('/verify/reject/{code}' , 'LeaverequestController@reject');

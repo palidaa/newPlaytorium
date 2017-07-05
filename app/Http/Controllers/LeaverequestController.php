@@ -26,20 +26,29 @@ class LeaverequestController extends Controller
       $leave_request_historys = DB::select('SELECT * FROM leaverequest_of_employee WHERE id = ? ', [Auth::id()]);
       return view('leave_request_history')->with('leave_request_history' ,$leave_request_historys);
   }
+  public function accept(String $code)
+  {
+      DB::update( 'UPDATE leaverequest_of_employee l SET l.status=? WHERE l.code = ? and l.status = ? ' , ['Accepted',$code,'Pending'] );
+  }
+  public function reject(String $code)
+  {
+
+      DB::update( 'UPDATE leaverequest_of_employee l SET l.status=? WHERE l.code = ? and l.status = ? ' , ['Rejected',$code,'Pending'] );
+  }
 
   public function addLeave(Request $request)
   {
-
+      $code=substr(md5(mt_rand()),0,15);
       $data = DB::select('SELECT * FROM employees WHERE id = ? ', [Auth::id()] );
       $user = DB::select('SELECT e.id,e.type,e.department,e.carry_annual_leave,u.email FROM users u join employees e on e.email=u.email where u.id= ?' , [Auth::id()]  );
-      DB::insert('insert into leaverequest_of_employee values (?,?,?,?,?,?)', [$user[0]->id,$request->input('from'),$request->input('to'),$request->input('leave_type'),'0',$request->input('purpose')]);
+      DB::insert('insert into leaverequest_of_employee values (?,?,?,?,?,?,?)', [$user[0]->id,$request->input('from'),$request->input('to'),$request->input('leave_type'),'Pending',$request->input('purpose') , $code]);
       $leave = DB::select('select ifnull(sum(cal_days(l.from,l.to)),0) as leave_used from leaverequest_of_employee l where l.id= ? and leave_type= ? and year(l.from)= year(?)' , [$user[0]->id,$request->input('leave_type'), $request->input('to') ] );
-      $leave_days= DB::select('select cal_days( ? , ? ) as leave_days ' , [$request->input('from'),$request->input('to')]  );
+      $leave_days= DB::select('select cal_days(?,?) as leave_days ' , [$request->input('from'),$request->input('to')]  );
       $year_leave = 0;
-
       $from = explode('-' ,$request->input('from') );
       $to = explode('-' ,$request->input('to') );
-
+      $accept_path = '/newPlaytorium.dev/verify/accept/'.$code ;
+      $reject_path = '/newPlaytorium.dev/verify/reject/'.$code ;
       $month_from = "";
       $month_to = "";
       $leave_type = "";
@@ -95,7 +104,7 @@ class LeaverequestController extends Controller
           break;
       }
 
-      switch ($to[1]) {
+      switch ($to[1]){
       case 1:
           $month_to = "มกราคม";
           break;
@@ -156,7 +165,7 @@ class LeaverequestController extends Controller
        'leave_type' => $leave_type ,'purpose'=> $request->input('purpose'),
        'date_to'=>$to[2],'month_to'=>$month_to, 'year_to'=> ($to[0]+543)
        ,'data' => $data ,'line1'=> $year_leave , 'line2'=>$leave[0]->leave_used, 'line3'=>( $year_leave -$leave[0]->leave_used)
-       ,'leave_day'=>$leave_days[0]->leave_days
+       ,'leave_day'=>$leave_days[0]->leave_days , 'accept_path' => $accept_path , 'reject_path' => $reject_path
       );
 
       //return view('mail')->with('mail' , $mail);
@@ -170,16 +179,14 @@ class LeaverequestController extends Controller
       // $leave_request_history->status = $request->input('0');
       // $leave_request_history->save();
 
-
-
       Mail::send('mail', $mail, function($message) {
          $message->to('miin2ht@gmail.com', 'Playtorium') ->subject
             ('Leave Request') ;
          $message->from('yudaqq@gmail.com','Kimmintra') ;
       });
+
     return redirect()->route('leave_request');
 
   }
-
 
 }
