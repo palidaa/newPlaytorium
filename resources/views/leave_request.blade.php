@@ -8,10 +8,19 @@
     <!-- show Remaining Leave Day -->
     <div class="col-md-8 col-md-offset-2">
 
-      <div class="alert alert-success alert-dismissable">
-        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-        <strong>Success!</strong> Leave request has been sent. !!!
-      </div>
+      @if(Session::has('success_message'))
+        <div class="alert alert-success alert-dismissable">
+          <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+            {!! session('success_message') !!}
+        </div>
+      @endif
+
+      @if(Session::has('unsuccess_message'))
+        <div class="alert alert-danger alert-dismissable">
+          <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+            {!! session('unsuccess_message') !!}
+        </div>
+      @endif
 
 
       <h2>Leave Request</h2>
