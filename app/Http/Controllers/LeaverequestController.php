@@ -18,7 +18,37 @@ class LeaverequestController extends Controller
 
   public function leave_request(Request $request)
   {
-      return view('leave_request');
+    $user = DB::select('SELECT e.id,e.type,e.department,e.carry_annual_leave,u.email FROM users u join employees e on e.email=u.email where u.id= ?' , [Auth::id()]  );
+
+      $leave_annual = DB::select('select ifnull(sum(cal_days(l.from,l.to)),0) as leave_annual_used from leaverequest_of_employee l where l.id= ? and leave_type= ? and year(l.from)= ? ' ,
+    [$user[0]->id,'Annual Leave', date("Y") ] );
+
+    $leave_personal = DB::select('select ifnull(sum(cal_days(l.from,l.to)),0) as leave_personal_used from leaverequest_of_employee l where l.id= ? and leave_type= ? and year(l.from)= ? ' ,
+    [$user[0]->id,'Personal Leave', date("Y") ] );
+
+    $leave_sick = DB::select('select ifnull(sum(cal_days(l.from,l.to)),0) as leave_sick_used from leaverequest_of_employee l where l.id= ? and leave_type= ? and year(l.from)= ? ' ,
+    [$user[0]->id,'Sick Leave', date("Y") ] );
+
+    $remain_leave_annual = 0;
+    $remain_leave_personal = 6;
+    $remain_leave_sick = 30;
+
+   if($user[0]->type==1){
+      $remain_leave_annual=6+$user[0]->carry_annual_leave;
+    }else if($user[0]->type>=2 && $user[0]->type<=7){
+      $remain_leave_annual=12+$user[0]->carry_annual_leave;
+    }else if($user[0]->type>=8){
+      $remain_leave_annual=15+$user[0]->carry_annual_leave;
+    }
+
+    $remain_leave_annual=$remain_leave_annual-($leave_annual[0]->leave_annual_used);
+    $remain_leave_personal=$remain_leave_personal-($leave_personal[0]->leave_personal_used);
+    $remain_leave_sick=$remain_leave_sick-($leave_sick[0]->leave_sick_used);
+
+      return view('leave_request')
+        ->with('remain_annual',$remain_leave_annual)
+        ->with('remain_personal',$remain_leave_personal)
+        ->with('remain_sick',$remain_leave_sick);
   }
 
   public function index(Request $request)
@@ -38,7 +68,35 @@ class LeaverequestController extends Controller
 
   public function addLeave(Request $request)
   {
-      $code=substr(md5(mt_rand()),0,15);
+
+    $code=substr(md5(mt_rand()),0,15);
+
+    $this->validate($request,[
+      'leave_type'=> 'required',
+      'from'=>'required',
+      'to'=>'required',
+      'purpose'=>'required'
+    ]);
+
+    // DB::insert('insert into leaverequest_of_employee values (?, ?,?,?,?,?)',
+    // [(Auth::id()),$request->input('from'),$request->input('to'),$request->input('leave_type'),'0',$request->input('purpose')]);
+
+    $check_overlap = DB::select('
+    SELECT * FROM leaverequest_of_employee l WHERE
+    (l.from BETWEEN ? AND ? OR
+    l.to BETWEEN ? AND ? OR
+    ? BETWEEN l.from AND l.to) AND l.id = ?',[$request->input('from'),$request->input('to'),$request->input('from'),$request->input('to'),$request->input('from'),(Auth::id())]);
+
+
+    if(strtotime($request->input('from')) > strtotime($request->input('to'))){
+      \Session::flash('unsuccess_message','<strong>Unsuccess!</strong> There is something wrong on from and to field');
+    }
+    else if (!empty($check_overlap)){
+      //throw new Exception('We have overlapping');
+      \Session::flash('unsuccess_message','<strong>Unsuccess!</strong> You already have leave request on these day.');
+    }
+    else {
+
       $data = DB::select('SELECT * FROM employees WHERE id = ? ', [Auth::id()] );
       $user = DB::select('SELECT e.id,e.type,e.department,e.carry_annual_leave,u.email FROM users u join employees e on e.email=u.email where u.id= ?' , [Auth::id()]  );
       DB::insert('insert into leaverequest_of_employee values (?,?,?,?,?,?,?)', [$user[0]->id,$request->input('from'),$request->input('to'),$request->input('leave_type'),'Pending',$request->input('purpose') , $code]);
@@ -168,22 +226,17 @@ class LeaverequestController extends Controller
        ,'leave_day'=>$leave_days[0]->leave_days , 'accept_path' => $accept_path , 'reject_path' => $reject_path
       );
 
-      //return view('mail')->with('mail' , $mail);
-
-      // $leave_request_history = new leaverequest_of_employee;
-      // $leave_request_history->id = Auth::id();
-      // $leave_request_history->from = $request->input('from');
-      // $leave_request_history->to = $request->input('to');
-      // $leave_request_history->purpose = $request->input('purpose');
-      // $leave_request_history->leave_type = $request->input('leave_type');
-      // $leave_request_history->status = $request->input('0');
-      // $leave_request_history->save();
-
-      Mail::send('mail', $mail, function($message) {
+      Mail::send('mail',
+       $mail, function($message) {
          $message->to('miin2ht@gmail.com', 'Playtorium') ->subject
             ('Leave Request') ;
          $message->from('yudaqq@gmail.com','Kimmintra') ;
       });
+
+      //return view('mail')->with('mail' , $mail);
+      \Session::flash('success_message','<strong>Success!</strong> Leave request has been sent.');
+    }
+
 
     return redirect()->route('leave_request');
 
