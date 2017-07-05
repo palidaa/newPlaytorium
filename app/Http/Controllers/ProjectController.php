@@ -22,8 +22,15 @@ class ProjectController extends Controller
               ->orderBy('status','desc')
               ->orderBy('prj_no','desc')
               ->get();
+
+      $type = DB::table('users')
+               ->select('user_type')
+               ->where('id',Auth::id())
+               ->get();
+
         
       return view('project')->with('projects',$users)
+      ->with('type',$type[0]->user_type)
       ->with('num',"")
       ->with('name',"");
 
@@ -58,8 +65,13 @@ class ProjectController extends Controller
     public function showProjectDetailList(String $id){
     $members = DB::select('select * from employees e inner join works w on e.id = w.id where w.prj_no = ?',[$id]);
     $project = DB::select('select * from projects where prj_no=?',[$id]);
+    $type = DB::table('users')
+         ->select('user_type')
+         ->where('id',Auth::id())
+         ->get();
 
-      return view('project_detail', compact('members','project'));
+      return view('project_detail', compact('members','project'))
+        ->with('type',$type[0]->user_type);
     }
 
     public function search(Request $request) {
@@ -89,4 +101,7 @@ class ProjectController extends Controller
        ->with('num',$no)
        ->with('name',$name);
    }
+
+
+
 }

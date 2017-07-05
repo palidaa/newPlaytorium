@@ -14,9 +14,14 @@
         <div class="form-group col-md-5">
           <label for="Leave_Type">Your remaining leave days</label>
           <ul style="list-style-type: none;">
-            <li>Annual leave</li>
-            <li>Personal leave</li>
-            <li>Sick leave</li>
+            <div class="col-md-6 col-offset-2">
+              <li>Annual leave</li>
+              <li>Personal leave</li>
+              <li>Sick leave</li>
+            </div>
+              <li>{{$remain_annual}}</li>
+              <li>{{$remain_personal}}</li>
+              <li>{{$remain_sick}}</li>
           </ul>
           <form action="/leave_request_history">
           <button type="submit" class="btn btn-default">Leave History</button>

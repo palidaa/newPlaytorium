@@ -13,12 +13,15 @@
       <p style="font-size:30px; font-weight:semibold;">Project</p>
       </div>
       <div class="col-md-6">
-
+       
+         
 
         <!-- add project button -->
-        <button type="button" class="btn btn-default pull-right" data-toggle="modal" data-target="#myModal">
-          <span class="glyphicon glyphicon-plus-sign"></span> Add project
-        </button>
+        @if ($type=='Admin')
+          <button type="button" class="btn btn-default pull-right" data-toggle="modal" data-target="#myModal">
+            <span class="glyphicon glyphicon-plus-sign"></span> Add project
+          </button>
+        @endif
 
         <!-- Modal -->
         <div class="modal fade" id="myModal" role="dialog">

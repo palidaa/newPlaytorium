@@ -64,9 +64,11 @@
       </div>
       <div class="col-md-6">
         <!-- add project button -->
+        @if ($type=='Admin')
         <button type="button" class="btn btn-default pull-right" data-toggle="modal" data-target="#myModal">
           <span class="glyphicon glyphicon-plus-sign"></span> Add member
         </button>
+        @endif
 
         <!-- Modal -->
         <div class="modal fade" id="myModal" role="dialog">
@@ -129,7 +131,9 @@
                  {{ csrf_field() }}
                <input type="hidden" name="id" value="{{$member->id}}">
                <input type="hidden" name="prj_no" value="{{ $project[0]->prj_no}}">
+                @if ($type=='Admin')
                   <td><button type="submit" class="btn btn-primary" >x</a></td>
+                @endif
              </form>
 
 

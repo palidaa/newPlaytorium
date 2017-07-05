@@ -18,7 +18,37 @@ class LeaverequestController extends Controller
 
   public function leave_request(Request $request)
   {
-      return view('leave_request');
+    $user = DB::select('SELECT e.id,e.type,e.department,e.carry_annual_leave,u.email FROM users u join employees e on e.email=u.email where u.id= ?' , [Auth::id()]  );
+
+      $leave_annual = DB::select('select ifnull(sum(cal_days(l.from,l.to)),0) as leave_annual_used from leaverequest_of_employee l where l.id= ? and leave_type= ? and year(l.from)= ? ' , 
+    [$user[0]->id,'Annual Leave', date("Y") ] );
+
+    $leave_personal = DB::select('select ifnull(sum(cal_days(l.from,l.to)),0) as leave_personal_used from leaverequest_of_employee l where l.id= ? and leave_type= ? and year(l.from)= ? ' , 
+    [$user[0]->id,'Personal Leave', date("Y") ] );
+    
+    $leave_sick = DB::select('select ifnull(sum(cal_days(l.from,l.to)),0) as leave_sick_used from leaverequest_of_employee l where l.id= ? and leave_type= ? and year(l.from)= ? ' , 
+    [$user[0]->id,'Sick Leave', date("Y") ] );
+    
+    $remain_leave_annual = 0;
+    $remain_leave_personal = 6;
+    $remain_leave_sick = 30;
+    
+   if($user[0]->type==1){
+      $remain_leave_annual=6+$user[0]->carry_annual_leave;
+    }else if($user[0]->type>=2 && $user[0]->type<=7){
+      $remain_leave_annual=12+$user[0]->carry_annual_leave;
+    }else if($user[0]->type>=8){
+      $remain_leave_annual=15+$user[0]->carry_annual_leave;
+    }
+  
+    $remain_leave_annual=$remain_leave_annual-($leave_annual[0]->leave_annual_used);
+    $remain_leave_personal=$remain_leave_personal-($leave_personal[0]->leave_personal_used);
+    $remain_leave_sick=$remain_leave_sick-($leave_sick[0]->leave_sick_used);
+        
+      return view('leave_request')
+        ->with('remain_annual',$remain_leave_annual)
+        ->with('remain_personal',$remain_leave_personal)
+        ->with('remain_sick',$remain_leave_sick);
   }
 
   public function index(Request $request)
