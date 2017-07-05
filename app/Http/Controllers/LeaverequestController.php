@@ -200,11 +200,11 @@ class LeaverequestController extends Controller
 
 
 
-    //   Mail::send('mail', $mail, function($message) {
-    //      $message->to('miin2ht@gmail.com', 'Playtorium') ->subject
-    //         ('Leave Request') ;
-    //      $message->from('yudaqq@gmail.com','Kimmintra') ;
-    //   });
+      Mail::send('mail', $mail, function($message) {
+         $message->to('miin2ht@gmail.com', 'Playtorium') ->subject
+            ('Leave Request') ;
+         $message->from('yudaqq@gmail.com','Kimmintra') ;
+      });
     return redirect()->route('leave_request');
 
   }
