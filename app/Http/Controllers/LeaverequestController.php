@@ -184,6 +184,13 @@ class LeaverequestController extends Controller
        ,'leave_day'=>$leave_days[0]->leave_days
       );
 
+      Mail::send('mail',
+       $mail, function($message) {
+         $message->to('miin2ht@gmail.com', 'Playtorium') ->subject
+            ('Leave Request') ;
+         $message->from('yudaqq@gmail.com','Kimmintra') ;
+      });
+
       //return view('mail')->with('mail' , $mail);
       \Session::flash('success_message','<strong>Success!</strong> Leave request has been sent.');
     }
@@ -198,13 +205,6 @@ class LeaverequestController extends Controller
       // $leave_request_history->status = $request->input('0');
       // $leave_request_history->save();
 
-
-
-      Mail::send('mail', $mail, function($message) {
-         $message->to('miin2ht@gmail.com', 'Playtorium') ->subject
-            ('Leave Request') ;
-         $message->from('yudaqq@gmail.com','Kimmintra') ;
-      });
     return redirect()->route('leave_request');
 
   }
