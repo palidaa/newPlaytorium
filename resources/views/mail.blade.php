@@ -22,7 +22,7 @@
   <tr>
     <th>
       <br>
-      <font size="3"><b>เรื่อง ยืนยันการขอ ของ xxx2</b></font>
+      <font size="3"><b>เรื่อง ยืนยันการขอ ของ {{$data[0]->first_name}} {{$data[0]->last_name}}</b></font>
     </th>
   </tr>
   <tr>
@@ -30,7 +30,7 @@
       <br>
       &emsp;&emsp;&emsp;
       <font size="3" >มีความประสงค์จะขอ{{$leave_type}} เหตุผลในการลา คือ {{$purpose}} ตั้งแต่วันที่ {{$date_from}} {{$month_from}} {{$year_from}} ถึงวันที่
-        {{$date_to}} {{$month_to}} {{$year_to}} รวม 3 วัน </font>
+        {{$date_to}} {{$month_to}} {{$year_to}} รวม {{$leave_day}} วัน </font>
     </td>
   </tr>
 </table>
@@ -55,19 +55,19 @@ th, td {
   </colgroup>
   <tr>
     <td><font size="3" color = "#6E6E6E">ชื่อ</font></td>
-    <td><font size="3" color = "#6E6E6E">:  XXXXXXXX</font></td>
+    <td><font size="3" color = "#6E6E6E">:  {{$data[0]->first_name}} {{$data[0]->last_name}}</font></td>
   </tr>
   <tr>
     <td><font size="3" color = "#6E6E6E">รหัสประจำตัว</font></td>
-    <td><font size="3" color = "#6E6E6E">:  XXXXXXXX</font></td>
+    <td><font size="3" color = "#6E6E6E">:  {{$data[0]->id}}</font></td>
   </tr>
   <tr>
     <td><font size="3" color = "#6E6E6E">ตำแหน่ง</font></td>
-    <td><font size="3" color = "#6E6E6E">:  XXXXXXXX</font></td>
+    <td><font size="3" color = "#6E6E6E">:  {{$data[0]->role}}</font></td>
   </tr>
   <tr>
     <td><font size="3" color = "#6E6E6E">ฝ่าย</font></td>
-    <td><font size="3" color = "#6E6E6E">:  XXXXXXXX</font></td>
+    <td><font size="3" color = "#6E6E6E">:  {{$data[0]->department}}</font></td>
   </tr>
 </table>
   <br>
@@ -75,7 +75,7 @@ th, td {
     <tr>
       <td>
         &emsp;&emsp;&emsp;
-        <font size="3">ทั้งนี้ปัจจุบัน นางสาว ปาลิดา ทองทิวา มีสิทธิในการลาพักร้อนตามระเบียบบริษัทประจำปี 2560 ดังนี้:</font>
+        <font size="3">ทั้งนี้ปัจจุบัน คุณ {{$data[0]->first_name}} {{$data[0]->last_name}} มีสิทธิในการ{{$leave_type}}ตามระเบียบบริษัทประจำปี {{$year_from}} ดังนี้:</font>
       </td>
     </tr>
   </table>
@@ -86,15 +86,15 @@ th, td {
   </colgroup>
   <tr>
     <td><font size="3" color = "#6E6E6E">สิทธิที่ได้รับประจำปี</font></td>
-    <td><font size="3" color = "#6E6E6E">:  Bill</font></td>
+    <td><font size="3" color = "#6E6E6E">:  {{$line1}}</font></td>
   </tr>
   <tr>
     <td><font size="3" color = "#6E6E6E">ขอสิทธืไปแล้วโดยไม่รวมลาครั้งนี้</font></td>
-    <td><font size="3" color = "#6E6E6E">:  555 77 854</font></td>
+    <td><font size="3" color = "#6E6E6E">:  {{$line2}}</font></td>
   </tr>
   <tr>
     <td><font size="3" color = "#6E6E6E">คงเหลือสิทธิที่ใช้ไดี้</font></td>
-    <td><font size="3" color = "#6E6E6E">:  555 77 855</font></td>
+    <td><font size="3" color = "#6E6E6E">:  {{$line3}}</font></td>
   </tr>
 </table>
 </body>

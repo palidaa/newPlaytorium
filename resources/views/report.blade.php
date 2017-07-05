@@ -18,27 +18,28 @@
 			  <div class="form-group col-md-4">
 				<label>Type</label>
 				<br>
-				<select class="form-control" name="type">
-				 <option value=""></option>
+				<select class="form-control" name="type" onchange="showDiv(this)">
 				 <option value="Timesheet">Timesheet</option>
 				 <option value="Summary Timesheet">Summary Timesheet</option>
 				</select>
 			  </div>
 			</div>
 
-			<p>Select year and month to export a report.</p>
+			<p id="selYM">Select year and month to export a report.</p>
 			<div class="row">
 			  <div class="form-group col-md-3">
 				  <select class="form-control" name="year">
 				   <option value="">Select Year</option>
-				   <option value="2018">2018</option>
-				   <option value="2017">2017</option>
-				   <option value="2016">2016</option>
+				   
+					@for($i=0;$i<20;$i++)
+						<option value=<?php echo date("Y")-$i; ?>><?php echo date("Y")-$i; ?></option>
+					@endfor
+					
 				  </select>
 			  </div>
 
 				<div class="form-group col-md-3">
-				  <select class="form-control" name="month">
+				  <select class="form-control" name="month" id="month">
 					<option value="">Select Month</option>
 					<option value="01">January</option>
 					<option value="02">Febuary</option>
@@ -56,9 +57,9 @@
 			  </div>
 
 			</div>
-			  <p>Project</p>
+			  <p id="p">Project</p>
 
-			  <select class="form-control" name="project">
+			  <select class="form-control" name="project" id="project">
 			   <option value="">Select Project</option>
 			   @foreach($data as $eachdata)
 				<option value={{ $eachdata->prj_no }}>{{ $eachdata->prj_name }}</option>
@@ -78,3 +79,21 @@
 
 </div>
 @endsection
+
+
+<script type="text/javascript">
+function showDiv(elem){
+	if(elem.value == "Timesheet"){
+		document.getElementById('month').style.display = "block";
+		document.getElementById('project').style.display = "block";
+		document.getElementById('selYM').innerHTML = "Select year and month to export a report.";
+		document.getElementById('p').style.display = "block";
+	}
+	else if(elem.value == "Summary Timesheet"){
+		document.getElementById('month').style.display = "none";
+		document.getElementById('project').style.display = "none";
+		document.getElementById('selYM').innerHTML = "Select year to export a report.";
+		document.getElementById('p').style.display = "none";
+	}
+}
+</script>
