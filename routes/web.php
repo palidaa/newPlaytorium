@@ -61,3 +61,13 @@ Route::post('/timesheet/addLeave', 'LeaverequestController@addLeave');
 Route::get('/verify/accept/{code}' , 'LeaverequestController@accept');
 
 Route::get('/verify/reject/{code}' , 'LeaverequestController@reject');
+
+Route::get('/admin/holiday', 'AdminHolidayController@showHolidayList');
+
+Route::post('/admin/holiday/deleteHoliday', 'AdminHolidayController@deleteHoliday');
+
+Route::post('/admin/holiday/addHoliday', 'AdminHolidayController@addHoliday');
+
+Route::get('/admin/new_user', 'AdminUserController@showForm');
+
+Route::post('/admin/new_user/register', 'AdminUserController@register');
