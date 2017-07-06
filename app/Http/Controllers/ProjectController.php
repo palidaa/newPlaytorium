@@ -16,7 +16,7 @@ class ProjectController extends Controller
     }
 
     public function showProjectList(){
-    
+
       $users = DB::table('projects')
               ->select(DB::raw("*"))
               ->orderBy('status','desc')
@@ -28,7 +28,7 @@ class ProjectController extends Controller
                ->where('id',Auth::id())
                ->get();
 
-        
+
       return view('project')->with('projects',$users)
       ->with('type',$type[0]->user_type)
       ->with('num',"")

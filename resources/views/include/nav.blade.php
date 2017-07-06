@@ -12,6 +12,8 @@
     </div>
     <div class="collapse navbar-collapse" id="myNavbar">
       <ul class="nav navbar-nav">
+        <li><a href="/admin/holiday">Holiday</a></li>
+        <li><a href="/admin/new_user">New user</a></li>
         <li><a href="/timesheet">Timesheet</a></li>
         <li><a href="/leave_request">Leave Request</a></li>
         <li><a href="/project">Project</a></li>
