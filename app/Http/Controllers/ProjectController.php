@@ -17,6 +17,7 @@ class ProjectController extends Controller
 
     public function showProjectList(){
 
+
       $userid = DB::select('SELECT e.id,u.user_type FROM users u join employees e on e.email=u.email where u.id= ?' , [Auth::id()]  );
 
       if($userid[0]->user_type=='Admin'){
@@ -36,6 +37,7 @@ class ProjectController extends Controller
       ->with('name',"");
 
     }
+
     public function addProject(Request $request)
     {
         $project = new Project;

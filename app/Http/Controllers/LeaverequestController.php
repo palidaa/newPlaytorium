@@ -23,16 +23,16 @@ class LeaverequestController extends Controller
     $leave_annual = DB::select('select ifnull(sum(cal_days(l.from,l.to)),0) as leave_annual_used from leaverequest_of_employee l where l.id= ? and leave_type= ? and year(l.from)= ? ' , 
     [$user[0]->id,'Annual Leave', date("Y") ] );
 
-    $leave_personal = DB::select('select ifnull(sum(cal_days(l.from,l.to)),0) as leave_personal_used from leaverequest_of_employee l where l.id= ? and leave_type= ? and year(l.from)= ? ' , 
+    $leave_personal = DB::select('select ifnull(sum(cal_days(l.from,l.to)),0) as leave_personal_used from leaverequest_of_employee l where l.id= ? and leave_type= ? and year(l.from)= ? ' ,
     [$user[0]->id,'Personal Leave', date("Y") ] );
-    
-    $leave_sick = DB::select('select ifnull(sum(cal_days(l.from,l.to)),0) as leave_sick_used from leaverequest_of_employee l where l.id= ? and leave_type= ? and year(l.from)= ? ' , 
+
+    $leave_sick = DB::select('select ifnull(sum(cal_days(l.from,l.to)),0) as leave_sick_used from leaverequest_of_employee l where l.id= ? and leave_type= ? and year(l.from)= ? ' ,
     [$user[0]->id,'Sick Leave', date("Y") ] );
-    
+
     $remain_leave_annual = 0;
     $remain_leave_personal = 6;
     $remain_leave_sick = 30;
-    
+
     if($user[0]->type==1){
       $remain_leave_annual=6+$user[0]->carry_annual_leave;
     }else if($user[0]->type>=2 && $user[0]->type<=7){
@@ -40,11 +40,11 @@ class LeaverequestController extends Controller
     }else if($user[0]->type>=8){
       $remain_leave_annual=15+$user[0]->carry_annual_leave;
     }
-  
+
     $remain_leave_annual=$remain_leave_annual-($leave_annual[0]->leave_annual_used);
     $remain_leave_personal=$remain_leave_personal-($leave_personal[0]->leave_personal_used);
     $remain_leave_sick=$remain_leave_sick-($leave_sick[0]->leave_sick_used);
-        
+
       return view('leave_request')
         ->with('remain_annual',$remain_leave_annual)
         ->with('remain_personal',$remain_leave_personal)
@@ -58,9 +58,21 @@ class LeaverequestController extends Controller
       $leave_request_historys = DB::select('SELECT * FROM leaverequest_of_employee WHERE id = ? ', [$user[0]->id]);
       return view('leave_request_history')->with('leave_request_history' ,$leave_request_historys);
   }
+  public function accept(String $code)
+  {
+      DB::update( 'UPDATE leaverequest_of_employee l SET l.status=? WHERE l.code = ? and l.status = ? ' , ['Accepted',$code,'Pending'] );
+  }
+  public function reject(String $code)
+  {
+
+      DB::update( 'UPDATE leaverequest_of_employee l SET l.status=? WHERE l.code = ? and l.status = ? ' , ['Rejected',$code,'Pending'] );
+  }
 
   public function addLeave(Request $request)
   {
+
+    $code=substr(md5(mt_rand()),0,15);
+
     $this->validate($request,[
       'leave_type'=> 'required',
       'from'=>'required',
@@ -89,14 +101,14 @@ class LeaverequestController extends Controller
 
       $data = DB::select('SELECT * FROM employees WHERE id = ? ', [Auth::id()] );
       $user = DB::select('SELECT e.id,e.type,e.department,e.carry_annual_leave,u.email FROM users u join employees e on e.email=u.email where u.id= ?' , [Auth::id()]  );
-      DB::insert('insert into leaverequest_of_employee values (?,?,?,?,?,?)', [$user[0]->id,$request->input('from'),$request->input('to'),$request->input('leave_type'),'0',$request->input('purpose')]);
+      DB::insert('insert into leaverequest_of_employee values (?,?,?,?,?,?,?)', [$user[0]->id,$request->input('from'),$request->input('to'),$request->input('leave_type'),'Pending',$request->input('purpose') , $code]);
       $leave = DB::select('select ifnull(sum(cal_days(l.from,l.to)),0) as leave_used from leaverequest_of_employee l where l.id= ? and leave_type= ? and year(l.from)= year(?)' , [$user[0]->id,$request->input('leave_type'), $request->input('to') ] );
-      $leave_days= DB::select('select cal_days( ? , ? ) as leave_days ' , [$request->input('from'),$request->input('to')]  );
+      $leave_days= DB::select('select cal_days(?,?) as leave_days ' , [$request->input('from'),$request->input('to')]  );
       $year_leave = 0;
-
       $from = explode('-' ,$request->input('from') );
       $to = explode('-' ,$request->input('to') );
-
+      $accept_path = '/newPlaytorium.dev/verify/accept/'.$code ;
+      $reject_path = '/newPlaytorium.dev/verify/reject/'.$code ;
       $month_from = "";
       $month_to = "";
       $leave_type = "";
@@ -152,7 +164,7 @@ class LeaverequestController extends Controller
           break;
       }
 
-      switch ($to[1]) {
+      switch ($to[1]){
       case 1:
           $month_to = "มกราคม";
           break;
@@ -213,7 +225,7 @@ class LeaverequestController extends Controller
        'leave_type' => $leave_type ,'purpose'=> $request->input('purpose'),
        'date_to'=>$to[2],'month_to'=>$month_to, 'year_to'=> ($to[0]+543)
        ,'data' => $data ,'line1'=> $year_leave , 'line2'=>$leave[0]->leave_used, 'line3'=>( $year_leave -$leave[0]->leave_used)
-       ,'leave_day'=>$leave_days[0]->leave_days
+       ,'leave_day'=>$leave_days[0]->leave_days , 'accept_path' => $accept_path , 'reject_path' => $reject_path
       );
 
       Mail::send('mail',
@@ -228,18 +240,8 @@ class LeaverequestController extends Controller
     }
 
 
-      // $leave_request_history = new leaverequest_of_employee;
-      // $leave_request_history->id = Auth::id();
-      // $leave_request_history->from = $request->input('from');
-      // $leave_request_history->to = $request->input('to');
-      // $leave_request_history->purpose = $request->input('purpose');
-      // $leave_request_history->leave_type = $request->input('leave_type');
-      // $leave_request_history->status = $request->input('0');
-      // $leave_request_history->save();
-
     return redirect()->route('leave_request');
 
   }
-
 
 }
