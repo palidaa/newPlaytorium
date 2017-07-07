@@ -20,7 +20,7 @@ class LeaverequestController extends Controller
   {
     $user = DB::select('SELECT e.id,e.type,e.department,e.carry_annual_leave,u.email FROM users u join employees e on e.email=u.email where u.id= ?' , [Auth::id()]  );
 
-      $leave_annual = DB::select('select ifnull(sum(cal_days(l.from,l.to)),0) as leave_annual_used from leaverequest_of_employee l where l.id= ? and leave_type= ? and year(l.from)= ? ' , 
+    $leave_annual = DB::select('select ifnull(sum(cal_days(l.from,l.to)),0) as leave_annual_used from leaverequest_of_employee l where l.id= ? and leave_type= ? and year(l.from)= ? ' , 
     [$user[0]->id,'Annual Leave', date("Y") ] );
 
     $leave_personal = DB::select('select ifnull(sum(cal_days(l.from,l.to)),0) as leave_personal_used from leaverequest_of_employee l where l.id= ? and leave_type= ? and year(l.from)= ? ' , 
@@ -33,7 +33,7 @@ class LeaverequestController extends Controller
     $remain_leave_personal = 6;
     $remain_leave_sick = 30;
     
-   if($user[0]->type==1){
+    if($user[0]->type==1){
       $remain_leave_annual=6+$user[0]->carry_annual_leave;
     }else if($user[0]->type>=2 && $user[0]->type<=7){
       $remain_leave_annual=12+$user[0]->carry_annual_leave;
@@ -53,7 +53,9 @@ class LeaverequestController extends Controller
 
   public function index(Request $request)
   {
-      $leave_request_historys = DB::select('SELECT * FROM leaverequest_of_employee WHERE id = ? ', [Auth::id()]);
+    $user = DB::select('SELECT e.id FROM users u join employees e on e.email=u.email where u.id= ?' , [Auth::id()]  );
+
+      $leave_request_historys = DB::select('SELECT * FROM leaverequest_of_employee WHERE id = ? ', [$user[0]->id]);
       return view('leave_request_history')->with('leave_request_history' ,$leave_request_historys);
   }
 

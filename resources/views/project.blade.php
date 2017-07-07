@@ -12,16 +12,14 @@
       <div class="col-md-6">
       <p style="font-size:30px; font-weight:semibold;">Project</p>
       </div>
+@if ($type=='Admin')
       <div class="col-md-6">
        
-         
-
         <!-- add project button -->
-        @if ($type=='Admin')
+        
           <button type="button" class="btn btn-default pull-right" data-toggle="modal" data-target="#myModal">
             <span class="glyphicon glyphicon-plus-sign"></span> Add project
           </button>
-        @endif
 
         <!-- Modal -->
         <div class="modal fade" id="myModal" role="dialog">
@@ -75,6 +73,8 @@
           </div>
         </div>
       </div>
+@endif
+
       </div>
 
       <form method="GET" action="/project/search">
@@ -95,11 +95,20 @@
                <th>Customer</th>
                <th>Quo.No.</th>
                <th>status</th>
+               @if ($type=='Admin')
+               <th></th>
+               @endif
              </tr>
 
              @if ( sizeof($projects) ==0)
                 <td> No result were found !!</td>
-
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                @if ($type=='Admin')
+                  <th></th>
+                @endif
              @else
 
              @foreach($projects as $project)
@@ -109,6 +118,14 @@
                 <td>{{ $project->customer }}</td>
                 <td>{{ $project->quo_no }}</td>
                 <td style="color:#C4B20F;">{{ $project->status }}</td>
+
+                @if ($type=='Admin')
+                  <form action="/project/deleteProject" method="post">
+                   {{ csrf_field() }}
+                  <input type="hidden" name="prj_no" value="{{$project->prj_no}}">
+                  <td><button type="submit" class="btn btn-primary" >x</a></td>
+                  </form>
+                @endif
               </tr>
              @endforeach
 
@@ -126,8 +143,6 @@
              @endfor
 -->
           </table>
-
-
       </div>
     </div>
 @endsection

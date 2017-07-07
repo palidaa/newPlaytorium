@@ -46,6 +46,8 @@ Route::post('/project/addProjectMember' , 'ProjectController@addProjectMember');
 
 Route::post('/project/deleteMember' , 'ProjectController@deleteMember');
 
+Route::post('/project/deleteProject' , 'ProjectController@deleteProject');
+
 Route::get('/export2' , 'MessagesController@export2');
 
 Auth::routes();

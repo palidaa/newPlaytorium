@@ -15,6 +15,11 @@
       </div>
     </div>
     <hr style="border-color:grey">
+
+@if ($type!='Admin' and sizeof($works) ==0)
+ <p>You don't have permission to access this project!</p>
+@else
+
     <div class="row">
       <div class="col-md-3">
         <p style="font-size:18px; font-weight:bold;">Project Number</p>
@@ -62,13 +67,13 @@
       <div class="col-md-6">
       <p style="font-size:30px; font-weight:semibold;">Project Members</p>
       </div>
+  @if ($type=='Admin')
       <div class="col-md-6">
+        
         <!-- add project button -->
-        @if ($type=='Admin')
         <button type="button" class="btn btn-default pull-right" data-toggle="modal" data-target="#myModal">
           <span class="glyphicon glyphicon-plus-sign"></span> Add member
         </button>
-        @endif
 
         <!-- Modal -->
         <div class="modal fade" id="myModal" role="dialog">
@@ -97,8 +102,6 @@
                   </form>
               </div>
 
-
-
               <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
                 <button type="submit" class="btn btn-primary" form="form">Add</button>
@@ -109,6 +112,7 @@
           </div>
         </div>
       </div>
+  @endif
       </div>
 
 
@@ -118,7 +122,9 @@
                <th>Name</th>
                <th>Position</th>
                <th>Role</th>
+               @if ($type=='Admin')
                <th></th>
+               @endif
              </tr>
 
              @foreach($members as $member)
@@ -127,21 +133,21 @@
                <td>{{ $member->first_name." ".$member->last_name }}</td>
                <td>{{ $member->position }}</td>
                <td>{{ $member->role }}</td>
-               <form action="/project/deleteMember" method="post">
-                 {{ csrf_field() }}
-               <input type="hidden" name="id" value="{{$member->id}}">
-               <input type="hidden" name="prj_no" value="{{ $project[0]->prj_no}}">
-                @if ($type=='Admin')
+
+               @if ($type=='Admin')
+                <form action="/project/deleteMember" method="post">
+                   {{ csrf_field() }}
+                 <input type="hidden" name="id" value="{{$member->id}}">
+                 <input type="hidden" name="prj_no" value="{{ $project[0]->prj_no}}">
                   <td><button type="submit" class="btn btn-primary" >x</a></td>
-                @endif
-             </form>
+                </form>
+             @endif
 
 
              </tr>
              @endforeach
           </table>
-
-
+@endif
       </div>
     </div>
 
