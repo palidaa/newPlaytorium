@@ -15,6 +15,11 @@
         <li class="{{ Request::is('timesheet') ? 'active' : '' }}"><a href="/timesheet">Timesheet</a></li>
         <li class="{{ Request::is('leave_request') ? 'active' : '' }}"><a href="/leave_request">Leave Request</a></li>
         <li class="{{ Request::is('project*') ? 'active' : '' }}"><a href="/project">Project</a></li>
+        <li class="{{ Request::is('report') ? 'active' : '' }}"><a href="/report">Report</a></li>
+        @if(Auth::user()->user_type=="Admin")
+          <li><a href="/admin/holiday">Holiday</a></li>
+			    <li><a href="/admin/new_user">New user</a></li>
+        @endif
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">

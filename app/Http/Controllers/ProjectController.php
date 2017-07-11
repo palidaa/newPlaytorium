@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use DB;
 use App\Project;
+use App\Work;
 
 class ProjectController extends Controller
 {
@@ -19,7 +20,7 @@ class ProjectController extends Controller
     }
 
     public function fetch() {
-      if(Auth::user()->type == 'admin') {
+      if(Auth::user()->user_type == 'admin') {
         $projects = Project::all();
         return $projects;
       }
@@ -52,4 +53,58 @@ class ProjectController extends Controller
                     ->get();
       return view('project_detail', compact('project', 'members'));
     }
+
+    public function search(Request $request) {
+      $no = $request->input('prj_no');
+      $name = $request->input('prj_name');
+/*
+      if($no!=""){
+        $result = DB::table('projects')
+           ->select(DB::raw("*"))
+           ->where('prj_no',$no)
+           ->where('prj_name', 'like','%' . $name . '%'  )
+           ->orderBy('status','desc')
+           ->orderBy('prj_no','desc')
+           ->get();
+         }
+      else {
+        $result = DB::table('projects')
+             ->select(DB::raw("*"))
+             ->where('prj_no',$no)
+             ->orwhere('prj_name', 'like','%' . $name . '%'  )
+             ->orderBy('status','desc')
+             ->orderBy('prj_no','desc')
+             ->get();
+      }
+
+*/
+
+$userid = DB::select('SELECT e.id,u.user_type FROM users u join employees e on e.email=u.email where u.id= ?' , [Auth::id()]  );
+
+      if($userid[0]->user_type=='Admin'){
+        $result = DB::table('projects')
+             ->select(DB::raw("*"))
+             ->where('prj_no',$no)
+             ->orwhere('prj_name', 'like','%' . $name . '%'  )
+             ->orderBy('status','desc')
+             ->orderBy('prj_no','desc')
+             ->get();
+      }else{
+        $result = DB::select('select p.* from projects p join works w on p.prj_no=w.prj_no where w.id= ? and (p.prj_no= ? or p.prj_name like ?) order by status desc,prj_no desc',
+        [$userid[0]->id,$no,'%'.$name.'%']);
+      }
+
+      $type = DB::table('users')
+         ->select('user_type')
+         ->where('id',Auth::id())
+         ->get();
+
+       return view('project')->with('projects',$result)
+       ->with('num',$no)
+       ->with('name',$name)
+        ->with('type',$type[0]->user_type);
+   }
+
+
+
 }

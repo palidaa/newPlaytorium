@@ -21,25 +21,14 @@
         <div class="row">
           <div class="col-md-4 col-md-offset-4">
 
-            <form action ="{{ route('login') }}" method="post">
+            <form action="/submit" method="post">
               {{ csrf_field() }}
 
-              <div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
-                <input id="email" type="email" class="form-control" name="email" placeholder="E-mail" value="{{ old('email') }}" required autofocus>
-                  @if ($errors->has('email'))
-                    <span class="help-block">
-                      <strong>{{ $errors->first('email') }}</strong>
-                    </span>
-                  @endif
+              <div class="form-group">
+                <input type="email" class="form-control" id="email" placeholder="E-mail" name="email">
               </div>
-
-              <div class="form-group{{ $errors->has('password') ? ' has-error' : '' }}">
-                <input id="password" type="password" class="form-control" name="password" placeholder="Password" required>
-                  @if ($errors->has('password'))
-                    <span class="help-block">
-                      <strong>{{ $errors->first('password') }}</strong>
-                    </span>
-                  @endif
+              <div class="form-group">
+                <input type="password" class="form-control" id="pwd" placeholder="Password" name="pwd">
               </div>
 
               <div class="row">
@@ -53,8 +42,10 @@
                   @endif
                 </div>
               </div>
-              <button type="submit" class="btn btn-primary btn-block">Login</button>
+              <button type="submit" class="btn btn-primary btn-block">Log In</button>
             </form>
+
+
           </div>
         </div>
       </div>
