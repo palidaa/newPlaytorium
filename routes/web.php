@@ -11,16 +11,34 @@
 |
 */
 
-//timesheet route
+Auth::routes();
+
+// timesheet route
+
+// redirect to timesheet page
 Route::get('/', function () {
     return redirect()->route('timesheet');
 });
 
+// route to timesheet page
 Route::get('/timesheet', 'TimesheetController@index')->name('timesheet');
 
-Route::post('/timesheet/addTask', 'TimesheetController@addTask');
+// route to insert page
+Route::get('/timesheet/new', 'TimesheetController@new')->name('new');
 
-//leave request route
+// fetch timesheet
+Route::get('/timesheet/fetch', 'TimesheetController@fetch');
+
+// insert timesheet
+Route::post('/timesheet/insert', 'TimesheetController@insert');
+
+// edit timesheet
+Route::post('/timesheet/update', 'TimesheetController@update');
+
+// delete timesheet
+Route::delete('/timesheet/delete', 'TimesheetController@delete');
+
+// leave request route
 Route::get('/leave_request', function () {
     return view('leave_request');
 });
@@ -29,23 +47,28 @@ Route::get('/report', function () {
     return view('report');
 });
 
-Route::get('/project' , 'ProjectController@showProjectList')->name('project');
+// project route
 
+// route to project page
+Route::get('/project', 'ProjectController@index')->name('project');
 
-Route::post('/project/addProject' , 'ProjectController@addProject');
+// fetch project
+Route::get('/project/fetch', 'ProjectController@fetch');
 
-Route::post('/submit' , 'MessagesController@submit');
+// insert project
+Route::post('/project/insert', 'ProjectController@insert');
 
-Route::get('/export' , 'MessagesController@export');
+// view project by prj_no
+Route::get('/project/{prj_no}', 'ProjectController@view');
 
-Route::get('/project/{id}', 'ProjectController@showProjectDetailList');
+Route::post('/submit', 'MessagesController@submit');
 
-Route::get('/export2' , 'MessagesController@export2');
+Route::get('/export', 'MessagesController@export');
+
+Route::get('/export2', 'MessagesController@export2');
 
 Route::get('/report', function () {
     return view('report');
 });
-
-Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');

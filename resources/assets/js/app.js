@@ -6,8 +6,10 @@
  */
 
 require('./bootstrap');
+require('./bootstrap-datepicker.js');
 
 window.Vue = require('vue');
+window.moment = require('moment');
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -15,11 +17,4 @@ window.Vue = require('vue');
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
-Vue.component('example', require('./components/Example.vue'));
-
-const app = new Vue({
-    el: '#app',
-    data: {
-      message: 'gg'
-    }
-});
+//Vue.component('example', require('./components/Example.vue'));
