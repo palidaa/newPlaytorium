@@ -43,9 +43,7 @@ Route::get('/leave_request', function () {
     return view('leave_request');
 });
 
-Route::get('/report', function () {
-    return view('report');
-});
+Route::get('/leave_request', 'LeaverequestController@leave_request')->name('leave_request');
 
 // project route
 
@@ -61,14 +59,30 @@ Route::post('/project/insert', 'ProjectController@insert');
 // view project by prj_no
 Route::get('/project/{prj_no}', 'ProjectController@view');
 
-Route::post('/submit', 'MessagesController@submit');
+Route::get('/report', 'ReportController@getdata');
 
-Route::get('/export', 'MessagesController@export');
+Route::post('/report/export' , 'MessagesController@export');
 
-Route::get('/export2', 'MessagesController@export2');
-
-Route::get('/report', function () {
-    return view('report');
-});
+Route::get('/export2' , 'MessagesController@export2');
 
 Route::get('/home', 'HomeController@index')->name('home');
+
+Route::get('/sendbasicmail','MailController@html_email');
+
+Route::get('/leave_request_history', 'LeaverequestController@index')->name('leave_request_history');
+
+Route::post('/timesheet/addLeave', 'LeaverequestController@addLeave');
+
+Route::get('/verify/accept/{code}' , 'LeaverequestController@accept');
+
+Route::get('/verify/reject/{code}' , 'LeaverequestController@reject');
+
+Route::get('/admin/holiday', 'AdminHolidayController@showHolidayList');
+
+Route::post('/admin/holiday/deleteHoliday', 'AdminHolidayController@deleteHoliday');
+
+Route::post('/admin/holiday/addHoliday', 'AdminHolidayController@addHoliday');
+
+Route::get('/admin/new_user', 'AdminUserController@showForm');
+
+Route::post('/admin/new_user/register', 'AdminUserController@register');

@@ -59,7 +59,9 @@
       <div class="col-md-6">
         <p style="font-size:30px; font-weight:semibold;">Project Members</p>
       </div>
+
       <div class="col-md-6">
+
         <!-- add project button -->
         <button type="button" class="btn btn-default pull-right" data-toggle="modal" data-target="#myModal">
           <span class="glyphicon glyphicon-plus-sign"></span> Add member
@@ -76,47 +78,53 @@
                 <h4 class="modal-title">Add a member</h4>
               </div>
               <div class="modal-body">
+                <form id="form" action="/project/addProjectMember" method="post">
+                  {{ csrf_field() }}
+                  <input type="hidden" name="prj_no" value="{{ $project->prj_no}}">
                 <div class="row">
                   <div class="col-md-4">
                     <label for="">Emp.No.</label>
-                    <input type="text" class="form-control" name="" value="">
+                    <input type="text" class="form-control" name="id" value="">
                   </div>
                   <div class="col-md-4 col-md-offset-1">
                     <label for="">Position</label>
-                    <input type="text" class="form-control" name="" value="">
+                    <input type="text" class="form-control" name="position" value="">
                   </div>
                 </div>
+                  </form>
               </div>
+
               <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-primary" data-dismiss="modal">Add</button>
+                <button type="submit" class="btn btn-primary" form="form">Add</button>
               </div>
+
             </div>
 
           </div>
         </div>
       </div>
-      </div>
+    </div>
 
-      <table class="table table-hover table-striped">
-        <tr style="font-size:20px;">
-           <th>Emp.No.</th>
-           <th>Name</th>
-           <th>Position</th>
-           <th>Role</th>
-           <th></th>
-         </tr>
+    <table class="table table-hover table-striped">
+      <tr style="font-size:20px;">
+         <th>Emp.No.</th>
+         <th>Name</th>
+         <th>Position</th>
+         <th>Role</th>
+         <th></th>
+       </tr>
 
-         @foreach($members as $member)
-         <tr>
-           <td>{{ $member->id }}</td>
-           <td>{{ $member->first_name." ".$member->last_name }}</td>
-           <td>{{ $member->position }}</td>
-           <td>{{ $member->role }}</td>
-           <td><a href=#>x</a></td>
-         </tr>
-         @endforeach
-      </table>
+       @foreach($members as $member)
+       <tr>
+         <td>{{ $member->id }}</td>
+         <td>{{ $member->first_name." ".$member->last_name }}</td>
+         <td>{{ $member->position }}</td>
+         <td>{{ $member->role }}</td>
+         <td><a href=#>x</a></td>
+       </tr>
+       @endforeach
+    </table>
 
   </div>
 </div>
