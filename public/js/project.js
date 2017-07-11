@@ -71,7 +71,51 @@
 /***/ 121:
 /***/ (function(module, exports) {
 
-throw new Error("Module build failed: Error: ENOENT: no such file or directory, open 'C:\\xampp\\htdocs\\playtorium\\resources\\assets\\js\\project.js'");
+new Vue({
+  el: '#project',
+  data: {
+    projects: [],
+    search: '',
+    filtered: []
+  },
+  created: function created() {
+    this.fetch();
+    console.log(this.filtered);
+  },
+  watch: {
+    search: function search(val) {
+      var _this = this;
+
+      this.filtered = [];
+      if (val.lenght < 2) {
+        this.filtered = this.projects;
+      } else {
+        var regexp = new RegExp(val, 'i');
+        this.projects.forEach(function (project) {
+          if (regexp.test(project.prj_no) || regexp.test(project.prj_name)) {
+            _this.filtered.push(project);
+          }
+        });
+      }
+    }
+  },
+  methods: {
+    fetch: function fetch() {
+      var _this2 = this;
+
+      axios.get('/project/fetch').then(function (response) {
+        console.log(response);
+        _this2.projects = response.data;
+        _this2.filtered = _this2.projects;
+      }).catch(function (error) {
+        console.log(error);
+      });
+    },
+    view: function view(project) {
+      window.location.href = '/project/' + project.prj_no;
+    }
+  }
+});
 
 /***/ }),
 

@@ -9,18 +9,14 @@
     <div class="col-md-10 col-md-offset-1">
 
     <!-- Project Detail -->
-    <div class="row">
-      <div class="col-md-6">
-        <p style="font-size:30px; font-weight:semibold;">Project Detail</p>
-      </div>
-    </div>
-    <hr style="border-color:grey">
+    <h2>Project Detail</h2>
+    <hr>
     <div class="row">
       <div class="col-md-3">
         <p style="font-size:18px; font-weight:bold;">Project Number</p>
       </div>
       <div class="col-md-9">
-        <p style="font-size:18px;">PS170001</p>
+        <p style="font-size:18px;">{{ $project->prj_no}}</p>
       </div>
     </div>
     <div class="row">
@@ -28,7 +24,7 @@
         <p style="font-size:18px; font-weight:bold;">Project Name</p>
       </div>
       <div class="col-md-9">
-        <p style="font-size:18px;">Function Lead Service for Project New Interaction Mgmt by Pega</p>
+        <p style="font-size:18px;">{{ $project->prj_name}}</p>
       </div>
     </div>
     <div class="row">
@@ -36,7 +32,7 @@
         <p style="font-size:18px; font-weight:bold;">Customer </p>
       </div>
       <div class="col-md-9">
-        <p style="font-size:18px;">MFEC</p>
+        <p style="font-size:18px;">{{ $project->customer}}</p>
       </div>
     </div>
     <div class="row">
@@ -44,20 +40,24 @@
         <p style="font-size:18px; font-weight:bold;">Quotation number</p>
       </div>
       <div class="col-md-9">
-        <p style="font-size:18px;">201701003</p>
+        <p style="font-size:18px;">{{ $project->quo_no}}</p>
       </div>
     </div>
     <div class="row">
       <div class="col-md-3">
         <p style="font-size:18px; font-weight:bold;">Description</p>
       </div>
+      <div class="col-md-9">
+        <p style="font-size:18px;">{{ $project->description}}</p>
+      </div>
     </div>
     <br>
-    <hr style="border-color:grey">
+    <hr>
+
     <!-- Project Members -->
     <div class="row">
       <div class="col-md-6">
-      <p style="font-size:30px; font-weight:semibold;">Project Members</p>
+        <p style="font-size:30px; font-weight:semibold;">Project Members</p>
       </div>
       <div class="col-md-6">
         <!-- add project button -->
@@ -98,30 +98,28 @@
       </div>
       </div>
 
+      <table class="table table-hover table-striped">
+        <tr style="font-size:20px;">
+           <th>Emp.No.</th>
+           <th>Name</th>
+           <th>Position</th>
+           <th>Role</th>
+           <th></th>
+         </tr>
 
-          <table class="table table-hover table-striped">
-            <tr style="font-size:20px;">
-               <th>Emp.No.</th>
-               <th>Name</th>
-               <th>Position</th>
-               <th>Role</th>
-               <th></th>
-             </tr>
+         @foreach($members as $member)
+         <tr>
+           <td>{{ $member->id }}</td>
+           <td>{{ $member->first_name." ".$member->last_name }}</td>
+           <td>{{ $member->position }}</td>
+           <td>{{ $member->role }}</td>
+           <td><a href=#>x</a></td>
+         </tr>
+         @endforeach
+      </table>
 
-             @for ($i = 0;$i<sizeof($tables);$i++)
-            <tr>
-               <td>{{ $tables[$i]->id }}</td>
-               <td>{{ $tables[$i]->first_name." ".$tables[$i]->last_name }}</td>
-               <td>{{ $tables[$i]->position }}</td>
-               <td>{{ $tables[$i]->role }}</td>
-               <td><a href=#>x</a></td>
-             </tr>
-             @endfor
-          </table>
-
-
-      </div>
-    </div>
+  </div>
+</div>
 
 
 

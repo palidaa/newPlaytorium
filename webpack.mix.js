@@ -12,4 +12,7 @@ let mix = require('laravel-mix');
  */
 
 mix.js('resources/assets/js/app.js', 'public/js')
+   .js('resources/assets/js/timesheet.js', 'public/js')
+   .js('resources/assets/js/new.js', 'public/js')
+   .js('resources/assets/js/project.js', 'public/js')
    .sass('resources/assets/sass/app.scss', 'public/css')
