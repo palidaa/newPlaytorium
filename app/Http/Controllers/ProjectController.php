@@ -15,73 +15,43 @@ class ProjectController extends Controller
       $this->middleware('auth');
     }
 
-    public function showProjectList(){
-
-
-      $userid = DB::select('SELECT e.id,u.user_type FROM users u join employees e on e.email=u.email where u.id= ?' , [Auth::id()]  );
-
-      if($userid[0]->user_type=='Admin'){
-              $users = DB::table('projects')
-              ->select(DB::raw("*"))
-              ->orderBy('status','desc')
-              ->orderBy('prj_no','desc')
-              ->get();
-      }else{
-        $users = DB::select('select p.* from projects p join works w on p.prj_no=w.prj_no where w.id= ? order by status desc,prj_no desc',
-        [$userid[0]->id]);
-      }
-
-      return view('project')->with('projects',$users)
-      ->with('type',$userid[0]->user_type)
-      ->with('num',"")
-      ->with('name',"");
-
+    public function index() {
+      return view('project');
     }
 
-    public function addProject(Request $request)
-    {
+    public function fetch() {
+      if(Auth::user()->user_type == 'admin') {
+        $projects = Project::all();
+        return $projects;
+      }
+      else {
+        $projects = DB::table('projects')
+                      ->join('works', 'projects.prj_no', '=', 'works.prj_no')
+                      ->where('works.id', Auth::id())
+                      ->get();
+        return $projects;
+      }
+    }
+
+    public function insert(Request $request) {
         $project = new Project;
         $project->prj_no = $request->input('prj_no');
         $project->prj_name = $request->input('prj_name');
         $project->customer = $request->input('customer');
         $project->quo_no = $request->input('quo_no');
-        $project->description =  $request->input('description');
+        $project->description = $request->input('description');
         $project->status = 'In Progress';
         $project->save();
         return redirect()->route('project');
     }
 
-    public function addProjectMember(Request $request){
-        $member = new Work;
-        $member->id = $request->input('id');
-        $member->prj_no = $request->input('prj_no');
-        $member->position = $request->input('position');
-        $member->save();
-        return redirect()->back();
-    }
-
-    public function deleteMember(Request $request){
-    $works = DB::delete('delete from works where id=? and prj_no=?' ,[$request->input('id'),$request->input('prj_no')]);
-        return redirect()->back();
-    }
-
-    public function deleteProject(Request $request){
-    $works = DB::delete('delete from projects where prj_no=?' ,[$request->input('prj_no')]);
-        return redirect()->back();
-    }
-
-    public function showProjectDetailList(String $id){
-      $userid = DB::select('SELECT e.id,u.user_type FROM users u join employees e on e.email=u.email where u.id= ?' , [Auth::id()]  );
-      $works = DB::select('select * from works w where w.id = ? and w.prj_no = ?',[$userid[0]->id,$id]);
-
-      if($userid[0]->user_type=='Admin' or sizeof($works)!=0){
-        $members = DB::select('select * from employees e inner join works w on e.id = w.id where w.prj_no = ?',[$id]);
-        $project = DB::select('select * from projects where prj_no=?',[$id]);
-      }
-
-      return view('project_detail', compact('members','project'))
-        ->with('type',$userid[0]->user_type)
-        ->with('works',$works);
+    public function view($prj_no) {
+      $project = Project::find($prj_no);
+      $members = DB::table('employees')
+                    ->join('works', 'employees.id', '=', 'works.id')
+                    ->where('works.prj_no', $prj_no)
+                    ->get();
+      return view('project_detail', compact('project', 'members'));
     }
 
     public function search(Request $request) {

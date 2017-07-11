@@ -11,46 +11,59 @@
 |
 */
 
-//timesheet route
+Auth::routes();
+
+// timesheet route
+
+// redirect to timesheet page
 Route::get('/', function () {
     return redirect()->route('timesheet');
 });
 
+// route to timesheet page
 Route::get('/timesheet', 'TimesheetController@index')->name('timesheet');
 
-Route::post('/timesheet/addTask', 'TimesheetController@addTask');
+// route to insert page
+Route::get('/timesheet/new', 'TimesheetController@new')->name('new');
 
-//leave request route
-// Route::get('/leave_request', function () {
-//     return view('leave_request');
-// });
+// fetch timesheet
+Route::get('/timesheet/fetch', 'TimesheetController@fetch');
+
+// insert timesheet
+Route::post('/timesheet/insert', 'TimesheetController@insert');
+
+// edit timesheet
+Route::post('/timesheet/update', 'TimesheetController@update');
+
+// delete timesheet
+Route::delete('/timesheet/delete', 'TimesheetController@delete');
+
+// leave request route
+Route::get('/leave_request', function () {
+    return view('leave_request');
+});
 
 Route::get('/leave_request', 'LeaverequestController@leave_request')->name('leave_request');
 
+// project route
+
+// route to project page
+Route::get('/project', 'ProjectController@index')->name('project');
+
+// fetch project
+Route::get('/project/fetch', 'ProjectController@fetch');
+
+// insert project
+Route::post('/project/insert', 'ProjectController@insert');
+
+// view project by prj_no
+Route::get('/project/{prj_no}', 'ProjectController@view');
+
 Route::get('/report', 'ReportController@getdata');
-
-Route::get('/project' , 'ProjectController@showProjectList')->name('project');
-Route::get('/project/search','ProjectController@search');
-
-Route::post('/project/addProject' , 'ProjectController@addProject');
-
-Route::post('/submit' , 'MessagesController@submit');
 
 Route::post('/report/export' , 'MessagesController@export');
 
-
-Route::get('/project_detail', 'projectDetailList@showProjectDetailList');
-
-Route::get('/project/{id}', 'ProjectController@showProjectDetailList');
-Route::post('/project/addProjectMember' , 'ProjectController@addProjectMember');
-
-Route::post('/project/deleteMember' , 'ProjectController@deleteMember');
-
-Route::post('/project/deleteProject' , 'ProjectController@deleteProject');
-
 Route::get('/export2' , 'MessagesController@export2');
-
-Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 

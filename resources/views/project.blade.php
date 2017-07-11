@@ -4,25 +4,36 @@
 
 @section('content')
 
-<div class="container">
-  <div class="row">
-    <div class="col-md-10 col-md-offset-1">
-
+<div id="project">
+  <div class="container">
     <div class="row">
-      <div class="col-md-6">
-      <p style="font-size:30px; font-weight:semibold;">Project</p>
-      </div>
-@if ($type=='Admin')
-      <div class="col-md-6">
-       
-        <!-- add project button -->
-        
-          <button type="button" class="btn btn-default pull-right" data-toggle="modal" data-target="#myModal">
-            <span class="glyphicon glyphicon-plus-sign"></span> Add project
-          </button>
+      <div class="col-md-10 col-md-offset-1">
+        <h2>Project</h2>
+        <hr>
+        <input type="text" v-model="search">
+        <button type="button" class="btn btn-default pull-right" data-toggle="modal" data-target="#addProject">
+          <span class="glyphicon glyphicon-plus-sign"></span> Add project
+        </button>
+
+        <table class="table table-hover table-striped">
+          <tr style="font-size:20px;">
+             <th>Prj.No.</th>
+             <th>Name</th>
+             <th>Customer</th>
+             <th>Quo.No.</th>
+             <th>status</th>
+           </tr>
+           <tr class="click-table" v-for="project in filtered" @click="view(project)">
+             <td>@{{ project.prj_no }}</td>
+             <td>@{{ project.prj_name }}</td>
+             <td>@{{ project.customer }}</td>
+             <td>@{{ project.quo_no }}</td>
+             <td style="color:#C4B20F;">@{{ project.status }}</td>
+           </tr>
+        </table>
 
         <!-- Modal -->
-        <div class="modal fade" id="myModal" role="dialog">
+        <div class="modal fade" id="addProject" role="dialog">
           <div class="modal-dialog">
 
             <!-- Modal content-->
@@ -72,93 +83,14 @@
 
           </div>
         </div>
-      </div>
-@endif
 
-      </div>
-
-      <form method="GET" action="/project/search">
-
-        <label>Project number </label>
-        <input type="text" name ="prj_no" value = "{{ $num }}">
-
-        <label>Name</label>
-        <input type="text" name="prj_name" value = "{{ $name }}">
-
-        <button type="submit" class="btn btn-primary" >Search</button>
-      </form>
-
-          <table class="table table-hover table-striped">
-            <tr style="font-size:20px;">
-               <th>Prj.No.</th>
-               <th>Name</th>
-               <th>Customer</th>
-               <th>Quo.No.</th>
-               <th>status</th>
-               @if ($type=='Admin')
-               <th></th>
-               @endif
-             </tr>
-
-             @if ( sizeof($projects) ==0)
-                <td> No result were found !!</td>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th></th>
-                @if ($type=='Admin')
-                  <th></th>
-                @endif
-             @else
-
-             @foreach($projects as $project)
-              <tr class="project" value="{{ $project->prj_no }}">
-                <td>{{ $project->prj_no }}</td>
-                <td>{{ $project->prj_name  }}</td>
-                <td>{{ $project->customer }}</td>
-                <td>{{ $project->quo_no }}</td>
-                <td style="color:#C4B20F;">{{ $project->status }}</td>
-
-                @if ($type=='Admin')
-                  <form action="/project/deleteProject" method="post">
-                   {{ csrf_field() }}
-                  <input type="hidden" name="prj_no" value="{{$project->prj_no}}">
-                  <td><button type="submit" class="btn btn-primary" >x</a></td>
-                  </form>
-                @endif
-              </tr>
-             @endforeach
-
-             @endif
-
-<!--
-             @for ($i = 0;$i<=2;$i++)
-             <tr>
-               <td>PS170001</td>
-               <td>Function Lead Service for Project New Interaction Mgmt by Pega</td>
-               <td>MFEC</td>
-               <td>201701003</td>
-               <td style="color:#0FC40F;">Done</td>
-             </tr>
-             @endfor
--->
-          </table>
       </div>
     </div>
+  </div>
+</div>
+
 @endsection
 
 @section('script')
-<script type="text/javascript">
-  $(document).ready(function(){
-    $('tr.project').each(function(){
-      $(this)
-      .hover(function(){
-        $(this).css( 'cursor', 'pointer' );
-      })
-      .click(function(){
-        window.location.href = '/project/' + $(this).attr('value');
-      });
-    });
-  });
-</script>
+<script src="{{ asset('js/project.js') }}"></script>
 @endsection

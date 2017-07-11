@@ -1,7 +1,7 @@
-<nav class="navbar navbar-default">
+<nav class="navbar navbar-default navbar-fixed-top">
   <div class="container-fluid">
     <div class="navbar-header">
-      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
@@ -10,13 +10,12 @@
         <img src="{{URL::asset('/images/logo.png')}}" style="max-width:120px; margin-top: -7px;">
       </div>
     </div>
-    <div class="collapse navbar-collapse" id="myNavbar">
+    <div class="collapse navbar-collapse" id="navbar">
       <ul class="nav navbar-nav">
-        <li><a href="/timesheet">Timesheet</a></li>
-        <li><a href="/leave_request">Leave Request</a></li>
-        <li><a href="/project">Project</a></li>
-		    <li><a href="/report">Report</a></li>
-
+        <li class="{{ Request::is('timesheet') ? 'active' : '' }}"><a href="/timesheet">Timesheet</a></li>
+        <li class="{{ Request::is('leave_request') ? 'active' : '' }}"><a href="/leave_request">Leave Request</a></li>
+        <li class="{{ Request::is('project*') ? 'active' : '' }}"><a href="/project">Project</a></li>
+        <li class="{{ Request::is('report') ? 'active' : '' }}"><a href="/report">Report</a></li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">

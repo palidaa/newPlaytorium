@@ -9,23 +9,14 @@
     <div class="col-md-10 col-md-offset-1">
 
     <!-- Project Detail -->
-    <div class="row">
-      <div class="col-md-6">
-        <p style="font-size:30px; font-weight:semibold;">Project Detail</p>
-      </div>
-    </div>
-    <hr style="border-color:grey">
-
-@if ($type!='Admin' and sizeof($works) ==0)
- <p>You don't have permission to access this project!</p>
-@else
-
+    <h2>Project Detail</h2>
+    <hr>
     <div class="row">
       <div class="col-md-3">
         <p style="font-size:18px; font-weight:bold;">Project Number</p>
       </div>
       <div class="col-md-9">
-        <p style="font-size:18px;">{{ $project[0]->prj_no}}</p>
+        <p style="font-size:18px;">{{ $project->prj_no}}</p>
       </div>
     </div>
     <div class="row">
@@ -33,7 +24,7 @@
         <p style="font-size:18px; font-weight:bold;">Project Name</p>
       </div>
       <div class="col-md-9">
-        <p style="font-size:18px;">{{ $project[0]->prj_name}}</p>
+        <p style="font-size:18px;">{{ $project->prj_name}}</p>
       </div>
     </div>
     <div class="row">
@@ -41,7 +32,7 @@
         <p style="font-size:18px; font-weight:bold;">Customer </p>
       </div>
       <div class="col-md-9">
-        <p style="font-size:18px;">{{ $project[0]->customer}}</p>
+        <p style="font-size:18px;">{{ $project->customer}}</p>
       </div>
     </div>
     <div class="row">
@@ -49,7 +40,7 @@
         <p style="font-size:18px; font-weight:bold;">Quotation number</p>
       </div>
       <div class="col-md-9">
-        <p style="font-size:18px;">{{ $project[0]->quo_no}}</p>
+        <p style="font-size:18px;">{{ $project->quo_no}}</p>
       </div>
     </div>
     <div class="row">
@@ -57,19 +48,20 @@
         <p style="font-size:18px; font-weight:bold;">Description</p>
       </div>
       <div class="col-md-9">
-        <p style="font-size:18px;">{{ $project[0]->description}}</p>
+        <p style="font-size:18px;">{{ $project->description}}</p>
       </div>
     </div>
     <br>
-    <hr style="border-color:grey">
+    <hr>
+
     <!-- Project Members -->
     <div class="row">
       <div class="col-md-6">
-      <p style="font-size:30px; font-weight:semibold;">Project Members</p>
+        <p style="font-size:30px; font-weight:semibold;">Project Members</p>
       </div>
-  @if ($type=='Admin')
+
       <div class="col-md-6">
-        
+
         <!-- add project button -->
         <button type="button" class="btn btn-default pull-right" data-toggle="modal" data-target="#myModal">
           <span class="glyphicon glyphicon-plus-sign"></span> Add member
@@ -88,7 +80,7 @@
               <div class="modal-body">
                 <form id="form" action="/project/addProjectMember" method="post">
                   {{ csrf_field() }}
-                  <input type="hidden" name="prj_no" value="{{ $project[0]->prj_no}}">
+                  <input type="hidden" name="prj_no" value="{{ $project->prj_no}}">
                 <div class="row">
                   <div class="col-md-4">
                     <label for="">Emp.No.</label>
@@ -112,44 +104,30 @@
           </div>
         </div>
       </div>
-  @endif
-      </div>
-
-
-          <table class="table table-hover table-striped">
-            <tr style="font-size:20px;">
-               <th>Emp.No.</th>
-               <th>Name</th>
-               <th>Position</th>
-               <th>Role</th>
-               @if ($type=='Admin')
-               <th></th>
-               @endif
-             </tr>
-
-             @foreach($members as $member)
-            <tr>
-               <td>{{ $member->id }}</td>
-               <td>{{ $member->first_name." ".$member->last_name }}</td>
-               <td>{{ $member->position }}</td>
-               <td>{{ $member->role }}</td>
-
-               @if ($type=='Admin')
-                <form action="/project/deleteMember" method="post">
-                   {{ csrf_field() }}
-                 <input type="hidden" name="id" value="{{$member->id}}">
-                 <input type="hidden" name="prj_no" value="{{ $project[0]->prj_no}}">
-                  <td><button type="submit" class="btn btn-primary" >x</a></td>
-                </form>
-             @endif
-
-
-             </tr>
-             @endforeach
-          </table>
-@endif
-      </div>
     </div>
+
+    <table class="table table-hover table-striped">
+      <tr style="font-size:20px;">
+         <th>Emp.No.</th>
+         <th>Name</th>
+         <th>Position</th>
+         <th>Role</th>
+         <th></th>
+       </tr>
+
+       @foreach($members as $member)
+       <tr>
+         <td>{{ $member->id }}</td>
+         <td>{{ $member->first_name." ".$member->last_name }}</td>
+         <td>{{ $member->position }}</td>
+         <td>{{ $member->role }}</td>
+         <td><a href=#>x</a></td>
+       </tr>
+       @endforeach
+    </table>
+
+  </div>
+</div>
 
 
 
