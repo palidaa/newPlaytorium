@@ -4,7 +4,7 @@
 
 @section('content')
 
-<div id="timesheet">
+<div id="timesheet" v-cloak>
   <div class="container">
     <div class="row">
       <div class="col-md-8 col-md-offset-2">

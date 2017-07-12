@@ -78,7 +78,7 @@ new Vue({
     search: '',
     filtered: []
   },
-  created: function created() {
+  mounted: function mounted() {
     this.fetch();
     console.log(this.filtered);
   },

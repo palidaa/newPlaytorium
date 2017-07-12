@@ -85,12 +85,10 @@ new Vue({
     },
     selectedKey: 0
   },
-  created: function created() {
-    this.fetch();
-  },
   mounted: function mounted() {
     var _this = this;
 
+    this.fetch();
     $('.input-group.date').datepicker({
       format: 'yyyy-mm-dd',
       autoclose: true
