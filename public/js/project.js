@@ -63,12 +63,12 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 158);
+/******/ 	return __webpack_require__(__webpack_require__.s = 151);
 /******/ })
 /************************************************************************/
 /******/ ({
 
-/***/ 128:
+/***/ 121:
 /***/ (function(module, exports) {
 
 new Vue({
@@ -78,7 +78,7 @@ new Vue({
     search: '',
     filtered: []
   },
-  created: function created() {
+  mounted: function mounted() {
     this.fetch();
     console.log(this.filtered);
   },
@@ -119,10 +119,10 @@ new Vue({
 
 /***/ }),
 
-/***/ 158:
+/***/ 151:
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(128);
+module.exports = __webpack_require__(121);
 
 
 /***/ })
