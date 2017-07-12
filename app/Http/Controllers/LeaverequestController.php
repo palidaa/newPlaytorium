@@ -60,12 +60,23 @@ class LeaverequestController extends Controller
   }
   public function accept(String $code)
   {
-      DB::update( 'UPDATE leaverequest_of_employee l SET l.status=? WHERE l.code = ? and l.status = ? ' , ['Accepted',$code,'Pending'] );
+      $check_status = DB::select( 'select l.status from leaverequest_of_employee l WHERE l.code = ?' , [$code] );
+      if($check_status[0]->status == 'Pending'){
+        DB::update( 'UPDATE leaverequest_of_employee l SET l.status=? WHERE l.code = ? and l.status = ? ' , ['Accepted',$code,'Pending'] );
+        return view('accepted_mail');
+      }
+      else
+        return view('already_mail');
   }
   public function reject(String $code)
   {
-
-      DB::update( 'UPDATE leaverequest_of_employee l SET l.status=? WHERE l.code = ? and l.status = ? ' , ['Rejected',$code,'Pending'] );
+      $check_status = DB::select( 'select l.status from leaverequest_of_employee l WHERE l.code = ?' , [$code] );
+      if($check_status[0]->status == 'Pending'){
+        DB::update( 'UPDATE leaverequest_of_employee l SET l.status=? WHERE l.code = ? and l.status = ? ' , ['Rejected',$code,'Pending'] );
+        return view('denied_mail');
+      }
+      else
+        return view('already_mail');
   }
 
   public function addLeave(Request $request)
