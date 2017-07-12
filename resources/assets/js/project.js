@@ -5,7 +5,7 @@ new Vue({
     search: '',
     filtered: []
   },
-  created: function() {
+  mounted: function() {
     this.fetch();
     console.log(this.filtered);
   },

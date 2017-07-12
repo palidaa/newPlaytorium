@@ -63,12 +63,12 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 159);
+/******/ 	return __webpack_require__(__webpack_require__.s = 152);
 /******/ })
 /************************************************************************/
 /******/ ({
 
-/***/ 129:
+/***/ 122:
 /***/ (function(module, exports) {
 
 new Vue({
@@ -85,12 +85,10 @@ new Vue({
     },
     selectedKey: 0
   },
-  created: function created() {
-    this.fetch();
-  },
   mounted: function mounted() {
     var _this = this;
 
+    this.fetch();
     $('.input-group.date').datepicker({
       format: 'yyyy-mm-dd',
       autoclose: true
@@ -160,10 +158,10 @@ new Vue({
 
 /***/ }),
 
-/***/ 159:
+/***/ 152:
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(129);
+module.exports = __webpack_require__(122);
 
 
 /***/ })
