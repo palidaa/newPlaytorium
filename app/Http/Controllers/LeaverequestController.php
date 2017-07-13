@@ -20,13 +20,13 @@ class LeaverequestController extends Controller
   {
     $user = DB::select('SELECT e.id,e.type,e.department,e.carry_annual_leave,u.email FROM users u join employees e on e.email=u.email where u.id= ?' , [Auth::id()]  );
 
-    $leave_annual = DB::select('select ifnull(sum(cal_days(l.from,l.to)),0) as leave_annual_used from leaverequest_of_employee l where l.id= ? and leave_type= ? and year(l.from)= ? ' ,
+    $leave_annual = DB::select('select count(l.leave_date) as leave_annual_used from leaverequest_of_employee l where l.id= ? and leave_type= ? and year(l.leave_date)= ? ' ,
     [$user[0]->id,'Annual Leave', date("Y") ] );
 
-    $leave_personal = DB::select('select ifnull(sum(cal_days(l.from,l.to)),0) as leave_personal_used from leaverequest_of_employee l where l.id= ? and leave_type= ? and year(l.from)= ? ' ,
+    $leave_personal = DB::select('select count(l.leave_date) as leave_personal_used from leaverequest_of_employee l where l.id= ? and leave_type= ? and year(l.leave_date)= ? ' ,
     [$user[0]->id,'Personal Leave', date("Y") ] );
 
-    $leave_sick = DB::select('select ifnull(sum(cal_days(l.from,l.to)),0) as leave_sick_used from leaverequest_of_employee l where l.id= ? and leave_type= ? and year(l.from)= ? ' ,
+    $leave_sick = DB::select('select count(l.leave_date) as leave_sick_used from leaverequest_of_employee l where l.id= ? and leave_type= ? and year(l.leave_date)= ? ' ,
     [$user[0]->id,'Sick Leave', date("Y") ] );
 
     $remain_leave_annual = 0;
@@ -96,15 +96,13 @@ class LeaverequestController extends Controller
 
     $check_overlap = DB::select('
     SELECT * FROM leaverequest_of_employee l WHERE
-    (l.from BETWEEN ? AND ? OR
-    l.to BETWEEN ? AND ? OR
-    ? BETWEEN l.from AND l.to) AND l.id = ?',[$request->input('from'),$request->input('to'),$request->input('from'),$request->input('to'),$request->input('from'),(Auth::id())]);
+    (l.leave_date BETWEEN ? AND ?) AND l.id = ?',[$request->input('from'),$request->input('to'),(Auth::id())]);
 
 
 
       $data = DB::select('SELECT * FROM employees WHERE id = ? ', [Auth::id()] );
       $user = DB::select('SELECT e.id,e.type,e.department,e.carry_annual_leave,u.email FROM users u join employees e on e.email=u.email where u.id= ?' , [Auth::id()]  );
-      $leave = DB::select('select ifnull(sum(cal_days(l.from,l.to)),0) as leave_used from leaverequest_of_employee l where l.id= ? and leave_type= ? and year(l.from)= year(?)' , [$user[0]->id,$request->input('leave_type'), $request->input('to') ] );
+      $leave = DB::select('select count(l.leave_date) as leave_used from leaverequest_of_employee l where l.id= ? and leave_type= ? and year(l.leave_date)= year(?)' , [$user[0]->id,$request->input('leave_type'), $request->input('to') ] );
       $leave_days= DB::select('select cal_days(?,?) as leave_days ' , [$request->input('from'),$request->input('to')]  );
       $year_leave = 0;
       $from = explode('-' ,$request->input('from') );
@@ -250,7 +248,22 @@ class LeaverequestController extends Controller
               ('Leave Request') ;
            $message->from('yudaqq@gmail.com','Kimmintra') ;
         });
-        DB::insert('insert into leaverequest_of_employee values (?,?,?,?,?,?,?)', [$user[0]->id,$request->input('from'),$request->input('to'),$request->input('leave_type'),'Pending',$request->input('purpose') , $code]);
+		$begin = new DateTime($request->input('from'));
+		$interval = new DateInterval( "P1D" );
+		$end = new DateTime($request->input('to'));
+		$end->add( $interval );
+		$period = new DatePeriod($begin, $interval, $end);
+		$holidays = DB::select('select holiday from holidays');
+		foreach($period as $period_v){
+			$notinholiday = true;
+			foreach($holidays as $holiday){
+				if($holiday->holiday->format('Y-m-d')==$period_v->format('Y-m-d'))$notinholiday = false;
+			}
+			if(date('N', $period_v->format('Y-m-d'))<6 and $notinholiday){
+				DB::insert('insert into leaverequest_of_employee values (?,?,?,?,?,?)', [$user[0]->id,$period_v,$request->input('leave_type'),'Pending',$request->input('purpose') , $code]);
+			}
+		}
+        
         //return view('mail')->with('mail' , $mail);
         \Session::flash('success_message','<strong>Success!</strong> Leave request has been sent.');
       }

@@ -625,7 +625,7 @@ class MessagesController extends Controller
 						}
 						$sheet ->mergeCells('D'.$currentRow.':'.'E'.$currentRow);
 						$sheet->SetCellValue('D'.$currentRow,"Non project code");
-						$query3 = DB::select('SELECT loe.leavedate FROM leaverequest_of_employee loe join employees e on loe.id=e.id where loe.id= ? and year(loe.leavedate)= ? and loe.status="Accepted"',[$query0_v->id,$year]);
+						$query3 = DB::select('SELECT loe.leave_date FROM leaverequest_of_employee loe join employees e on loe.id=e.id where loe.id= ? and year(loe.leave_date)= ? and loe.status="Accepted"',[$query0_v->id,$year]);
 						//non project code(undone)
 						for($i =1;$i<13;$i++){
 							$month[$i] = 0;
