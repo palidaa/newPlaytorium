@@ -79,6 +79,7 @@ new Vue({
     filtered: []
   },
   mounted: function mounted() {
+    pace.start();
     this.fetch();
     console.log(this.filtered);
   },

@@ -5,15 +5,29 @@ new Vue({
     timesheets: [],
     selectedTimesheet: {
       prj_no: '',
+      prj_name: '',
       task_name: '',
       time_in: '',
       time_out: '',
       description: ''
     },
-    selectedKey: 0
+    selectedKey: 0,
+    projects: []
   },
   mounted: function() {
+    pace.start();
     this.fetch();
+
+    // fetch project
+    axios.get('/project/fetch')
+      .then(response => {
+        this.projects = response.data;
+      })
+      .catch(error => {
+        console.log(error);
+      });
+
+    // datepicker setup
     $('.input-group.date').datepicker({
       format: 'yyyy-mm-dd',
       autoclose: true
@@ -24,6 +38,7 @@ new Vue({
   },
   methods: {
     fetch: function() {
+      pace.start();
       axios.get('/timesheet/fetch', {
         params: {
           date: this.date
@@ -32,6 +47,7 @@ new Vue({
         .then(response => {
           console.log(response);
           this.timesheets = response.data;
+          pace.stop();
         })
         .catch(error => {
           console.log(error);

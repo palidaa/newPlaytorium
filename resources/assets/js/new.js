@@ -3,7 +3,9 @@ let now = moment().format('YYYY-MM-DD');
 new Vue({
   el: '#new',
   data: {
-    prj_no: '',
+    // selectedProject format = 'prj_no - prj_name'
+    selectedProject: '',
+    projects: [],
     task_name: 'Dev',
     startDate: now,
     endDate: now,
@@ -15,6 +17,17 @@ new Vue({
     }]
   },
   mounted: function() {
+    pace.start();
+
+    axios.get('/project/fetch')
+      .then(response => {
+        this.projects = response.data;
+      })
+      .catch(error => {
+        console.log(error);
+      });
+
+    //setup datepicker
     $('.input-group.date').datepicker({
       format: 'yyyy-mm-dd',
       autoclose: true
@@ -45,18 +58,18 @@ new Vue({
             date: task.date,
             time_in: task.time_in,
             time_out: task.time_out,
-            prj_no: this.prj_no,
+            prj_no: this.selectedProject.substr(0, this.selectedProject.indexOf(' ')),
             task_name: this.task_name,
             description: task.description
           })
           .then(response => {
             console.log(response);
+            window.location.href = '/timesheet';
           })
           .catch(error => {
             console.log(error);
           });
         });
-      //window.location.href = '/timesheet';
     }
   }
 });

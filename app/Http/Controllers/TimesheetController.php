@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use DB;
 use App\Timesheet;
 
 class TimesheetController extends Controller
@@ -23,7 +24,12 @@ class TimesheetController extends Controller
     {
         $id = Auth::id();
         $date = $request->input('date');
-        $timesheets = Timesheet::where(['id' => $id, 'date' => $date])->get();
+        //$timesheets = Timesheet::where(['id' => $id, 'date' => $date])->get();
+        $timesheets = DB::table('timesheets')
+                        ->join('projects', 'timesheets.prj_no' ,'=', 'projects.prj_no')
+                        ->where(['id' => $id, 'date' => $date])
+                        ->select('timesheets.*', 'projects.prj_name')
+                        ->get();
         return $timesheets;
     }
 

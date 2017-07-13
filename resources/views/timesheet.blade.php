@@ -26,7 +26,7 @@
 
         <!-- timesheet -->
         <div class="panel panel-default" v-for="(timesheet, key) in timesheets">
-          <div class="panel-heading">@{{ timesheet.prj_no }} - @{{ timesheet.task_name }}
+          <div class="panel-heading">@{{ timesheet.prj_no }} - @{{ timesheet.prj_name }}
             <div class="btn-group pull-right">
               <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
                 <span class="caret"></span>
@@ -43,6 +43,8 @@
           </div>
           <div class="panel-body">
               Time: @{{ timesheet.time_in }} - @{{ timesheet.time_out }}
+              <br>
+              Task: @{{ timesheet.task_name }}
               <br>
               Description: @{{ timesheet.description }}
           </div>
@@ -64,27 +66,34 @@
                 <form>
                   <div class="row">
                     <div class="col-md-6">
-                      <label for="">Prj.No.</label>
-                      <input type="text" class="form-control" v-model="selectedTimesheet.prj_no">
+                      <label>Project</label>
+                      <select class="form-control">
+                        <option v-for="project in projects">@{{ project.prj_no }} - @{{ project.prj_name }}</option>
+                      </select>
                     </div>
                     <div class="col-md-6">
-                      <label for="">Task name</label>
-                      <input type="text" class="form-control" v-model="selectedTimesheet.task_name">
+                      <label>Task name</label>
+                      <select class="form-control" v-model="selectedTimesheet.task_name">
+                        <option>Dev</option>
+                        <option>Testing</option>
+                        <option>Training</option>
+                        <option>Meeting</option>
+                      </select>
                     </div>
                   </div>
                   <div class="row">
                     <div class="col-md-6">
-                      <label for="">Time in</label>
+                      <label>Time in</label>
                       <input type="time" class="form-control" v-model="selectedTimesheet.time_in">
                     </div>
                     <div class="col-md-6">
-                      <label for="">Time out</label>
+                      <label>Time out</label>
                       <input type="time" class="form-control" v-model="selectedTimesheet.time_out">
                     </div>
                   </div>
                   <div class="row">
                     <div class="col-md-12">
-                      <label for="">Description</label>
+                      <label>Description</label>
                       <textarea class="form-control" rows="4" v-model="selectedTimesheet.description"></textarea>
                     </div>
                   </div>
@@ -92,7 +101,7 @@
               </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-primary" @click="update">Save</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal" @click="update">Save</button>
               </div>
             </div>
 

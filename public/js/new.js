@@ -76,7 +76,9 @@ var now = moment().format('YYYY-MM-DD');
 new Vue({
   el: '#new',
   data: {
-    prj_no: '',
+    // selectedProject format = 'prj_no - prj_name'
+    selectedProject: '',
+    projects: [],
     task_name: 'Dev',
     startDate: now,
     endDate: now,
@@ -90,6 +92,15 @@ new Vue({
   mounted: function mounted() {
     var _this = this;
 
+    pace.start();
+
+    axios.get('/project/fetch').then(function (response) {
+      _this.projects = response.data;
+    }).catch(function (error) {
+      console.log(error);
+    });
+
+    //setup datepicker
     $('.input-group.date').datepicker({
       format: 'yyyy-mm-dd',
       autoclose: true
@@ -122,16 +133,16 @@ new Vue({
           date: task.date,
           time_in: task.time_in,
           time_out: task.time_out,
-          prj_no: _this2.prj_no,
+          prj_no: _this2.selectedProject.substr(0, _this2.selectedProject.indexOf(' ')),
           task_name: _this2.task_name,
           description: task.description
         }).then(function (response) {
           console.log(response);
+          window.location.href = '/timesheet';
         }).catch(function (error) {
           console.log(error);
         });
       });
-      //window.location.href = '/timesheet';
     }
   }
 });

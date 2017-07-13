@@ -14,8 +14,10 @@
         <div class="form-group">
           <div class="row">
             <div class="col-md-4">
-              <label class="control-label">Project No.</label>
-              <input type="text" class="form-control" v-model="prj_no">
+              <label class="control-label">Project</label>
+              <select class="form-control" v-model="selectedProject">
+                <option v-for="project in projects">@{{ project.prj_no }} - @{{ project.prj_name }}</option>
+              </select>
             </div>
             <div class="col-md-4">
               <label class="control-label">Task name</label>
