@@ -8,11 +8,9 @@
   <div class="row">
     <div class="col-md-10 col-md-offset-1">
 
-    <div class="row">
-      <div class="col-md-6">
-	  <h2>Leave request history</h2>
-      </div>
 
+    <h2>Leave request history</h2>
+    <br>
           <table class="table table-hover table-striped">
             <tr style="font-size:20px;">
                <th>Leave Type</th>
@@ -32,13 +30,8 @@
 
               </tr>
              @endfor
-
-
-
-
           </table>
-
-
-      </div>
     </div>
+  </div>
+</div>
 @endsection

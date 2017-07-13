@@ -56,9 +56,8 @@ class LeaverequestController extends Controller
 
   public function index(Request $request)
   {
-    $user = DB::select('SELECT e.id FROM users u join employees e on e.email=u.email where u.id= ?' , [Auth::id()]  );
+    $leave_request_historys = DB::select('SELECT * FROM leaverequest_of_employee WHERE id = ? and year(leave_date) = ? and leave_date=leave_from', [Auth::id(),date("Y")]);
 
-      $leave_request_historys = DB::select('SELECT distinct id,leave_from,leave_to,leave_type,status,purpose,code FROM leaverequest_of_employee WHERE id = ?', [$user[0]->id]);
       return view('leave_request_history')->with('leave_request_history' ,$leave_request_historys);
   }
   public function accept(String $code)

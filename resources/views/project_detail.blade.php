@@ -111,7 +111,9 @@
          <th>Name</th>
          <th>Position</th>
          <th>Role</th>
-         <th></th>
+         @if(Auth::user()->user_type=="Admin")
+          <th></th>
+         @endif
        </tr>
 
        @foreach($members as $member)
@@ -120,7 +122,9 @@
          <td>{{ $member->first_name." ".$member->last_name }}</td>
          <td>{{ $member->position }}</td>
          <td>{{ $member->role }}</td>
-         <td><a href=#>x</a></td>
+         @if(Auth::user()->user_type=="Admin")
+          <td><a href=#>x</a></td>
+         @endif
        </tr>
        @endforeach
     </table>
