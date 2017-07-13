@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Mail;
 use DB;
+use DateInterval;
+use DatePeriod;
+use DateTime;
 
 class LeaverequestController extends Controller
 {
@@ -257,9 +260,9 @@ class LeaverequestController extends Controller
 		foreach($period as $period_v){
 			$notinholiday = true;
 			foreach($holidays as $holiday){
-				if($holiday->holiday->format('Y-m-d')==$period_v->format('Y-m-d'))$notinholiday = false;
+				if($holiday->holiday==$period_v->format('Y-m-d'))$notinholiday = false;
 			}
-			if(date('N', $period_v->format('Y-m-d'))<6 and $notinholiday){
+			if(date('N', $period_v->getTimestamp())<6 and $notinholiday){
 				DB::insert('insert into leaverequest_of_employee values (?,?,?,?,?,?)', [$user[0]->id,$period_v,$request->input('leave_type'),'Pending',$request->input('purpose') , $code]);
 			}
 		}

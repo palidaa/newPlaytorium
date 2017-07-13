@@ -61,12 +61,12 @@
       </div>
 
       <div class="col-md-6">
-
+      @if(Auth::user()->user_type=="Admin")
         <!-- add project button -->
         <button type="button" class="btn btn-default pull-right" data-toggle="modal" data-target="#myModal">
           <span class="glyphicon glyphicon-plus-sign"></span> Add member
         </button>
-
+      
         <!-- Modal -->
         <div class="modal fade" id="myModal" role="dialog">
           <div class="modal-dialog">
@@ -98,11 +98,10 @@
                 <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
                 <button type="submit" class="btn btn-primary" form="form">Add</button>
               </div>
-
             </div>
-
           </div>
         </div>
+        @endif
       </div>
     </div>
 

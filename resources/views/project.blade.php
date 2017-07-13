@@ -10,11 +10,16 @@
       <div class="col-md-10 col-md-offset-1">
         <h2>Project</h2>
         <hr>
-        <input type="text" v-model="search">
-        <button type="button" class="btn btn-default pull-right" data-toggle="modal" data-target="#addProject">
-          <span class="glyphicon glyphicon-plus-sign"></span> Add project
-        </button>
-
+          <div class="col-md-6">
+            <input type="text" v-model="search">
+            <br>
+            <br>
+          </div>
+      @if(Auth::user()->user_type=="Admin")
+          <button type="button" class="btn btn-default pull-right" data-toggle="modal" data-target="#addProject">
+            <span class="glyphicon glyphicon-plus-sign"></span> Add project
+          </button>
+      @endif
         <table class="table table-hover table-striped">
           <tr style="font-size:20px;">
              <th>Prj.No.</th>
@@ -31,7 +36,7 @@
              <td style="color:#C4B20F;">@{{ project.status }}</td>
            </tr>
         </table>
-
+      @if(Auth::user()->user_type=="Admin")
         <!-- Modal -->
         <div class="modal fade" id="addProject" role="dialog">
           <div class="modal-dialog">
@@ -80,10 +85,9 @@
                 <button type="submit" class="btn btn-primary" form="form">Add</button>
               </div>
             </div>
-
+          @endif
           </div>
         </div>
-
       </div>
     </div>
   </div>
