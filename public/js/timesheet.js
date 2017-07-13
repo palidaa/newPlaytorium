@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 152);
+/******/ 	return __webpack_require__(__webpack_require__.s = 153);
 /******/ })
 /************************************************************************/
 /******/ ({
@@ -78,17 +78,29 @@ new Vue({
     timesheets: [],
     selectedTimesheet: {
       prj_no: '',
+      prj_name: '',
       task_name: '',
       time_in: '',
       time_out: '',
       description: ''
     },
-    selectedKey: 0
+    selectedKey: 0,
+    projects: []
   },
   mounted: function mounted() {
     var _this = this;
 
+    pace.start();
     this.fetch();
+
+    // fetch project
+    axios.get('/project/fetch').then(function (response) {
+      _this.projects = response.data;
+    }).catch(function (error) {
+      console.log(error);
+    });
+
+    // datepicker setup
     $('.input-group.date').datepicker({
       format: 'yyyy-mm-dd',
       autoclose: true
@@ -101,6 +113,7 @@ new Vue({
     fetch: function fetch() {
       var _this2 = this;
 
+      pace.start();
       axios.get('/timesheet/fetch', {
         params: {
           date: this.date
@@ -108,6 +121,7 @@ new Vue({
       }).then(function (response) {
         console.log(response);
         _this2.timesheets = response.data;
+        pace.stop();
       }).catch(function (error) {
         console.log(error);
       });
@@ -158,7 +172,7 @@ new Vue({
 
 /***/ }),
 
-/***/ 152:
+/***/ 153:
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__(122);

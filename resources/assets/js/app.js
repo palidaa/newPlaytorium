@@ -10,6 +10,7 @@ require('./bootstrap-datepicker.js');
 
 window.Vue = require('vue');
 window.moment = require('moment');
+window.pace = require('./pace.min.js');
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

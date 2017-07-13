@@ -6,6 +6,7 @@ new Vue({
     filtered: []
   },
   mounted: function() {
+    pace.start();
     this.fetch();
     console.log(this.filtered);
   },
