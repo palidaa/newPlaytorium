@@ -58,7 +58,7 @@ class LeaverequestController extends Controller
   {
     $user = DB::select('SELECT e.id FROM users u join employees e on e.email=u.email where u.id= ?' , [Auth::id()]  );
 
-      $leave_request_historys = DB::select('SELECT * FROM leaverequest_of_employee WHERE id = ? ', [$user[0]->id]);
+      $leave_request_historys = DB::select('SELECT distinct id,leave_from,leave_to,leave_type,status,purpose,code FROM leaverequest_of_employee WHERE id = ?', [$user[0]->id]);
       return view('leave_request_history')->with('leave_request_history' ,$leave_request_historys);
   }
   public function accept(String $code)
@@ -245,12 +245,12 @@ class LeaverequestController extends Controller
          ,'leave_day'=>$leave_days[0]->leave_days , 'accept_path' => $accept_path , 'reject_path' => $reject_path
         );
 
-        Mail::send('mail',
+        /*Mail::send('mail',
          $mail, function($message) {
            $message->to('miin2ht@gmail.com', 'Playtorium') ->subject
               ('Leave Request') ;
            $message->from('yudaqq@gmail.com','Kimmintra') ;
-        });
+        });*/
 		$begin = new DateTime($request->input('from'));
 		$interval = new DateInterval( "P1D" );
 		$end = new DateTime($request->input('to'));
@@ -263,7 +263,7 @@ class LeaverequestController extends Controller
 				if($holiday->holiday==$period_v->format('Y-m-d'))$notinholiday = false;
 			}
 			if(date('N', $period_v->getTimestamp())<6 and $notinholiday){
-				DB::insert('insert into leaverequest_of_employee values (?,?,?,?,?,?)', [$user[0]->id,$period_v,$request->input('leave_type'),'Pending',$request->input('purpose') , $code]);
+				DB::insert('insert into leaverequest_of_employee values (?,?,?,?,?,?,?,?)', [$user[0]->id,$period_v,$request->input('from'),$request->input('to'),$request->input('leave_type'),'Pending',$request->input('purpose') , $code]);
 			}
 		}
         

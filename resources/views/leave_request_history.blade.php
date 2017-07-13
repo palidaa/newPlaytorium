@@ -10,7 +10,7 @@
 
     <div class="row">
       <div class="col-md-6">
-      <p style="font-size:30px; font-weight:semibold;">Leave request history</p>
+	  <h2>Leave request history</h2>
       </div>
 
           <table class="table table-hover table-striped">
@@ -25,8 +25,8 @@
              @for ($i = 0;$i<sizeof($leave_request_history);$i++)
               <tr>
                 <td>{{ $leave_request_history[$i]->leave_type}}</td>
-                <td>{{ $leave_request_history[$i]->from }}</td>
-                <td>{{ $leave_request_history[$i]->to }}</td>
+                <td>{{ $leave_request_history[$i]->leave_from }}</td>
+                <td>{{ $leave_request_history[$i]->leave_to }}</td>
                 <td>{{ $leave_request_history[$i]->purpose }}</td>
                 <td style="color:#C4B20F;">{{ $leave_request_history[$i]->status }}</td>
 

@@ -90,7 +90,7 @@
           @endif -->
           <label for="date">From</label>
           <div class="input-group date" data-provide="datepicker"  data-date-format="yyyy-mm-dd" data-date-autoclose="true">
-            <input type="text" class="form-control " name ="from">
+            <input type="text" class="form-control" name ="from">
             <div class="input-group-addon">
               <span class="glyphicon glyphicon-th"></span>
             </div>
