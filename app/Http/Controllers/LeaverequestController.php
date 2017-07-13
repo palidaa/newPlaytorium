@@ -100,8 +100,6 @@ class LeaverequestController extends Controller
     l.to BETWEEN ? AND ? OR
     ? BETWEEN l.from AND l.to) AND l.id = ?',[$request->input('from'),$request->input('to'),$request->input('from'),$request->input('to'),$request->input('from'),(Auth::id())]);
 
-
-
       $data = DB::select('SELECT * FROM employees WHERE id = ? ', [Auth::id()] );
       $user = DB::select('SELECT e.id,e.type,e.department,e.carry_annual_leave,u.email FROM users u join employees e on e.email=u.email where u.id= ?' , [Auth::id()]  );
       $leave = DB::select('select ifnull(sum(cal_days(l.from,l.to)),0) as leave_used from leaverequest_of_employee l where l.id= ? and leave_type= ? and year(l.from)= year(?)' , [$user[0]->id,$request->input('leave_type'), $request->input('to') ] );
