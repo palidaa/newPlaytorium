@@ -48,7 +48,7 @@
                 <h4 class="modal-title">Add a project</h4>
               </div>
               <div class="modal-body">
-                <form class="" id="form" action="/project/addProject" method="post">
+                <form class="" id="form" action="/project/insert" method="post">
                   {{ csrf_field() }}
 
                   <div class="row">
