@@ -20,7 +20,7 @@ class ProjectController extends Controller
     }
 
     public function fetch() {
-      if(Auth::user()->user_type == 'admin') {
+      if(Auth::user()->user_type == 'Admin') {
         $projects = Project::all();
         return $projects;
       }

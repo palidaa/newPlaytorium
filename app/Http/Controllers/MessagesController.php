@@ -185,21 +185,22 @@ class MessagesController extends Controller
                     from timesheets t
                     where t.id=? and date_format(t.time_in,?)=? and t.prj_no=?' , 
                     [$employee,'%Y-%m',$year.'-'.$month,$project]);
-                $sick_leave = DB::select('select ifnull(sum(cal_days(l.from,l.to)),0) as sick_leave from leaverequest_of_employee l where l.id= ? and month(l.from)= ? and leave_type= ? ; ' , 
+                $sick_leave = DB::select('select ifnull(count(l.leave_date),0) as sick_leave from leaverequest_of_employee l where l.id= ? and month(l.leave_date)= ? and leave_type= ? 
+                  and year(l.leave_date)= ? ' , 
                     [$employee ,$month,'Sick leave',$year ]);
-                $private_leave = DB::select('select ifnull(sum(cal_days(l.from,l.to)),0) as private_leave from leaverequest_of_employee l where l.id= ? and month(l.from)= ? and leave_type= ? and year(l.from)= ? ;' , 
+                $private_leave = DB::select('select ifnull(count(l.leave_date),0) as private_leave from leaverequest_of_employee l where l.id= ? and month(l.leave_date)= ? and leave_type= ? and year(l.leave_date)= ? ' , 
                     [$employee ,$month,'Personal leave',$year ]);
                 $public_holiday = DB::select('select count(*) as public_holiday
                     from holidays h
                     where year(h.holiday)=? and month(h.holiday)= ? ' , 
                     [$year , $month ]);
-                $annual_leave = DB::select('select ifnull(sum(cal_days(l.from,l.to)),0) as annual_leave from leaverequest_of_employee l where l.id= ? and month(l.from)= ? and leave_type= ? and year(l.from)= ? ;' , 
+                $annual_leave = DB::select('select ifnull(count(l.leave_date),0) as annual_leave from leaverequest_of_employee l where l.id= ? and month(l.leave_date)= ? and leave_type= ? and year(l.leave_date)= ? ;' , 
                     [$employee ,$month,'Annual leave',$year]);
                 $holiday = DB::select('select date_format(h.holiday,?) as holiday,h.date_name 
                   from holidays h 
                   where year(h.holiday)=? and month(h.holiday)= ?',['%m/%d/%Y',$year,$month]);
-                $leave = DB::select('select date_format(l.from, ? ) as from_date,date_format(l.to, ? ) as to_date,l.leave_type from leaverequest_of_employee l where id= ? and year(l.from)= ? and month(l.from)= ?',
-                  ['%m/%d/%Y','%m/%d/%Y',$employee,$year,$month]);
+                $leave = DB::select('select date_format(l.leave_date, ? ) as leave_date,l.leave_type from leaverequest_of_employee l where id= ? and year(l.leave_date)= ? and month(l.leave_date)= ?',
+                  ['%m/%d/%Y',$employee,$year,$month]);
 
                 $sheet ->fromArray(array(
                  array (null , null,'TIMESHEET'),
@@ -249,10 +250,10 @@ class MessagesController extends Controller
               $sheet-> SetCellValue('B'.$rowCount, 'Holiday' )
                     -> SetCellValue('C'.$rowCount, $holiday[$countholiday]->date_name);
               $countholiday++;
-             }else if(count($leave)>0 and $countleave<count($leave) and $strStartDate>=$leave[$countleave]->from_date and $strStartDate<=$leave[$countleave]->to_date){
+             }else if(count($leave)>0 and $countleave<count($leave) and $strStartDate==$leave[$countleave]->leave_date){
                 $sheet->SetCellValue('C'.$rowCount,$leave[$countleave]->leave_type);
+                $countleave++;
              }
-             if(count($leave)>0 and $countleave<count($leave) and $strStartDate>$leave[$countleave]->to_date) $countleave++;
 
             if(count($users2)>0 and $eiei2<count($users2) and $users2[$eiei2]->date==$strStartDate){
               //$sheet -> SetCellValue('A'.$rowCount, $users2[$eiei2]->date);
@@ -625,15 +626,13 @@ class MessagesController extends Controller
 						}
 						$sheet ->mergeCells('D'.$currentRow.':'.'E'.$currentRow);
 						$sheet->SetCellValue('D'.$currentRow,"Non project code");
-						$query3 = DB::select('SELECT loe.leavedate FROM leaverequest_of_employee loe join employees e on loe.id=e.id where loe.id= ? and year(loe.leavedate)= ? and loe.status="Accepted"',[$query0_v->id,$year]);
-						//non project code(undone)
+						$query3 = DB::select('SELECT loe.leave_date FROM leaverequest_of_employee loe join employees e on loe.id=e.id where loe.id= ? and year(loe.leave_date)= ? and loe.status="Accepted"',[$query0_v->id,$year]);
+						
 						for($i =1;$i<13;$i++){
 							$month[$i] = 0;
 						}
 						foreach($query3 as $query3_v){
-							if(date('N', strtotime($query3_v->date))<6){
-								$month[(int)date('m', strtotime($query3_v->date))]++;
-							}
+								$month[(int)date('m', strtotime($query3_v->leave_date))]++;
 						}
 						for($i =1;$i<13;$i++){
 							if($month[$i]>0){
