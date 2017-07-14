@@ -78,7 +78,7 @@
                 <h4 class="modal-title">Add a member</h4>
               </div>
               <div class="modal-body">
-                <form id="form" action="/project/addProjectMember" method="post">
+                <form id="form" action="/project/insertMember" method="post">
                   {{ csrf_field() }}
                   <input type="hidden" name="prj_no" value="{{ $project->prj_no}}">
                 <div class="row">
@@ -123,7 +123,12 @@
          <td>{{ $member->position }}</td>
          <td>{{ $member->role }}</td>
          @if(Auth::user()->user_type=="Admin")
-          <td><a href=#>x</a></td>
+          <form action="/project/deleteMember" method="post">
+             {{ csrf_field() }}
+           <input type="hidden" name="id" value="{{$member->id}}">
+           <input type="hidden" name="prj_no" value="{{ $project->prj_no}}">
+            <td><button type="submit" class="btn btn-primary" >x</a></td>
+          </form>
          @endif
        </tr>
        @endforeach

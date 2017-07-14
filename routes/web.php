@@ -56,6 +56,12 @@ Route::get('/project/fetch', 'ProjectController@fetch');
 // insert project
 Route::post('/project/insert', 'ProjectController@insert');
 
+// insert Member
+Route::post('/project/insertMember', 'ProjectController@insertMember');
+
+// delete Member
+Route::post('/project/deleteMember', 'ProjectController@deleteMember');
+
 // view project by prj_no
 Route::get('/project/{prj_no}', 'ProjectController@view');
 
