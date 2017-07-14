@@ -24,7 +24,6 @@ class TimesheetController extends Controller
     {
         $id = Auth::id();
         $date = $request->input('date');
-        //$timesheets = Timesheet::where(['id' => $id, 'date' => $date])->get();
         $timesheets = DB::table('timesheets')
                         ->join('projects', 'timesheets.prj_no' ,'=', 'projects.prj_no')
                         ->where(['id' => $id, 'date' => $date])
@@ -35,16 +34,32 @@ class TimesheetController extends Controller
 
     public function insert(Request $request)
     {
-        $timesheet = Timesheet::firstOrNew([
+        $timesheet = Timesheet::where([
           'id' => Auth::id(),
           'date' => $request->input('date'),
           'prj_no' => $request->input('prj_no')
-        ]);
-        $timesheet->time_in = $request->input('time_in');
-        $timesheet->time_out = $request->input('time_out');
-        $timesheet->task_name = $request->input('task_name');
-        $timesheet->description = $request->input('description');
-        $timesheet->save();
+        ])->first();
+        if(empty($timesheet)) {
+          $timesheet = new Timesheet;
+          $timesheet->id = Auth::id();
+          $timesheet->date = $request->input('date');
+          $timesheet->prj_no = $request->input('prj_no');
+          $timesheet->time_in = $request->input('time_in');
+          $timesheet->time_out = $request->input('time_out');
+          $timesheet->task_name = $request->input('task_name');
+          $timesheet->description = $request->input('description');
+          $timesheet->save();
+        }
+        else {
+          $timesheet = Timesheet::where(['id' => Auth::id(), 'prj_no' => $request->input('prj_no'), 'date' => $request->input('date')])
+                                ->update([
+                                  'time_in' => $request->input('time_in'),
+                                  'time_out' => $request->input('time_out'),
+                                  'prj_no' => $request->input('prj_no'),
+                                  'task_name' => $request->input('task_name'),
+                                  'description' => $request->input('description')
+                                ]);
+        }
     }
 
     public function update(Request $request)

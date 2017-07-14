@@ -49,6 +49,7 @@
               Description: @{{ timesheet.description }}
           </div>
         </div>
+        <p v-if="timesheets.length == 0">No task has been added.</p>
 
         <a href="/timesheet/new" class="btn btn-default">New task</button></a>
 
