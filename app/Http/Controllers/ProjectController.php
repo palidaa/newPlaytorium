@@ -122,7 +122,7 @@ $userid = DB::select('SELECT e.id,u.user_type FROM users u join employees e on e
        return view('project')->with('projects',$result)
        ->with('num',$no)
        ->with('name',$name)
-        ->with('type',$type[0]->user_type);
+       ->with('type',$type[0]->user_type);
    }
 
 
