@@ -21,13 +21,19 @@ class ProjectController extends Controller
 
     public function fetch() {
       if(Auth::user()->user_type == 'Admin') {
-        $projects = Project::all();
+        //$projects = Project::all();
+        $projects = DB::table('projects')
+                      ->orderBy('projects.status','desc')
+                      ->orderBy('prj_no','desc')
+                      ->get();
         return $projects;
       }
       else {
         $projects = DB::table('projects')
                       ->join('works', 'projects.prj_no', '=', 'works.prj_no')
                       ->where('works.id', Auth::id())
+                      ->orderBy('projects.status','desc')
+                      ->orderBy('prj_no','desc')
                       ->get();
         return $projects;
       }
@@ -45,6 +51,15 @@ class ProjectController extends Controller
         return redirect()->route('project');
     }
 
+    public function insertMember(Request $request) {
+        $work = new Work;
+        $work->id = Auth::id();
+        $work->prj_no = $request->input('prj_no');
+        $work->position = $request->input('position');
+        $work->save();
+        return redirect()->back();
+    }
+
     public function view($prj_no) {
       $project = Project::find($prj_no);
       $members = DB::table('employees')
@@ -52,6 +67,11 @@ class ProjectController extends Controller
                     ->where('works.prj_no', $prj_no)
                     ->get();
       return view('project_detail', compact('project', 'members'));
+    }
+
+     public function deleteMember(Request $request){
+      $works = DB::delete('delete from works where id=? and prj_no=?' ,[$request->input('id'),$request->input('prj_no')]);
+        return redirect()->back();
     }
 
     public function search(Request $request) {
