@@ -39,6 +39,7 @@ class MessagesController extends Controller
     
  public function export(Request $request){
     if($request->input('type')=="Timesheet"){
+		if($request->input('year')=="" or $request->input('month')=="" or $request->input('project')=="") return redirect('report');
       Excel::create('timesheet' , function ($excel)use ($request) {
         $excel -> sheet('sheet' , function($sheet)use ($request){
 			
@@ -543,6 +544,7 @@ class MessagesController extends Controller
 
 			}) -> export('xlsx');
 		}else if($request->input('type')=="Summary Timesheet"){
+			if($request->input('year')=="") return redirect('report');
 				Excel::create('summary_timesheet' , function ($excel) use ($request){
 
 				$excel -> sheet('Timesheet' , function($sheet)use ($request){
@@ -703,7 +705,6 @@ class MessagesController extends Controller
 		}else {
 			return redirect('report');
 		}
-		return view('report');
     }
 
     public function import(){

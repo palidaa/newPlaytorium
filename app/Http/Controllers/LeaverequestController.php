@@ -56,7 +56,7 @@ class LeaverequestController extends Controller
 
   public function index(Request $request)
   {
-    $leave_request_historys = DB::select('SELECT * FROM leaverequest_of_employee WHERE id = ? and year(leave_date) = ? and leave_date=leave_from', [Auth::id(),date("Y")]);
+    $leave_request_historys = DB::select('SELECT * FROM leaverequest_of_employee WHERE id = ? and year(leave_date) = ? and leave_date=leave_from order by leave_from', [Auth::id(),date("Y")]);
 
       return view('leave_request_history')->with('leave_request_history' ,$leave_request_historys);
   }

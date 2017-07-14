@@ -18,7 +18,7 @@
 			  <div class="form-group col-md-4">
 				<label>Type</label>
 				<br>
-				<select class="form-control" name="type" onchange="showDiv(this)">
+				<select class="form-control" name="type" onchange="showDiv(this)" id="type">
 				 <option value="Timesheet">Timesheet</option>
 				 <option value="Summary Timesheet">Summary Timesheet</option>
 				</select>
@@ -29,7 +29,7 @@
 			<p id="selYM">Select year and month to export a report.</p>
 			<div class="row">
 			  <div class="form-group col-md-3">
-				  <select class="form-control" name="year" id="year"">
+				  <select class="form-control" name="year" id="year">
 				   <option value="">Select Year</option>
 				   
 					@for($i=0;$i<20;$i++)
@@ -80,13 +80,14 @@
 
 		  <!-- Button -->
 		  <button type="submit" class="btn btn-default" data-toggle="modal" data-target="#myModal">View</button>
-
 		  </div>
 		</form>
     </div>
   </div>
 </div>
-
+<script type="text/javascript">
+  showDiv(document.getElementById('type'));
+</script>
 </div>
 @endsection
 
@@ -106,41 +107,4 @@ function showDiv(elem){
 		document.getElementById('p').style.display = "none";
 	}
 }
-</script>
-
-<script>
-//https://www.w3schools.com/php/php_ajax_database.asp
-//not finish yet
-function showProject(year,month) {
-  if (year=="" || month=="") {
-    document.getElementById("selYM").innerHTML="asd";
-    return;
-  }else{
-	//$datas = DB::select('select * from projects');
-	if (window.XMLHttpRequest) {
-            // code for IE7+, Firefox, Chrome, Opera, Safari
-            xmlhttp = new XMLHttpRequest();
-        } else {
-            // code for IE6, IE5
-            xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
-        }
-        xmlhttp.onreadystatechange = function() {
-            if (this.readyState == 4 && this.status == 200) {
-                document.getElementById("txtHint").innerHTML = this.responseText;
-            }
-        };
-        xmlhttp.open("GET","getuser.php?q="+str,true);
-        xmlhttp.send();
-	$code = '<option value="">Select Projectssss</option>';
-	//foreach($datas as $data){
-		//$code += '<option value='.{{$eachdata->prj_no }}.'>'.{{ $eachdata->prj_name }}.'</option>';
-		$code = $code + '<option value="">Select Pr3333oject</option>';
-	//}
-  	document.getElementById('project').innerHTML = $code;
-  }
-  if(year==2017){
-  	document.getElementById('selYM').innerHTML = "123";
-  }
-}
-
 </script>
