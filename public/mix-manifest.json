@@ -5,5 +5,6 @@
   "/js/test.js": "/js/test.js",
   "/js/timesheet.js": "/js/timesheet.js",
   "/js/new.js": "/js/new.js",
-  "/js/project.js": "/js/project.js"
+  "/js/project.js": "/js/project.js",
+  "/js/holiday.js": "/js/holiday.js"
 }

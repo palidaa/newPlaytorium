@@ -63,96 +63,22 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 154);
+/******/ 	return __webpack_require__(__webpack_require__.s = 153);
 /******/ })
 /************************************************************************/
 /******/ ({
 
-/***/ 121:
+/***/ 120:
 /***/ (function(module, exports) {
 
-var now = moment().format('YYYY-MM-DD');
-
-new Vue({
-  el: '#new',
-  data: {
-    // selectedProject format = 'prj_no - prj_name'
-    selectedProject: '',
-    projects: [],
-    task_name: 'Dev',
-    startDate: now,
-    endDate: now,
-    tasks: [{
-      date: now,
-      time_in: '09:00',
-      time_out: '18:00',
-      description: ''
-    }]
-  },
-  mounted: function mounted() {
-    var _this = this;
-
-    pace.start();
-
-    axios.get('/project/fetch').then(function (response) {
-      _this.projects = response.data;
-    }).catch(function (error) {
-      console.log(error);
-    });
-
-    //setup datepicker
-    $('.input-group.date').datepicker({
-      format: 'yyyy-mm-dd',
-      autoclose: true
-    }).on('changeDate', function () {
-      _this.startDate = $('#startDateInput').val();
-      _this.endDate = $('#endDateInput').val();
-      _this.tasks = [];
-      _this.appendTask(_this.startDate, _this.endDate);
-    });
-  },
-  methods: {
-    appendTask: function appendTask(startDate, endDate) {
-      startDate = moment(startDate);
-      endDate = moment(endDate);
-      for (var m = startDate; m.diff(endDate, 'days') <= 0; m.add(1, 'days')) {
-        var task = {
-          date: moment(m).format('YYYY-MM-DD'),
-          time_in: '09:00',
-          time_out: '18:00',
-          description: ''
-        };
-        this.tasks.push(task);
-      }
-    },
-    submit: function submit() {
-      var _this2 = this;
-
-      this.tasks.forEach(function (task) {
-        axios.post('/timesheet/insert', {
-          date: task.date,
-          time_in: task.time_in,
-          time_out: task.time_out,
-          prj_no: _this2.selectedProject.substr(0, _this2.selectedProject.indexOf(' ')),
-          task_name: _this2.task_name,
-          description: task.description
-        }).then(function (response) {
-          console.log(response);
-          window.location.href = '/timesheet';
-        }).catch(function (error) {
-          console.log(error);
-        });
-      });
-    }
-  }
-});
+throw new Error("Module build failed: Error: ENOENT: no such file or directory, open 'C:\\xampp\\htdocs\\playtorium\\resources\\assets\\js\\holiday.js'");
 
 /***/ }),
 
-/***/ 154:
+/***/ 153:
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(121);
+module.exports = __webpack_require__(120);
 
 
 /***/ })
