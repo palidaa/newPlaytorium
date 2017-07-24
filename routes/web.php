@@ -30,13 +30,13 @@ Route::get('/timesheet/new', 'TimesheetController@new')->name('new');
 Route::get('/timesheet/fetch', 'TimesheetController@fetch');
 
 // insert timesheet
-Route::post('/timesheet/insert', 'TimesheetController@insert');
+Route::post('/timesheet/store', 'TimesheetController@store');
 
 // edit timesheet
 Route::post('/timesheet/update', 'TimesheetController@update');
 
 // delete timesheet
-Route::delete('/timesheet/delete', 'TimesheetController@delete');
+Route::delete('/timesheet/destroy', 'TimesheetController@destroy');
 
 // leave request route
 Route::get('/leave_request', function () {
@@ -54,7 +54,10 @@ Route::get('/project', 'ProjectController@index')->name('project');
 Route::get('/project/fetch', 'ProjectController@fetch');
 
 // insert project
-Route::post('/project/insert', 'ProjectController@insert');
+Route::post('/project/store', 'ProjectController@store');
+
+// delete project
+Route::delete('/project/destroy', 'ProjectController@destroy');
 
 // insert Member
 Route::post('/project/insertMember', 'ProjectController@insertMember');
@@ -63,15 +66,13 @@ Route::post('/project/insertMember', 'ProjectController@insertMember');
 Route::post('/project/deleteMember', 'ProjectController@deleteMember');
 
 // view project by prj_no
-Route::get('/project/{prj_no}', 'ProjectController@view');
+Route::get('/project/{prj_no}', 'ProjectController@show');
 
 Route::get('/report', 'ReportController@getdata');
 
 Route::post('/report/export' , 'MessagesController@export');
 
 Route::get('/export2' , 'MessagesController@export2');
-
-Route::get('/home', 'HomeController@index')->name('home');
 
 Route::get('/sendbasicmail','MailController@html_email');
 
@@ -83,12 +84,10 @@ Route::get('/verify/accept/{code}' , 'LeaverequestController@accept');
 
 Route::get('/verify/reject/{code}' , 'LeaverequestController@reject');
 
-Route::get('/admin/holiday', 'AdminHolidayController@showHolidayList');
+Route::get('/holiday', 'HolidayController@index');
 
-Route::post('/admin/holiday/deleteHoliday', 'AdminHolidayController@deleteHoliday');
+Route::get('/holiday/fetch', 'HolidayController@fetch');
 
-Route::post('/admin/holiday/addHoliday', 'AdminHolidayController@addHoliday');
+Route::post('/holiday/store', 'HolidayController@store');
 
-Route::get('/admin/new_user', 'AdminUserController@showForm');
-
-Route::post('/admin/new_user/register', 'AdminUserController@register');
+Route::delete('/holiday/destroy', 'HolidayController@destroy');

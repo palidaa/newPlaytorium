@@ -16,16 +16,17 @@
             <div class="col-md-4">
               <label class="control-label">Project</label>
               <select class="form-control" v-model="selectedProject">
+                <option disabled hidden value="">Please select a prject</option>
                 <option v-for="project in projects">@{{ project.prj_no }} - @{{ project.prj_name }}</option>
               </select>
             </div>
             <div class="col-md-4">
               <label class="control-label">Task name</label>
               <select class="form-control" v-model="task_name">
-                <option value="Dev">Dev</option>
-                <option value="Testing">Testing</option>
-                <option value="Training">Training</option>
-                <option value="Meeting">Meeting</option>
+                <option>Dev</option>
+                <option>Testing</option>
+                <option>Training</option>
+                <option>Meeting</option>
               </select>
             </div>
           </div>
@@ -35,8 +36,8 @@
         <div class="row">
           <div class="form-group col-md-3">
             <label for="startDate">Start date</label>
-            <div class="input-group date">
-              <input type="text" class="form-control" id="startDateInput" v-model="startDate">
+            <div class="input-group date" id="fromDatepicker">
+              <input type="text" class="form-control" id="startDateInput" v-model="startDate" readonly>
               <div class="input-group-addon">
                 <span class="glyphicon glyphicon-th"></span>
               </div>
@@ -44,8 +45,8 @@
           </div>
           <div class="form-group col-md-3">
             <label for="endDate">End date</label>
-            <div class="input-group date">
-              <input type="text" class="form-control" id="endDateInput" v-model="endDate">
+            <div class="input-group date" id="toDatepicker">
+              <input type="text" class="form-control" id="endDateInput" v-model="endDate" readonly>
               <div class="input-group-addon">
                 <span class="glyphicon glyphicon-th"></span>
               </div>
@@ -55,31 +56,32 @@
 
         <hr>
 
-        <div v-for="task in tasks">
-          <div class="row">
-            <div class="col-md-3">
-              <input type="text" class="form-control" v-model="task.date" disabled>
+        <div v-for="(task, key) in tasks">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              @{{ task.date }}
+              <span class="close" @click="removeTask(task, key)">&times;</span>
             </div>
-            <div class="col-md-3">
-              <input type="time" class="form-control" v-model="task.time_in">
-            </div>
-            <div class="col-md-3">
-              <input type="time" class="form-control" v-model="task.time_out">
+            <div class="panel-body">
+              <div class="row">
+                <div class="col-md-3">
+                  <input type="time" class="form-control" v-model="task.time_in">
+                </div>
+                <div class="col-md-3">
+                  <input type="time" class="form-control" v-model="task.time_out">
+                </div>
+              </div>
+              <br>
+              <div class="row">
+                <div class="col-md-12">
+                  <textarea name="name" class="form-control" rows="3" cols="80" placeholder="Description" v-model="task.description"></textarea>
+                </div>
+              </div>
             </div>
           </div>
-          <br>
-          <div class="row">
-            <div class="col-md-12">
-              <textarea name="name" class="form-control" rows="3" cols="80" placeholder="Description" v-model="task.description"></textarea>
-            </div>
-          </div>
-          <br>
         </div>
 
         <button type="button" class="btn btn-default" @click="submit">Submit</button>
-
-        <br>
-        <br>
 
       </div>
     </div>

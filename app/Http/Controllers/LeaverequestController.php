@@ -244,12 +244,12 @@ class LeaverequestController extends Controller
          ,'leave_day'=>$leave_days[0]->leave_days , 'accept_path' => $accept_path , 'reject_path' => $reject_path
         );
 
-        /*Mail::send('mail',
+        Mail::send('mail',
          $mail, function($message) {
            $message->to('miin2ht@gmail.com', 'Playtorium') ->subject
               ('Leave Request') ;
            $message->from('yudaqq@gmail.com','Kimmintra') ;
-        });*/
+        });
 		$begin = new DateTime($request->input('from'));
 		$interval = new DateInterval( "P1D" );
 		$end = new DateTime($request->input('to'));
@@ -265,7 +265,7 @@ class LeaverequestController extends Controller
 				DB::insert('insert into leaverequest_of_employee values (?,?,?,?,?,?,?,?)', [$user[0]->id,$period_v,$request->input('from'),$request->input('to'),$request->input('leave_type'),'Pending',$request->input('purpose') , $code]);
 			}
 		}
-        
+
         //return view('mail')->with('mail' , $mail);
         \Session::flash('success_message','<strong>Success!</strong> Leave request has been sent.');
       }

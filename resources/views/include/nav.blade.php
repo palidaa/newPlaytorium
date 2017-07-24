@@ -22,9 +22,9 @@
           <span class="glyphicon glyphicon-user"></span> {{ Auth::user()->name }}
           <span class="caret"></span></a>
           <ul class="dropdown-menu">
-            @if(Auth::user()->user_type=="Admin")
-              <li><a href="/admin/holiday">Add Holiday</a></li>
-              <li><a href="/admin/new_user">Add New user</a></li>
+            @if(Auth::user()->isAdmin())
+              <li><a href="/register">New User</a></li>
+              <li><a href="/holiday">Manage Holiday</a></li>
             @endif
             <li><a href="{{ route('logout') }}"
                 onclick="event.preventDefault();

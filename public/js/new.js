@@ -102,11 +102,18 @@ new Vue({
 
     //setup datepicker
     $('.input-group.date').datepicker({
+      maxViewMode: 2,
       format: 'yyyy-mm-dd',
+      orientation: 'bottom auto',
       autoclose: true
     }).on('changeDate', function () {
       _this.startDate = $('#startDateInput').val();
       _this.endDate = $('#endDateInput').val();
+      if (moment(_this.endDate) < moment(_this.startDate)) {
+        _this.endDate = _this.startDate;
+        $('#endDateInput').val(_this.startDate);
+      }
+      $('#toDatepicker').datepicker('setStartDate', _this.startDate);
       _this.tasks = [];
       _this.appendTask(_this.startDate, _this.endDate);
     });
@@ -125,24 +132,31 @@ new Vue({
         this.tasks.push(task);
       }
     },
+    removeTask: function removeTask(task, key) {
+      Vue.delete(this.tasks, key);
+    },
     submit: function submit() {
-      var _this2 = this;
+      var promises = [];
+      for (var i = 0; i < this.tasks.length; i++) {
+        promises.push(axios.post('/timesheet/store', {
+          date: this.tasks[i].date,
+          time_in: this.tasks[i].time_in,
+          time_out: this.tasks[i].time_out,
+          prj_no: this.selectedProject.substr(0, this.selectedProject.indexOf(' ')),
+          task_name: this.tasks[i].task_name,
+          description: this.tasks[i].description
+        }));
+      }
+      axios.all(promises).then(axios.spread(function () {
+        for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+          args[_key] = arguments[_key];
+        }
 
-      this.tasks.forEach(function (task) {
-        axios.post('/timesheet/insert', {
-          date: task.date,
-          time_in: task.time_in,
-          time_out: task.time_out,
-          prj_no: _this2.selectedProject.substr(0, _this2.selectedProject.indexOf(' ')),
-          task_name: _this2.task_name,
-          description: task.description
-        }).then(function (response) {
-          console.log(response);
-          window.location.href = '/timesheet';
-        }).catch(function (error) {
-          console.log(error);
-        });
-      });
+        for (var _i = 0; _i < args.length; _i++) {
+          console.log(args[_i]);
+        }
+        window.location.href = '/timesheet';
+      }));
     }
   }
 });

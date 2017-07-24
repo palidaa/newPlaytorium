@@ -15,6 +15,18 @@ textarea{
   resize: none;
 }
 
+input[readonly].form-control{
+  background-color: white;
+}
+
+.container{
+  padding-bottom: 20px;
+}
+
+.progress-bar{
+  min-width: 2em;
+}
+
 .click-table:hover{
   cursor: pointer;
 }
