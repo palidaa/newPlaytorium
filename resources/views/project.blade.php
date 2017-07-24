@@ -10,33 +10,45 @@
       <div class="col-md-10 col-md-offset-1">
         <h2>Project</h2>
         <hr>
+
+        <div class="row">
           <div class="col-md-6">
-            <input type="text" v-model="search">
-            <br>
-            <br>
+            <div class="input-group">
+              <input type="text" class="form-control" v-model="search" placeholder="Search project">
+              <span class="input-group-addon" aria-hidden="true">
+                <span class="glyphicon glyphicon-search"></span>
+              </span>
+            </div>
           </div>
-      @if(Auth::user()->user_type=="Admin")
-          <button type="button" class="btn btn-default pull-right" data-toggle="modal" data-target="#addProject">
-            <span class="glyphicon glyphicon-plus-sign"></span> Add project
-          </button>
-      @endif
+          @if(Auth::user()->isAdmin())
+            <div class="col-md-6">
+              <button type="button" class="btn btn-default pull-right" data-toggle="modal" data-target="#addProject">
+                <span class="glyphicon glyphicon-plus-sign"></span> Add project
+              </button>
+            </div>
+          @endif
+        </div>
+        <br>
+
         <table class="table table-hover table-striped">
           <tr style="font-size:20px;">
              <th>Prj.No.</th>
              <th>Name</th>
              <th>Customer</th>
              <th>Quo.No.</th>
-             <th>status</th>
+             <th>Status</th>
+             <th><th>
            </tr>
-           <tr class="click-table" v-for="project in filtered" @click="view(project)">
+           <tr class="click-table" v-for="(project, index) in filtered" @click="show(project)">
              <td>@{{ project.prj_no }}</td>
              <td>@{{ project.prj_name }}</td>
              <td>@{{ project.customer }}</td>
              <td>@{{ project.quo_no }}</td>
-             <td style="color:#C4B20F;">@{{ project.status }}</td>
+             <td style="color: #C4B20F;">@{{ project.status }}</td>
+             <td><a href="#" @click.prevent.stop="destroy(index)">Delete</a></td>
            </tr>
         </table>
-      @if(Auth::user()->user_type=="Admin")
+
         <!-- Modal -->
         <div class="modal fade" id="addProject" role="dialog">
           <div class="modal-dialog">
@@ -48,44 +60,40 @@
                 <h4 class="modal-title">Add a project</h4>
               </div>
               <div class="modal-body">
-                <form class="" id="form" action="/project/insert" method="post">
-                  {{ csrf_field() }}
-
-                  <div class="row">
-                    <div class="col-md-3">
-                      <label for="">Prj.No.</label>
-                      <input type="text" class="form-control" name="prj_no" value="">
-                    </div>
-                    <div class="col-md-8">
-                      <label for="">Name</label>
-                      <input type="text" class="form-control" name="prj_name" value="">
-                    </div>
+                <div class="row">
+                  <div class="col-md-6">
+                    <label for="">Prj.No.</label>
+                    <input type="text" class="form-control" name="prj_no" v-model="prj_no">
                   </div>
-                  <div class="row">
-                    <div class="col-md-3">
-                      <label for="">Quo.No</label>
-                      <input type="text" class="form-control" name="quo_no" value="">
-                    </div>
-                    <div class="col-md-8">
-                      <label for="">Customer</label>
-                      <input type="text" class="form-control" name="customer" value="">
-                    </div>
+                  <div class="col-md-6">
+                    <label for="">Name</label>
+                    <input type="text" class="form-control" name="prj_name" v-model="prj_name">
                   </div>
-                  <div class="row">
-                    <div class="col-md-11">
-                      <label for="">Description</label>
-                      <textarea class='form-control' style="resize: none" name="description" rows="4"></textarea>
-                    </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-6">
+                    <label for="">Quo.No</label>
+                    <input type="text" class="form-control" name="quo_no" v-model="quo_no">
                   </div>
-                </form>
+                  <div class="col-md-6">
+                    <label for="">Customer</label>
+                    <input type="text" class="form-control" name="customer" v-model="customer">
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-12">
+                    <label for="">Description</label>
+                    <textarea class='form-control' style="resize: none" name="description" v-model="description" rows="4"></textarea>
+                  </div>
+                </div>
               </div>
 
               <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                <button type="submit" class="btn btn-primary" form="form">Add</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal" @click="store()">Add</button>
               </div>
             </div>
-          @endif
+
           </div>
         </div>
       </div>

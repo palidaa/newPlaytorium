@@ -63,110 +63,106 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 154);
+/******/ 	return __webpack_require__(__webpack_require__.s = 153);
 /******/ })
 /************************************************************************/
 /******/ ({
 
-/***/ 121:
+/***/ 120:
 /***/ (function(module, exports) {
 
-var now = moment().format('YYYY-MM-DD');
-
 new Vue({
-  el: '#new',
+  el: '#holiday',
   data: {
-    // selectedProject format = 'prj_no - prj_name'
-    selectedProject: '',
-    projects: [],
-    task_name: 'Dev',
-    startDate: now,
-    endDate: now,
-    tasks: [{
-      date: now,
-      time_in: '09:00',
-      time_out: '18:00',
-      description: ''
-    }]
+    holidays: [],
+    month: '01',
+    date: '',
+    date_name: ''
   },
   mounted: function mounted() {
     var _this = this;
 
-    pace.start();
-
-    axios.get('/project/fetch').then(function (response) {
-      _this.projects = response.data;
-    }).catch(function (error) {
-      console.log(error);
-    });
-
-    //setup datepicker
+    this.fetch();
     $('.input-group.date').datepicker({
-      maxViewMode: 2,
-      format: 'yyyy-mm-dd',
-      orientation: 'bottom auto',
+      format: "yyyy/mm/dd",
+      startView: 1,
+      maxViewMode: 1,
+      orientation: "bottom auto",
       autoclose: true
     }).on('changeDate', function () {
-      _this.startDate = $('#startDateInput').val();
-      _this.endDate = $('#endDateInput').val();
-      if (moment(_this.endDate) < moment(_this.startDate)) {
-        _this.endDate = _this.startDate;
-        $('#endDateInput').val(_this.startDate);
-      }
-      $('#toDatepicker').datepicker('setStartDate', _this.startDate);
-      _this.tasks = [];
-      _this.appendTask(_this.startDate, _this.endDate);
+      _this.date = $('#datepicker').val();
     });
   },
-  methods: {
-    appendTask: function appendTask(startDate, endDate) {
-      startDate = moment(startDate);
-      endDate = moment(endDate);
-      for (var m = startDate; m.diff(endDate, 'days') <= 0; m.add(1, 'days')) {
-        var task = {
-          date: moment(m).format('YYYY-MM-DD'),
-          time_in: '09:00',
-          time_out: '18:00',
-          description: ''
-        };
-        this.tasks.push(task);
-      }
-    },
-    removeTask: function removeTask(task, key) {
-      Vue.delete(this.tasks, key);
-    },
-    submit: function submit() {
-      var promises = [];
-      for (var i = 0; i < this.tasks.length; i++) {
-        promises.push(axios.post('/timesheet/store', {
-          date: this.tasks[i].date,
-          time_in: this.tasks[i].time_in,
-          time_out: this.tasks[i].time_out,
-          prj_no: this.selectedProject.substr(0, this.selectedProject.indexOf(' ')),
-          task_name: this.tasks[i].task_name,
-          description: this.tasks[i].description
-        }));
-      }
-      axios.all(promises).then(axios.spread(function () {
-        for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
-          args[_key] = arguments[_key];
-        }
 
-        for (var _i = 0; _i < args.length; _i++) {
-          console.log(args[_i]);
+  watch: {
+    month: function month() {
+      this.fetch();
+    }
+  },
+  methods: {
+    fetch: function fetch() {
+      var _this2 = this;
+
+      axios.get('/holiday/fetch', {
+        params: {
+          month: this.month
         }
-        window.location.href = '/timesheet';
-      }));
+      }).then(function (response) {
+        _this2.holidays = response.data;
+      }).catch(function (error) {
+        console.log(error);
+      });
+    },
+    store: function store() {
+      axios.post('/holiday/store', {
+        date: this.date,
+        date_name: this.date_name
+      }).then(function (response) {
+        console.log(response);
+        window.location.href = '/holiday';
+      }).catch(function (error) {
+        console.log(error);
+      });
+    },
+    destroy: function destroy(key) {
+      var _this3 = this;
+
+      bootbox.confirm({
+        title: 'Delete confirmation',
+        message: 'Do you really want to delete ?',
+        buttons: {
+          cancel: {
+            label: 'No'
+          },
+          confirm: {
+            label: 'Yes'
+          }
+        },
+        callback: function callback(confirm) {
+          if (confirm) {
+            axios.delete('/holiday/destroy', {
+              params: {
+                date: _this3.holidays[key].holiday
+              }
+            }).then(function (response) {
+              console.log(response);
+              Vue.delete(_this3.holidays, key);
+            }).catch(function (error) {
+              console.log(error);
+            });
+          }
+        }
+      });
     }
   }
 });
 
 /***/ }),
 
-/***/ 154:
+/***/ 153:
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(121);
+module.exports = __webpack_require__(120);
 
 
 /***/ })

@@ -29,11 +29,18 @@ new Vue({
 
     //setup datepicker
     $('.input-group.date').datepicker({
+      maxViewMode: 2,
       format: 'yyyy-mm-dd',
+      orientation: 'bottom auto',
       autoclose: true
     }).on('changeDate', () => {
       this.startDate = $('#startDateInput').val();
       this.endDate = $('#endDateInput').val();
+      if(moment(this.endDate) < moment(this.startDate)) {
+        this.endDate = this.startDate;
+        $('#endDateInput').val(this.startDate);
+      }
+      $('#toDatepicker').datepicker('setStartDate', this.startDate);
       this.tasks = [];
       this.appendTask(this.startDate, this.endDate);
     });
@@ -52,24 +59,28 @@ new Vue({
         this.tasks.push(task);
       }
     },
+    removeTask: function(task, key) {
+      Vue.delete(this.tasks, key);
+    },
     submit: function() {
-      this.tasks.forEach(task => {
-        axios.post('/timesheet/insert', {
-            date: task.date,
-            time_in: task.time_in,
-            time_out: task.time_out,
-            prj_no: this.selectedProject.substr(0, this.selectedProject.indexOf(' ')),
-            task_name: this.task_name,
-            description: task.description
-          })
-          .then(response => {
-            console.log(response);
-            window.location.href = '/timesheet';
-          })
-          .catch(error => {
-            console.log(error);
-          });
-        });
+      let promises = []
+      for(let i = 0; i < this.tasks.length; i++) {
+        promises.push(axios.post('/timesheet/store', {
+          date: this.tasks[i].date,
+          time_in: this.tasks[i].time_in,
+          time_out: this.tasks[i].time_out,
+          prj_no: this.selectedProject.substr(0, this.selectedProject.indexOf(' ')),
+          task_name: this.tasks[i].task_name,
+          description: this.tasks[i].description
+        }))
+      }
+      axios.all(promises)
+        .then(axios.spread((...args) => {
+          for(let i = 0; i < args.length; i++) {
+            console.log(args[i])
+          }
+          window.location.href = '/timesheet'
+        }))
     }
   }
 });

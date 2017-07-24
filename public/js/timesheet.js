@@ -63,18 +63,20 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 153);
+/******/ 	return __webpack_require__(__webpack_require__.s = 156);
 /******/ })
 /************************************************************************/
 /******/ ({
 
-/***/ 122:
+/***/ 123:
 /***/ (function(module, exports) {
 
 new Vue({
   el: '#timesheet',
   data: {
-    date: moment().format('YYYY-MM-DD'),
+    date: moment().format('YYYY-MM'),
+    daysInMonth: moment().daysInMonth(),
+    totalTimesheets: 0,
     timesheets: [],
     selectedTimesheet: {
       prj_no: '',
@@ -90,7 +92,6 @@ new Vue({
   mounted: function mounted() {
     var _this = this;
 
-    pace.start();
     this.fetch();
 
     // fetch project
@@ -102,10 +103,14 @@ new Vue({
 
     // datepicker setup
     $('.input-group.date').datepicker({
-      format: 'yyyy-mm-dd',
+      minViewMode: 1,
+      maxViewMode: 2,
+      format: 'yyyy-mm',
+      orientation: 'bottom auto',
       autoclose: true
     }).on('changeDate', function () {
       _this.date = $('#dateInput').val();
+      _this.daysInMonth = moment(_this.date).daysInMonth();
       _this.fetch();
     });
   },
@@ -113,7 +118,6 @@ new Vue({
     fetch: function fetch() {
       var _this2 = this;
 
-      pace.start();
       axios.get('/timesheet/fetch', {
         params: {
           date: this.date
@@ -121,7 +125,7 @@ new Vue({
       }).then(function (response) {
         console.log(response);
         _this2.timesheets = response.data;
-        pace.stop();
+        _this2.totalTimesheets = _this2.getTotalTimesheets();
       }).catch(function (error) {
         console.log(error);
       });
@@ -133,16 +137,33 @@ new Vue({
     remove: function remove(key) {
       var _this3 = this;
 
-      axios.delete('/timesheet/delete', {
-        params: {
-          date: this.timesheets[key].date,
-          prj_no: this.timesheets[key].prj_no
+      bootbox.confirm({
+        title: 'Delete confirmation',
+        message: 'Do you really want to delete a task ?',
+        buttons: {
+          cancel: {
+            label: 'No'
+          },
+          confirm: {
+            label: 'Yes'
+          }
+        },
+        callback: function callback(confirm) {
+          if (confirm) {
+            axios.delete('/timesheet/destroy', {
+              params: {
+                date: _this3.timesheets[key].date,
+                prj_no: _this3.timesheets[key].prj_no
+              }
+            }).then(function (response) {
+              console.log(response);
+              Vue.delete(_this3.timesheets, key);
+              _this3.totalTimesheets = _this3.getTotalTimesheets();
+            }).catch(function (error) {
+              console.log(error);
+            });
+          }
         }
-      }).then(function (response) {
-        console.log(response);
-        Vue.delete(_this3.timesheets, key);
-      }).catch(function (error) {
-        console.log(error);
       });
     },
     update: function update() {
@@ -166,16 +187,34 @@ new Vue({
       }).catch(function (error) {
         console.log(error);
       });
+    },
+    getTotalTimesheets: function getTotalTimesheets() {
+      var _this5 = this;
+
+      var count = 0;
+
+      var _loop = function _loop(d) {
+        if (_this5.timesheets.findIndex(function (timesheet) {
+          return timesheet.date.substr(8, 2) == d;
+        }) >= 0) {
+          count++;
+        }
+      };
+
+      for (var d = 1; d <= moment(this.date).daysInMonth(); d++) {
+        _loop(d);
+      }
+      return count;
     }
   }
 });
 
 /***/ }),
 
-/***/ 153:
+/***/ 156:
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(122);
+module.exports = __webpack_require__(123);
 
 
 /***/ })

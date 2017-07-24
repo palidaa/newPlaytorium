@@ -11,12 +11,18 @@
         <h2>Timesheet</h2>
         <hr>
 
+        <div class="progress">
+          <div class="progress-bar" role="progressbar" :style="{width: totalTimesheets/daysInMonth*100 + '%'}">
+            @{{ parseInt(totalTimesheets/daysInMonth*100) }}%
+          </div>
+        </div>
+
         <!-- date -->
         <div class="row">
           <div class="form-group col-md-3">
             <label>Date</label>
             <div class="input-group date">
-              <input type="text" class="form-control" id="dateInput" v-model="date">
+              <input type="text" class="form-control" id="dateInput" v-model="date" readonly>
               <div class="input-group-addon">
                 <span class="glyphicon glyphicon-th"></span>
               </div>
@@ -28,7 +34,7 @@
         <div class="panel panel-default" v-for="(timesheet, key) in timesheets">
           <div class="panel-heading">@{{ timesheet.prj_no }} - @{{ timesheet.prj_name }}
             <div class="btn-group pull-right">
-              <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+              <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" style="-webkit-box-shadow: none;">
                 <span class="caret"></span>
               </a>
               <ul class="dropdown-menu dropdown-menu-right">
@@ -42,16 +48,15 @@
             </div>
           </div>
           <div class="panel-body">
-              Time: @{{ timesheet.time_in }} - @{{ timesheet.time_out }}
-              <br>
-              Task: @{{ timesheet.task_name }}
-              <br>
-              Description: @{{ timesheet.description }}
+            <p>Date: @{{ timesheet.date }}</p>
+            <p>Time: @{{ timesheet.time_in }} - @{{ timesheet.time_out }}</p>
+            <p>Task: @{{ timesheet.task_name }}</p>
+            <p>Description: @{{ timesheet.description }}</p>
           </div>
         </div>
         <p v-if="timesheets.length == 0">No task has been added.</p>
 
-        <a href="/timesheet/new" class="btn btn-default">New task</button></a>
+        <a href="/timesheet/new" class="btn btn-default">New task</a>
 
         <!-- Modal -->
         <div class="modal fade" id="edit" role="dialog">

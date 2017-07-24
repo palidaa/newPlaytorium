@@ -63,12 +63,12 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 152);
+/******/ 	return __webpack_require__(__webpack_require__.s = 155);
 /******/ })
 /************************************************************************/
 /******/ ({
 
-/***/ 121:
+/***/ 122:
 /***/ (function(module, exports) {
 
 new Vue({
@@ -76,13 +76,18 @@ new Vue({
   data: {
     projects: [],
     search: '',
-    filtered: []
+    filtered: [],
+    prj_no: '',
+    prj_name: '',
+    quo_no: '',
+    customer: '',
+    description: ''
   },
   mounted: function mounted() {
-    pace.start();
     this.fetch();
     console.log(this.filtered);
   },
+
   watch: {
     search: function search(val) {
       var _this = this;
@@ -93,7 +98,7 @@ new Vue({
       } else {
         var regexp = new RegExp(val, 'i');
         this.projects.forEach(function (project) {
-          if (regexp.test(project.prj_no) || regexp.test(project.prj_name)) {
+          if (regexp.test(project.prj_no) || regexp.test(project.prj_name) || regexp.test(project.customer) || regexp.test(project.quo_no)) {
             _this.filtered.push(project);
           }
         });
@@ -112,18 +117,50 @@ new Vue({
         console.log(error);
       });
     },
-    view: function view(project) {
+    show: function show(project) {
       window.location.href = '/project/' + project.prj_no;
+    },
+    store: function store() {
+      var _this3 = this;
+
+      var project = {
+        prj_no: this.prj_no,
+        prj_name: this.prj_name,
+        quo_no: this.quo_no,
+        customer: this.customer,
+        description: this.description,
+        status: 'In Progress'
+      };
+      axios.post('/project/store', project).then(function (response) {
+        console.log(response);
+        _this3.projects.unshift(project);
+      }).catch(function (error) {
+        console.log(error);
+      });
+    },
+    destroy: function destroy(index) {
+      var _this4 = this;
+
+      axios.delete('/project/destroy', {
+        params: {
+          prj_no: this.projects[index].prj_no
+        }
+      }).then(function (response) {
+        console.log(response);
+        _this4.projects.splice(index, 1);
+      }).catch(function (error) {
+        console.log(error);
+      });
     }
   }
 });
 
 /***/ }),
 
-/***/ 152:
+/***/ 155:
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(121);
+module.exports = __webpack_require__(122);
 
 
 /***/ })

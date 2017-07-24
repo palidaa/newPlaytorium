@@ -6,11 +6,32 @@
  */
 
 require('./bootstrap');
-require('./bootstrap-datepicker.js');
+require('./bootstrap-datepicker');
 
 window.Vue = require('vue');
 window.moment = require('moment');
-window.pace = require('./pace.min.js');
+window.pace = require('./pace.min');
+window.bootbox = require('bootbox');
+
+// Add a request interceptor
+axios.interceptors.request.use(function (config) {
+    // Do something before request is sent
+    pace.start();
+    return config;
+  }, function (error) {
+    // Do something with request error
+    return Promise.reject(error);
+  });
+
+// Add a response interceptor
+axios.interceptors.response.use(function (response) {
+    // Do something with response data
+    pace.stop();
+    return response;
+  }, function (error) {
+    // Do something with response error
+    return Promise.reject(error);
+  });
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

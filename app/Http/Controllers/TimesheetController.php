@@ -23,16 +23,20 @@ class TimesheetController extends Controller
     public function fetch(Request $request)
     {
         $id = Auth::id();
+        // date format yyyy-mm
         $date = $request->input('date');
         $timesheets = DB::table('timesheets')
                         ->join('projects', 'timesheets.prj_no' ,'=', 'projects.prj_no')
-                        ->where(['id' => $id, 'date' => $date])
+                        ->where('id', $id)
+                        ->whereYear('date', substr($date, 0, 4))
+                        ->whereMonth('date', substr($date, 5, 2))
+                        ->latest('date')
                         ->select('timesheets.*', 'projects.prj_name')
                         ->get();
         return $timesheets;
     }
 
-    public function insert(Request $request)
+    public function store(Request $request)
     {
         $timesheet = Timesheet::where([
           'id' => Auth::id(),
@@ -77,7 +81,7 @@ class TimesheetController extends Controller
                               ]);
     }
 
-    public function delete(Request $request)
+    public function destroy(Request $request)
     {
         $id = Auth::id();
         $prj_no = $request->input('prj_no');

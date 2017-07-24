@@ -22,24 +22,22 @@ class ProjectController extends Controller
     public function fetch() {
       if(Auth::user()->user_type == 'Admin') {
         //$projects = Project::all();
-        $projects = DB::table('projects')
-                      ->orderBy('projects.status','desc')
-                      ->orderBy('prj_no','desc')
-                      ->get();
+        $projects = Project::orderBy('projects.status','desc')
+                    ->orderBy('prj_no','desc')
+                    ->get();
         return $projects;
       }
       else {
-        $projects = DB::table('projects')
-                      ->join('works', 'projects.prj_no', '=', 'works.prj_no')
+        $projects = Project::join('works', 'projects.prj_no', '=', 'works.prj_no')
                       ->where('works.id', Auth::id())
                       ->orderBy('projects.status','desc')
-                      ->orderBy('prj_no','desc')
+                      ->orderBy('projects.prj_no','desc')
                       ->get();
         return $projects;
       }
     }
 
-    public function insert(Request $request) {
+    public function store(Request $request) {
         $project = new Project;
         $project->prj_no = $request->input('prj_no');
         $project->prj_name = $request->input('prj_name');
@@ -48,7 +46,10 @@ class ProjectController extends Controller
         $project->description = $request->input('description');
         $project->status = 'In Progress';
         $project->save();
-        return redirect()->route('project');
+    }
+
+    public function destroy(Request $request) {
+      Project::destroy($request->input('prj_no'));
     }
 
     public function insertMember(Request $request) {
@@ -60,7 +61,7 @@ class ProjectController extends Controller
         return redirect()->back();
     }
 
-    public function view($prj_no) {
+    public function show($prj_no) {
       $project = Project::find($prj_no);
       $members = DB::table('employees')
                     ->join('works', 'employees.id', '=', 'works.id')
@@ -73,58 +74,5 @@ class ProjectController extends Controller
       $works = DB::delete('delete from works where id=? and prj_no=?' ,[$request->input('id'),$request->input('prj_no')]);
         return redirect()->back();
     }
-
-    public function search(Request $request) {
-      $no = $request->input('prj_no');
-      $name = $request->input('prj_name');
-/*
-      if($no!=""){
-        $result = DB::table('projects')
-           ->select(DB::raw("*"))
-           ->where('prj_no',$no)
-           ->where('prj_name', 'like','%' . $name . '%'  )
-           ->orderBy('status','desc')
-           ->orderBy('prj_no','desc')
-           ->get();
-         }
-      else {
-        $result = DB::table('projects')
-             ->select(DB::raw("*"))
-             ->where('prj_no',$no)
-             ->orwhere('prj_name', 'like','%' . $name . '%'  )
-             ->orderBy('status','desc')
-             ->orderBy('prj_no','desc')
-             ->get();
-      }
-
-*/
-
-$userid = DB::select('SELECT e.id,u.user_type FROM users u join employees e on e.email=u.email where u.id= ?' , [Auth::id()]  );
-
-      if($userid[0]->user_type=='Admin'){
-        $result = DB::table('projects')
-             ->select(DB::raw("*"))
-             ->where('prj_no',$no)
-             ->orwhere('prj_name', 'like','%' . $name . '%'  )
-             ->orderBy('status','desc')
-             ->orderBy('prj_no','desc')
-             ->get();
-      }else{
-        $result = DB::select('select p.* from projects p join works w on p.prj_no=w.prj_no where w.id= ? and (p.prj_no= ? or p.prj_name like ?) order by status desc,prj_no desc',
-        [$userid[0]->id,$no,'%'.$name.'%']);
-      }
-
-      $type = DB::table('users')
-         ->select('user_type')
-         ->where('id',Auth::id())
-         ->get();
-
-       return view('project')->with('projects',$result)
-       ->with('num',$no)
-       ->with('name',$name)
-       ->with('type',$type[0]->user_type);
-   }
-
-
-
+    
 }
