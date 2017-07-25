@@ -53,6 +53,8 @@ Route::get('/project', 'ProjectController@index')->name('project');
 // fetch project
 Route::get('/project/fetch', 'ProjectController@fetch');
 
+Route::get('/project/fetchNew', 'ProjectController@fetchNew');
+
 // insert project
 Route::post('/project/store', 'ProjectController@store');
 
@@ -70,6 +72,8 @@ Route::get('/project/{prj_no}', 'ProjectController@show');
 
 Route::get('/report', 'ReportController@getdata');
 
+Route::get('/report/fetch', 'ReportController@fetch');
+
 Route::post('/report/export' , 'MessagesController@export');
 
 Route::get('/export2' , 'MessagesController@export2');
@@ -78,7 +82,7 @@ Route::get('/sendbasicmail','MailController@html_email');
 
 Route::get('/leave_request_history', 'LeaverequestController@index')->name('leave_request_history');
 
-Route::get('/leave_request_history/fetch', 'LeaverequestController@fetch')->name('leave_request_history');
+Route::get('/leave_request_history/fetch', 'LeaverequestController@fetch');
 
 Route::post('/timesheet/addLeave', 'LeaverequestController@addLeave');
 

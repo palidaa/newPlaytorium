@@ -203,10 +203,13 @@ class MessagesController extends Controller
                 $leave = DB::select('select date_format(l.leave_date, ? ) as leave_date,l.leave_type from leaverequest_of_employee l where id= ? and year(l.leave_date)= ? and month(l.leave_date)= ?',
                   ['%m/%d/%Y',$employee,$year,$month]);
 
+                $strStartDate = $month."/01/2017";
+                $strEndDate = date ("m/d/Y", strtotime("-1 day", strtotime(($month+1)."/01/2017")));
+
                 $sheet ->fromArray(array(
                  array (null , null,'TIMESHEET'),
                  array ('Name:' , $users[0]->first_name." ".$users[0]->last_name),
-                 array ('Role:' , $users[0]->role , null,'Duration', 'xxx'),
+                 array ('Role:' , $users[0]->role , null,'Duration', date("j M",strtotime($strStartDate))." -".date("j M Y",strtotime($strEndDate))),
                  array ('Customer Site:',null , $users3[0]->customer),
                  array (),
                  array ('Date','Task Name' , 'Description' , 'Time In','Time Out',"Work\n(hours)" , "OT (hours)" , null , null , 'Remark'),
@@ -214,9 +217,6 @@ class MessagesController extends Controller
                 ) , NULL , 'A1',false,false );
 
            $sheet -> getStyle('F6') -> getAlignment() -> setWrapText(true);
-
-           $strStartDate = $month."/01/2017";
-           $strEndDate = date ("m/d/Y", strtotime("-1 day", strtotime(($month+1)."/01/2017")));
 
            $intWorkDay = 0;
            $intHoliday = 0;
@@ -437,7 +437,7 @@ class MessagesController extends Controller
 				 $rowCount++;
 
 				  $sheet ->mergeCells('C'.$rowCount.':'.'D'.$rowCount);
-				  $sheet -> SetCellValue('C'.$rowCount, '(Your Name)');
+				  $sheet -> SetCellValue('C'.$rowCount, $users[0]->first_name." ".$users[0]->last_name);
 				  $sheet->cells('C'.$rowCount.':'.'D'.$rowCount , function($cells){
 					$cells->setAlignment('center');
 					$cells->setValignment('center');

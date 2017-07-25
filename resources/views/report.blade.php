@@ -4,6 +4,7 @@
 
 @section('content')
 
+<div id="report" v-cloak>
 <div class="container">
   <div class="row">
     <div class="col-md-8 col-md-offset-2">
@@ -29,7 +30,7 @@
 			<p id="selYM">Select year and month to export a report.</p>
 			<div class="row">
 			  <div class="form-group col-md-3">
-				  <select class="form-control" name="year" id="year">
+				  <select class="form-control" name="year" id="year" v-model="year" onchange="showProject(this,document.getElementById('month'))">
 				   <option value="">Select Year</option>
 				   
 					@for($i=0;$i<20;$i++)
@@ -40,7 +41,7 @@
 			  </div>
 
 				<div class="form-group col-md-3">
-				  <select class="form-control" name="month" id="month">
+				  <select class="form-control" name="month" id="month" v-model="month" onchange="showProject(document.getElementById('year'),this)">
 					<option value="">Select Month</option>
 					<option value="01">January</option>
 					<option value="02">Febuary</option>
@@ -61,18 +62,10 @@
 			  <p id="p">Project</p>
 			  <select class="form-control" name="project" id="project" >
 			   <option value="">Select Project</option>
-			
-			<!--   @foreach($data as $eachdata)
-				<option value={{ $eachdata->prj_no }}>{{ $eachdata->prj_name }}</option>
-			   @endforeach -->
-			  
-			  <?php
-			  $datas = DB::select('select distinct w.prj_no,p.prj_name from works w join projects p join timesheets t on w.prj_no=p.prj_no and t.id=w.id and t.prj_no=p.prj_no where w.id= ? and year(t.date)= ? and month(t.date)= ? order by w.prj_no',[$id,2017,02]);
-			  	foreach($data as $eachdata){
-			  		echo "<option value=".$eachdata->prj_no.">".$eachdata->prj_no." - ".$eachdata->prj_name."</option>";
-			  	}
+			    <option v-for="project in projects" v-bind:value="project.prj_no">
+				    @{{ project.prj_no }} - @{{ project.prj_name }}
+				  </option>
 
-			  ?>
 				</select>
 
 		  <br>
@@ -89,6 +82,7 @@
   showDiv(document.getElementById('type'));
 </script>
 </div>
+</div>
 @endsection
 
 
@@ -96,9 +90,9 @@
 function showDiv(elem){
 	if(elem.value == "Timesheet"){
 		document.getElementById('month').style.display = "block";
-		document.getElementById('project').style.display = "block";
+		document.getElementById('project').style.display = "none";
 		document.getElementById('selYM').innerHTML = "Select year and month to export a report.";
-		document.getElementById('p').style.display = "block";
+		document.getElementById('p').style.display = "none";
 	}
 	else if(elem.value == "Summary Timesheet"){
 		document.getElementById('month').style.display = "none";
@@ -107,4 +101,22 @@ function showDiv(elem){
 		document.getElementById('p').style.display = "none";
 	}
 }
+function showProject(elem1,elem2){
+	if(elem1.value == "" || elem2.value == "" ){
+		document.getElementById('month').style.display = "block";
+		document.getElementById('project').style.display = "none";
+		document.getElementById('selYM').innerHTML = "Select year and month to export a report.";
+		document.getElementById('p').style.display = "none";
+	}
+	else{
+		document.getElementById('month').style.display = "block";
+		document.getElementById('project').style.display = "block";
+		document.getElementById('selYM').innerHTML = "Select year and month to export a report.";
+		document.getElementById('p').style.display = "block";
+	}
+}
 </script>
+
+@section('script')
+<script src="{{ asset('js/report.js') }}"></script>
+@endsection

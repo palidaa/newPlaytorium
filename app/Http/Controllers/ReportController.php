@@ -17,4 +17,12 @@ class ReportController extends Controller
 
 		return view('report',['data'=>$datas,'id'=>$userid[0]->id]);
 	}
+
+ public function fetch(Request $request)
+  {
+		$datas = DB::select('select p.prj_no,p.prj_name from timesheets t join projects p on p.prj_no=t.prj_no where t.id= ? and month(t.date)= ? and year(t.date)= ? group by p.prj_no;',[Auth::id(),$request->input('month'),$request->input('year')]);
+
+		return $datas;
+  }
+
 }

@@ -20,7 +20,7 @@ class ProjectController extends Controller
     }
 
     public function fetch() {
-      if(Auth::user()->user_type == 'Admin') {
+     if(Auth::user()->isAdmin()){
         //$projects = Project::all();
         $projects = Project::orderBy('projects.status','desc')
                     ->orderBy('prj_no','desc')
@@ -35,6 +35,16 @@ class ProjectController extends Controller
                       ->get();
         return $projects;
       }
+    }
+
+    public function fetchNew() {
+        $projects = Project::join('works', 'projects.prj_no', '=', 'works.prj_no')
+                      ->where('works.id', Auth::id())
+                      ->where('status','In Progress')
+                      ->orderBy('projects.status','desc')
+                      ->orderBy('projects.prj_no','desc')
+                      ->get();
+        return $projects;
     }
 
     public function store(Request $request) {
