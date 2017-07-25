@@ -60,6 +60,14 @@ class LeaverequestController extends Controller
 
       return view('leave_request_history')->with('leave_request_history' ,$leave_request_historys);
   }
+
+ public function fetch(Request $request)
+  {
+    $leave_request_historys = DB::select('SELECT * FROM leaverequest_of_employee WHERE id = ? and year(leave_date) like ? and leave_type like ? and leave_date=leave_from order by status desc,leave_from', [Auth::id(),"%".$request->input('year')."%","%".$request->input('leave_type')."%"]);
+
+      return $leave_request_historys;
+  }
+
   public function accept(String $code)
   {
       $check_status = DB::select( 'select l.status from leaverequest_of_employee l WHERE l.code = ?' , [$code] );

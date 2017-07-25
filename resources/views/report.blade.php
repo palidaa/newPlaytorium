@@ -69,7 +69,7 @@
 			  <?php
 			  $datas = DB::select('select distinct w.prj_no,p.prj_name from works w join projects p join timesheets t on w.prj_no=p.prj_no and t.id=w.id and t.prj_no=p.prj_no where w.id= ? and year(t.date)= ? and month(t.date)= ? order by w.prj_no',[$id,2017,02]);
 			  	foreach($data as $eachdata){
-			  		echo "<option value=".$eachdata->prj_no.">".$eachdata->prj_name."</option>";
+			  		echo "<option value=".$eachdata->prj_no.">".$eachdata->prj_no." - ".$eachdata->prj_name."</option>";
 			  	}
 
 			  ?>
