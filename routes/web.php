@@ -24,7 +24,7 @@ Route::get('/', function () {
 Route::get('/timesheet', 'TimesheetController@index')->name('timesheet');
 
 // route to insert page
-Route::get('/timesheet/new', 'TimesheetController@new')->name('new');
+Route::get('/timesheet/new', 'TimesheetController@create')->name('new');
 
 // fetch timesheet
 Route::get('/timesheet/fetch', 'TimesheetController@fetch');
