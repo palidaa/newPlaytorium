@@ -52,6 +52,48 @@
                             </div>
                         </div>
 
+                        <div class="form-group{{ $errors->has('role') ? ' has-error' : '' }}">
+                            <label for="role" class="col-md-4 control-label">Role</label>
+
+                            <div class="col-md-6">
+                                <input id="role" type="text" class="form-control" name="role" value="{{ old('role') }}" required>
+
+                                @if ($errors->has('role'))
+                                    <span class="help-block">
+                                        <strong>{{ $errors->first('role') }}</strong>
+                                    </span>
+                                @endif
+                            </div>
+                        </div>
+
+                        <div class="form-group{{ $errors->has('department') ? ' has-error' : '' }}">
+                            <label for="department" class="col-md-4 control-label">Department</label>
+
+                            <div class="col-md-6">
+                                <input id="department" type="text" class="form-control" name="department" value="{{ old('department') }}" required>
+
+                                @if ($errors->has('department'))
+                                    <span class="help-block">
+                                        <strong>{{ $errors->first('department') }}</strong>
+                                    </span>
+                                @endif
+                            </div>
+                        </div>
+
+                        <div class="form-group{{ $errors->has('type') ? ' has-error' : '' }}">
+                            <label for="type" class="col-md-4 control-label">Employee Type</label>
+
+                            <div class="col-md-6">
+                                <input id="type" type="text" class="form-control" name="type" value="{{ old('type') }}" required>
+
+                                @if ($errors->has('type'))
+                                    <span class="help-block">
+                                        <strong>{{ $errors->first('type') }}</strong>
+                                    </span>
+                                @endif
+                            </div>
+                        </div>
+
                         <div class="form-group{{ $errors->has('password') ? ' has-error' : '' }}">
                             <label for="password" class="col-md-4 control-label">Password</label>
 
