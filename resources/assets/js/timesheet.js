@@ -58,7 +58,9 @@ new Vue({
         });
     },
     select: function(timesheet, key) {
-      this.selectedTimesheet = timesheet;
+      // prevent reference sharing
+      let temp = Object.assign({}, timesheet)
+      this.selectedTimesheet = temp;
       this.selectedKey = key;
     },
     remove: function(key) {
