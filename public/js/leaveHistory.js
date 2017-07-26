@@ -76,12 +76,14 @@ new Vue({
   data: {
     leaveHistorys: [],
     leave_type: '',
-    year: ''
+    year: '',
+    years: []
   },
   mounted: function mounted() {
     var _this = this;
 
     this.fetch();
+    this.getYear();
   },
 
   watch: {
@@ -90,6 +92,7 @@ new Vue({
     },
     leave_type: function leave_type() {
       this.fetch();
+      this.getYear();
     }
   },
   methods: {
@@ -103,6 +106,19 @@ new Vue({
         }
       }).then(function (response) {
         _this2.leaveHistorys = response.data;
+      }).catch(function (error) {
+        console.log(error);
+      });
+    },
+    getYear: function getYear() {
+      var _this2 = this;
+
+      axios.get('/leave_request_history/getYear', {
+        params: {
+          leave_type: this.leave_type
+        }
+      }).then(function (response) {
+        _this2.years = response.data;
       }).catch(function (error) {
         console.log(error);
       });

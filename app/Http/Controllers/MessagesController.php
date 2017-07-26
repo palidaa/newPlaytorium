@@ -47,6 +47,8 @@ class MessagesController extends Controller
           $project = $request->input('project');
           $year = $request->input('year');
           $month = $request->input('month');
+         
+          $month = date("m",strtotime($month."/01/2017"));
 
             $sheet->setFreeze('A8');
             $sheet->setFontFamily('Arial');
@@ -217,6 +219,9 @@ class MessagesController extends Controller
                 ) , NULL , 'A1',false,false );
 
            $sheet -> getStyle('F6') -> getAlignment() -> setWrapText(true);
+
+            $strStartDate = $month."/01/2017";
+            $strEndDate = date ("m/d/Y", strtotime("-1 day", strtotime(($month+1)."/01/2017")));
 
            $intWorkDay = 0;
            $intHoliday = 0;

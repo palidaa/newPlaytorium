@@ -24,11 +24,9 @@
       <div class="col-md-3">
           <select class="form-control" v-model="year">
              <option value="">Year</option>
-             
-            @for($i=0;$i<20;$i++)
-              <option value=<?php echo date("Y")-$i; ?>><?php echo date("Y")-$i; ?></option>
-            @endfor
-        
+             <option v-for="year in years" v-bind:value="year.year">
+              @{{ year.year }}
+            </option>
         </select>
       </div>
     </div> 
