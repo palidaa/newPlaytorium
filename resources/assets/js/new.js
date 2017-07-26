@@ -1,4 +1,4 @@
-let now = moment().format('YYYY-MM-DD');
+let now = moment().format('YYYY-MM-DD')
 
 new Vue({
   el: '#new',
@@ -14,18 +14,19 @@ new Vue({
       time_in: '09:00',
       time_out: '18:00',
       description: ''
-    }]
+    }],
+    errors: []
   },
   mounted: function() {
-    pace.start();
+    pace.start()
 
     axios.get('/project/fetch')
       .then(response => {
-        this.projects = response.data;
+        this.projects = response.data
       })
       .catch(error => {
-        console.log(error);
-      });
+        console.log(error)
+      })
 
     //setup datepicker
     $('.input-group.date').datepicker({
@@ -34,33 +35,33 @@ new Vue({
       orientation: 'bottom auto',
       autoclose: true
     }).on('changeDate', () => {
-      this.startDate = $('#startDateInput').val();
-      this.endDate = $('#endDateInput').val();
+      this.startDate = $('#startDateInput').val()
+      this.endDate = $('#endDateInput').val()
       if(moment(this.endDate) < moment(this.startDate)) {
-        this.endDate = this.startDate;
-        $('#endDateInput').val(this.startDate);
+        this.endDate = this.startDate
+        $('#endDateInput').val(this.startDate)
       }
-      $('#toDatepicker').datepicker('setStartDate', this.startDate);
-      this.tasks = [];
-      this.appendTask(this.startDate, this.endDate);
-    });
+      $('#toDatepicker').datepicker('setStartDate', this.startDate)
+      this.tasks = []
+      this.appendTask(this.startDate, this.endDate)
+    })
   },
   methods: {
     appendTask: function(startDate, endDate) {
-      startDate = moment(startDate);
-      endDate = moment(endDate);
+      startDate = moment(startDate)
+      endDate = moment(endDate)
       for (var m = startDate; m.diff(endDate, 'days') <= 0; m.add(1, 'days')) {
         var task = {
           date: moment(m).format('YYYY-MM-DD'),
           time_in: '09:00',
           time_out: '18:00',
           description: ''
-        };
-        this.tasks.push(task);
+        }
+        this.tasks.push(task)
       }
     },
-    removeTask: function(task, key) {
-      Vue.delete(this.tasks, key);
+    removeTask: function(task, index) {
+      this.tasks.splice(index, 1)
     },
     submit: function() {
       let promises = []
@@ -70,17 +71,21 @@ new Vue({
           time_in: this.tasks[i].time_in,
           time_out: this.tasks[i].time_out,
           prj_no: this.selectedProject.substr(0, this.selectedProject.indexOf(' ')),
-          task_name: this.tasks[i].task_name,
+          task_name: this.task_name,
           description: this.tasks[i].description
         }))
       }
       axios.all(promises)
-        .then(axios.spread((...args) => {
-          for(let i = 0; i < args.length; i++) {
-            console.log(args[i])
+        .then(axios.spread((...responses) => {
+          for(let i = 0; i < responses.length; i++) {
+            console.log(responses[i])
           }
           window.location.href = '/timesheet'
         }))
+        .catch(error => {
+          console.log(error)
+          this.errors = error
+        })
     }
   }
-});
+})

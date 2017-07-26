@@ -20,8 +20,7 @@ class ProjectController extends Controller
     }
 
     public function fetch() {
-      if(Auth::user()->user_type == 'Admin') {
-        //$projects = Project::all();
+      if(Auth::user()->isAdmin()) {
         $projects = Project::orderBy('projects.status','desc')
                     ->orderBy('prj_no','desc')
                     ->get();
@@ -72,7 +71,7 @@ class ProjectController extends Controller
 
      public function deleteMember(Request $request){
       $works = DB::delete('delete from works where id=? and prj_no=?' ,[$request->input('id'),$request->input('prj_no')]);
-        return redirect()->back();
+      return redirect()->back();
     }
-    
+
 }

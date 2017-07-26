@@ -13,6 +13,11 @@
         <!-- head form -->
         <div class="form-group">
           <div class="row">
+            @if ($errors->has('prj_no'))
+                <span class="help-block">
+                    <strong>{{ $errors->first('prj_no') }}</strong>
+                </span>
+            @endif
             <div class="col-md-4">
               <label class="control-label">Project</label>
               <select class="form-control" v-model="selectedProject">
@@ -56,11 +61,11 @@
 
         <hr>
 
-        <div v-for="(task, key) in tasks">
+        <div v-for="(task, index) in tasks">
           <div class="panel panel-default">
             <div class="panel-heading">
               @{{ task.date }}
-              <span class="close" @click="removeTask(task, key)">&times;</span>
+              <span class="close" @click="removeTask(task, index)">&times;</span>
             </div>
             <div class="panel-body">
               <div class="row">
