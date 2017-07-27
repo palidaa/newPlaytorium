@@ -103,3 +103,7 @@ Route::get('/holiday/fetch', 'HolidayController@fetch');
 Route::post('/holiday/store', 'HolidayController@store');
 
 Route::delete('/holiday/destroy', 'HolidayController@destroy');
+
+Route::get('/updatepassword', 'Auth\UpdatePasswordController@index');
+
+Route::post('/updatepassword/update', 'Auth\UpdatePasswordController@update');

@@ -26,6 +26,7 @@
               <li><a href="/register">New User</a></li>
               <li><a href="/holiday">Manage Holiday</a></li>
             @endif
+            <li><a href="/updatepassword">Change password</a></li>
             <li><a href="{{ route('logout') }}"
                 onclick="event.preventDefault();
                          document.getElementById('logout-form').submit();">
