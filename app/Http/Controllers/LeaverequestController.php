@@ -259,12 +259,15 @@ class LeaverequestController extends Controller
          ,'leave_day'=>$leave_days[0]->leave_days , 'accept_path' => $accept_path , 'reject_path' => $reject_path
         );
 
-        Mail::send('mail',
-         $mail, function($message) use ($data) {
-           $message->to('test@pass.playtorium.co.th', 'Leave Moderator') ->subject
-              ('Leave Request from '.$data[0]->first_name.' '.$data[0]->last_name) ;
-           $message->from($data[0]->email,$data[0]->first_name.' '.$data[0]->last_name) ;
-        });
+        $modmail = array('test@pass.playtorium.co.th');
+		foreach($modmail as $eachmail){
+			Mail::send('mail',
+			 $mail, function($message) use ($data,$eachmail) {
+			   $message->to($eachmail, 'Leave Moderator') ->subject
+				  ('Leave Request from '.$data[0]->first_name.' '.$data[0]->last_name) ;
+			   $message->from($data[0]->email,$data[0]->first_name.' '.$data[0]->last_name) ;
+			});
+        }
 		$begin = new DateTime($request->input('from'));
 		$interval = new DateInterval( "P1D" );
 		$end = new DateTime($request->input('to'));
