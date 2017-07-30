@@ -10,19 +10,32 @@ class ReportController extends Controller
 {
     //
 	public function getdata(){
-
-		$userid = DB::select('SELECT e.id,e.first_name,e.last_name,u.user_type FROM users u join employees e on e.email=u.email where u.id= ?' , [Auth::id()]  );
-		$users = DB::select('select * from employees');
-		$datas = DB::select('select w.prj_no,p.prj_name from works w join projects p on w.prj_no=p.prj_no where w.id=? group by w.prj_no,p.prj_name',[$userid[0]->id]);
-
-		return view('report',['data'=>$datas,'id'=>$userid[0]->id,'users'=>$users]);
+		$datas = DB::select('select w.prj_no,p.prj_name from works w join projects p on w.prj_no=p.prj_no where w.id=? group by w.prj_no,p.prj_name',[Auth::id()]);
+		return view('report',['data'=>$datas]);
 	}
 
- public function fetch(Request $request)
+ public function getProject(Request $request)
   {
 		$datas = DB::select('select p.prj_no,p.prj_name from timesheets t join projects p on p.prj_no=t.prj_no where t.id= ? and month(t.date)= ? and year(t.date)= ? group by p.prj_no;',[Auth::id(),$request->input('month'),$request->input('year')]);
 
 		return $datas;
+  }
+
+   public function getYear(Request $request)
+  {
+  	if($request->input('type')=='Timesheet'){
+		$year = DB::select('select year(t.date) as year from timesheets t where t.id=? group by year(t.date)',[Auth::id()]);
+  	}else{
+		$year = DB::select('select year(t.date) as year from timesheets t group by year(t.date)');
+  	}
+	return $year;
+  }
+
+  public function getMonth(Request $request)
+  {
+	$month = DB::select('select monthname(t.date) as monthname ,month(t.date) as month from timesheets t where t.id = ? and year(t.date) = ? group by monthname,month order by month(t.date);'
+			,[Auth::id(),$request->input('year')]);
+	return $month;
   }
 
 }

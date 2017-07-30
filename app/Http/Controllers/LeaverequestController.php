@@ -63,7 +63,14 @@ class LeaverequestController extends Controller
 
  public function fetch(Request $request)
   {
-    $leave_request_historys = DB::select('SELECT * FROM leaverequest_of_employee WHERE id = ? and year(leave_date) like ? and leave_type like ? and leave_date=leave_from order by status desc,leave_from', [Auth::id(),"%".$request->input('year')."%","%".$request->input('leave_type')."%"]);
+    $leave_request_historys = DB::select('SELECT * FROM leaverequest_of_employee WHERE id = ? and year(leave_date) like ? and leave_type like ? and leave_date=leave_from order by status desc,leave_from desc', [Auth::id(),"%".$request->input('year')."%","%".$request->input('leave_type')."%"]);
+
+      return $leave_request_historys;
+  }
+
+  public function getYear(Request $request)
+  {
+    $leave_request_historys = DB::select('SELECT year(leave_date) as year FROM leaverequest_of_employee WHERE id = ? and leave_type like ? and leave_date=leave_from group by year', [Auth::id(),"%".$request->input('leave_type')."%"]);
 
       return $leave_request_historys;
   }

@@ -77,8 +77,11 @@ new Vue({
   el: '#report',
   data: {
     month: "",
+    months: [],
     year: "",
-    projects: []
+    years: [],
+    projects: [],
+    type: ""
   },
   mounted: function mounted() {
     var _this = this;
@@ -86,18 +89,48 @@ new Vue({
     //this.fetch();
   },
   watch: {
+    type: function type() {
+      this.getYear();
+    },
     year: function year() {
-      this.fetch();
+      this.getMonth();
+      this.getProject();
     },
     month: function month() {
-      this.fetch();
+      this.getProject();
     }
   },
   methods: {
-    fetch: function fetch() {
+    getYear: function getYear() {
       var _this2 = this;
 
-      axios.get('/report/fetch', {
+      axios.get('/report/getYear',{
+        params: {
+          type: this.type
+        }
+      }).then(function (response) {
+        _this2.years = response.data;
+      }).catch(function (error) {
+        console.log(error);
+      });
+    },
+    getMonth: function getMonth() {
+      var _this2 = this;
+
+      axios.get('/report/getMonth',{
+        params: {
+          year: this.year
+        }
+      }).then(function (response) {
+        _this2.months = response.data;
+      }).catch(function (error) {
+        console.log(error);
+      });
+    },
+    getProject: function getProject() {
+      var _this2 = this;
+
+      axios.get('/report/getProject', {
         params: {
           year: this.year,
           month: this.month

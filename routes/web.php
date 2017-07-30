@@ -24,7 +24,7 @@ Route::get('/', function () {
 Route::get('/timesheet', 'TimesheetController@index')->name('timesheet');
 
 // route to insert page
-Route::get('/timesheet/new', 'TimesheetController@new')->name('new');
+Route::get('/timesheet/new', 'TimesheetController@create')->name('new');
 
 // fetch timesheet
 Route::get('/timesheet/fetch', 'TimesheetController@fetch');
@@ -72,7 +72,11 @@ Route::get('/project/{prj_no}', 'ProjectController@show');
 
 Route::get('/report', 'ReportController@getdata');
 
-Route::get('/report/fetch', 'ReportController@fetch');
+Route::get('/report/getYear', 'ReportController@getYear');
+
+Route::get('/report/getMonth', 'ReportController@getMonth');
+
+Route::get('/report/getProject', 'ReportController@getProject');
 
 Route::post('/report/export' , 'MessagesController@export');
 
@@ -83,6 +87,8 @@ Route::get('/sendbasicmail','MailController@html_email');
 Route::get('/leave_request_history', 'LeaverequestController@index')->name('leave_request_history');
 
 Route::get('/leave_request_history/fetch', 'LeaverequestController@fetch');
+
+Route::get('/leave_request_history/getYear', 'LeaverequestController@getYear');
 
 Route::post('/timesheet/addLeave', 'LeaverequestController@addLeave');
 
@@ -97,3 +103,7 @@ Route::get('/holiday/fetch', 'HolidayController@fetch');
 Route::post('/holiday/store', 'HolidayController@store');
 
 Route::delete('/holiday/destroy', 'HolidayController@destroy');
+
+Route::get('/updatepassword', 'Auth\UpdatePasswordController@index');
+
+Route::post('/updatepassword/update', 'Auth\UpdatePasswordController@update');

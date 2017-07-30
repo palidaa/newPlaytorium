@@ -11,4 +11,5 @@ class Timesheet extends Model
   protected $fillable = [
       'id', 'prj_no', 'date', 'task_name', 'description', 'time_in', 'time_out'
   ];
+
 }
