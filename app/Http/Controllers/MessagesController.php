@@ -47,6 +47,8 @@ class MessagesController extends Controller
           $project = $request->input('project');
           $year = $request->input('year');
           $month = $request->input('month');
+         
+          $month = date("m",strtotime($month."/01/2017"));
 
             $sheet->setFreeze('A8');
             $sheet->setFontFamily('Arial');
@@ -217,6 +219,9 @@ class MessagesController extends Controller
                 ) , NULL , 'A1',false,false );
 
            $sheet -> getStyle('F6') -> getAlignment() -> setWrapText(true);
+
+            $strStartDate = $month."/01/2017";
+            $strEndDate = date ("m/d/Y", strtotime("-1 day", strtotime(($month+1)."/01/2017")));
 
            $intWorkDay = 0;
            $intHoliday = 0;
@@ -594,7 +599,7 @@ class MessagesController extends Controller
 					$query0= DB::select('select e.id,e.first_name,e.last_name
 						from employees e join works w on e.id=w.id join timesheets t on e.id= t.id and t.prj_no=w.prj_no
 						where year(date)= ?
-						group by e.id
+						group by e.id,e.first_name,e.last_name
 						order by e.id',[$year]);
 
 					$sheet ->fromArray(array(
@@ -609,7 +614,7 @@ class MessagesController extends Controller
 						$query1 = DB::select('select w.prj_no,p.prj_name
 							from (employees e join works w on e.id=w.id join timesheets t on e.id= t.id and t.prj_no=w.prj_no) join projects p on p.prj_no=w.prj_no
 							where year(date)= ? and e.id = ?
-							group by w.prj_no',[$year,$query0_v->id]);
+							group by w.prj_no,p.prj_name',[$year,$query0_v->id]);
 						$test = 30;
 						foreach($query1 as $query1_v){
 

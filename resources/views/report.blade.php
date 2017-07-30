@@ -19,7 +19,8 @@
 			  <div class="form-group col-md-4">
 				<label>Type</label>
 				<br>
-				<select class="form-control" name="type" onchange="showDiv(this)" id="type">
+				<select class="form-control" name="type" onchange="showDiv(this)" id="type" v-model="type">
+				<option value="">Select Type</option>
 				 <option value="Timesheet">Timesheet</option>
 				 <option value="Summary Timesheet">Summary Timesheet</option>
 				</select>
@@ -30,31 +31,20 @@
 			<p id="selYM">Select year and month to export a report.</p>
 			<div class="row">
 			  <div class="form-group col-md-3">
-				  <select class="form-control" name="year" id="year" v-model="year" onchange="showProject(this,document.getElementById('month'),document.getElementById('type'))">
+				  <select class="form-control" name="year" id="year" v-model="year">
 				   <option value="">Select Year</option>
-				   
-					@for($i=0;$i<20;$i++)
-						<option value=<?php echo date("Y")-$i; ?>><?php echo date("Y")-$i; ?></option>
-					@endfor
-					
+					   <option v-for="year in years" v-bind:value="year.year">
+					    @{{ year.year }}
+					  </option>
 				  </select>
 			  </div>
 
 				<div class="form-group col-md-3">
-				  <select class="form-control" name="month" id="month" v-model="month" onchange="showProject(document.getElementById('year'),this,document.getElementById('type'))">
+				  <select class="form-control" name="month" id="month" v-model="month">
 					<option value="">Select Month</option>
-					<option value="01">January</option>
-					<option value="02">Febuary</option>
-					<option value="03">March</option>
-					<option value="04">April</option>
-					<option value="05">Mar</option>
-					<option value="06">June</option>
-					<option value="07">July</option>
-					<option value="08">August</option>
-					<option value="09">September</option>
-					<option value="10">October</option>
-					<option value="11">November</option>
-					<option value="12">December</option>
+					<option v-for="month in months" v-bind:value="month.month">
+					    @{{ month.monthname }}
+					  </option>
 				  </select>
 			  </div>
 
@@ -88,35 +78,27 @@
 
 <script type="text/javascript">
 function showDiv(elem){
-	if(elem.value == "Timesheet"){
-		document.getElementById('month').style.display = "block";
-		document.getElementById('project').style.display = "none";
-		document.getElementById('selYM').innerHTML = "Select year and month to export a report.";
-		document.getElementById('p').style.display = "none";
-	}
-	else if(elem.value == "Summary Timesheet"){
+	if(elem.value == ""){
 		document.getElementById('month').style.display = "none";
 		document.getElementById('project').style.display = "none";
-		document.getElementById('selYM').innerHTML = "Select year to export a report.";
+		document.getElementById('selYM').style.display = "none";
 		document.getElementById('p').style.display = "none";
-	}
-}
-function showProject(year,month,type){
-	if(type.value == "Summary Timesheet"){
-		document.getElementById('month').style.display = "none";
-		document.getElementById('project').style.display = "none";
-		document.getElementById('selYM').innerHTML = "Select year to export a report.";
-		document.getElementById('p').style.display = "none";
-	}else if(year.value == "" || month.value == ""){
-		document.getElementById('month').style.display = "block";
-		document.getElementById('project').style.display = "none";
-		document.getElementById('selYM').innerHTML = "Select year and month to export a report.";
-		document.getElementById('p').style.display = "none";
-	}else{
+		document.getElementById('year').style.display = "none";
+	}else if(elem.value == "Timesheet"){
+		document.getElementById('year').style.display = "block";
 		document.getElementById('month').style.display = "block";
 		document.getElementById('project').style.display = "block";
+		document.getElementById('selYM').style.display = "block";
 		document.getElementById('selYM').innerHTML = "Select year and month to export a report.";
 		document.getElementById('p').style.display = "block";
+	}
+	else {
+		document.getElementById('year').style.display = "block";
+		document.getElementById('month').style.display = "none";
+		document.getElementById('project').style.display = "none";
+		document.getElementById('selYM').style.display = "block";
+		document.getElementById('selYM').innerHTML = "Select year to export a report.";
+		document.getElementById('p').style.display = "none";
 	}
 }
 </script>

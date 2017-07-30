@@ -68,7 +68,7 @@ class LeaverequestController extends Controller
       return $leave_request_historys;
   }
 
-  public function accept(String $code)
+  public function accept($code)
   {
       $check_status = DB::select( 'select l.status from leaverequest_of_employee l WHERE l.code = ?' , [$code] );
       if($check_status[0]->status == 'Pending'){
@@ -78,7 +78,7 @@ class LeaverequestController extends Controller
       else
         return view('already_mail');
   }
-  public function reject(String $code)
+  public function reject($code)
   {
       $check_status = DB::select( 'select l.status from leaverequest_of_employee l WHERE l.code = ?' , [$code] );
       if($check_status[0]->status == 'Pending'){
@@ -117,8 +117,8 @@ class LeaverequestController extends Controller
       $year_leave = 0;
       $from = explode('-' ,$request->input('from') );
       $to = explode('-' ,$request->input('to') );
-      $accept_path = '/newPlaytorium.dev/verify/accept/'.$code ;
-      $reject_path = '/newPlaytorium.dev/verify/reject/'.$code ;
+      $accept_path = 'http://pass.playtorium.co.th/verify/accept/'.$code ;
+      $reject_path = 'http://pass.playtorium.co.th/verify/reject/'.$code ;
       $month_from = "";
       $month_to = "";
       $leave_type = "";
@@ -253,10 +253,10 @@ class LeaverequestController extends Controller
         );
 
         Mail::send('mail',
-         $mail, function($message) {
-           $message->to('miin2ht@gmail.com', 'Playtorium') ->subject
-              ('Leave Request') ;
-           $message->from('yudaqq@gmail.com','Kimmintra') ;
+         $mail, function($message) use ($data) {
+           $message->to('test@pass.playtorium.co.th', 'Leave Moderator') ->subject
+              ('Leave Request from '.$data[0]->first_name.' '.$data[0]->last_name) ;
+           $message->from($data[0]->email,$data[0]->first_name.' '.$data[0]->last_name) ;
         });
 		$begin = new DateTime($request->input('from'));
 		$interval = new DateInterval( "P1D" );
