@@ -21,7 +21,7 @@
             <div class="col-md-4">
               <label class="control-label">Project</label>
               <select class="form-control" v-model="selectedProject">
-                <option disabled hidden value="">Please select a project</option>
+                <option disabled hidden value="">Please select a prject</option>
                 <option v-for="project in projects">@{{ project.prj_no }} - @{{ project.prj_name }}</option>
               </select>
             </div>

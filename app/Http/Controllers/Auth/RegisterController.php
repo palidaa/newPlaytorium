@@ -7,7 +7,6 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Http\Request;
-use DB;
 
 class RegisterController extends Controller
 {
@@ -53,10 +52,6 @@ class RegisterController extends Controller
             'id' => 'required|unique:users',
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:6|confirmed',
-            'role' => 'required|string',
-            'department' => 'required|string',
-            'type' => 'required|string'
         ]);
     }
 
@@ -68,21 +63,23 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
-        $sName = explode(" ",$data['name']);
-        $lastName = "";
-        for ($i=1;$i<count($sName);$i++) {
-            if($i==1) $lastName = $sName[$i];
-            else $lastName = $lastName." ".$sName[$i];
+        $alphabets = str_split('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ');
+        shuffle($alphabets);
+        $password = '';
+        for ($i = 0; $i < 6; $i++) {
+          $password .= $alphabets[$i];
         }
-
-        DB::insert('insert into employees values (?,?,?,?,?,?,?,?)', [$data['id'],$sName[0],$lastName,$data['role'],$data['type'],$data['email'],$data['department'], 0]);
-
-        return User::create([
+        $user = [
+          'email' => $data['email'],
+          'password' => $password
+        ];
+        User::create([
             'id' => $data['id'],
             'name' => $data['name'],
             'email' => $data['email'],
-            'password' => bcrypt($data['password']),
+            'password' => bcrypt($password),
         ]);
+        return $user;
     }
 
     public function register(Request $request)
@@ -95,7 +92,7 @@ class RegisterController extends Controller
         }
 
         $user = $this->create($request->all());
-        return redirect($this->redirectPath());
+        return view('auth.register_success')->with('user', $user);
     }
 
 }
