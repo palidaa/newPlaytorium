@@ -132,6 +132,35 @@
       </div>
 
       <div class="row">
+        <div class="form-group col-md-3">
+          <select class="form-control" name="" id="time">
+            <option value="fullDay">Full day</option>
+            <option value="specificTime">Specific time</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="row" id="hours">
+        <div class="col-md-12">
+          <label for="">Time (hrs)</label>
+        </div>
+        <div class="form-group col-md-2">
+          <select class="form-control" name="">
+            @for ($i = 9; $i <= 18; $i++)
+              <option value="{{ $i }}">{{ $i }}:00</option>
+            @endfor
+          </select>
+        </div>
+        <div class="form-group col-md-2">
+          <select class="form-control" name="">
+            @for ($i = 9; $i <= 18; $i++)
+              <option value="{{ $i }}">{{ $i }}:00</option>
+            @endfor
+          </select>
+        </div>
+      </div>
+
+      <div class="row">
         <div class="col-md-12">
           <label for="">Purpose</label>
           <textarea name ="purpose" class="form-control" name="name" rows="4" cols="80" style="resize: none"></textarea>
@@ -165,4 +194,20 @@
     <!-- container all -->
   </div>
 </div>
+@endsection
+
+@section('script')
+<script type="text/javascript">
+$(document).ready(function() {
+  $('#hours').hide();
+  $('#time').change(function() {
+    if($('#time').val() == 'specificTime') {
+      $('#hours').show();
+    }
+    else {
+      $('#hours').hide();
+    }
+  });
+});
+</script>
 @endsection
