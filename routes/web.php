@@ -53,6 +53,8 @@ Route::get('/project', 'ProjectController@index')->name('project');
 // fetch project
 Route::get('/project/fetch', 'ProjectController@fetch');
 
+Route::get('/project/fetchNew', 'ProjectController@fetchNew');
+
 // insert project
 Route::post('/project/store', 'ProjectController@store');
 
@@ -91,3 +93,17 @@ Route::get('/holiday/fetch', 'HolidayController@fetch');
 Route::post('/holiday/store', 'HolidayController@store');
 
 Route::delete('/holiday/destroy', 'HolidayController@destroy');
+
+Route::get('/report/getYear', 'ReportController@getYear');
+
+Route::get('/report/getMonth', 'ReportController@getMonth');
+
+Route::get('/report/getProject', 'ReportController@getProject');
+
+Route::get('/leave_request_history/fetch', 'LeaverequestController@fetch');
+
+Route::get('/leave_request_history/getYear', 'LeaverequestController@getYear');
+
+Route::get('/updatepassword', 'Auth\UpdatePasswordController@index');
+
+Route::post('/updatepassword/update', 'Auth\UpdatePasswordController@update');

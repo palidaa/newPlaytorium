@@ -36,6 +36,16 @@ class ProjectController extends Controller
       }
     }
 
+    public function fetchNew() {
+        $projects = Project::join('works', 'projects.prj_no', '=', 'works.prj_no')
+                      ->where('works.id', Auth::id())
+                      ->where('status','In Progress')
+                      ->orderBy('projects.status','desc')
+                      ->orderBy('projects.prj_no','desc')
+                      ->get();
+        return $projects;
+    }
+
     public function store(Request $request) {
         $project = new Project;
         $project->prj_no = $request->input('prj_no');
