@@ -90,7 +90,7 @@
           @endif -->
           <label for="date">From</label>
           <div class="input-group date" data-provide="datepicker"  data-date-format="yyyy-mm-dd" data-date-autoclose="true">
-            <input type="text" class="form-control" name ="from">
+            <input type="text" class="form-control" name ="from" id="startDate">
             <div class="input-group-addon">
               <span class="glyphicon glyphicon-th"></span>
             </div>
@@ -105,7 +105,7 @@
           @endif -->
           <label for="date">To</label>
           <div class="input-group date" data-provide="datepicker"  data-date-format="yyyy-mm-dd" data-date-autoclose="true">
-            <input type="text" class="form-control" name ="to">
+            <input type="text" class="form-control" name ="to" id="endDate">
             <div class="input-group-addon">
               <span class="glyphicon glyphicon-th"></span>
             </div>
@@ -131,7 +131,7 @@
         </div>
       </div>
 
-      <div class="row">
+      <div class="row" id="type">
         <div class="form-group col-md-3">
           <select class="form-control" name="type" id="time">
             <option value="fullDay">Full day</option>
@@ -145,16 +145,15 @@
           <label for="">Time (hrs)</label>
         </div>
         <div class="form-group col-md-2">
-          <select class="form-control" name="startHour">
+          <select class="form-control" name="startHour" id="startHour">
             <option value="9" selected>09:00</option>
-            @for ($i = 10; $i <= 18; $i++)
+            @for ($i = 10; $i <= 17; $i++)
               <option value="{{ $i }}">{{ $i }}:00</option>
             @endfor
           </select>
         </div>
         <div class="form-group col-md-2">
-          <select class="form-control" name="endHour">
-            <option value="9">09:00</option>
+          <select class="form-control" name="endHour" id="endHour">
             @for ($i = 10; $i <= 17; $i++)
               <option value="{{ $i }}">{{ $i }}:00</option>
             @endfor
@@ -202,7 +201,9 @@
 @section('script')
 <script type="text/javascript">
 $(document).ready(function() {
+
   $('#hours').hide();
+
   $('#time').change(function() {
     if($('#time').val() == 'specificTime') {
       $('#hours').show();
@@ -211,6 +212,33 @@ $(document).ready(function() {
       $('#hours').hide();
     }
   });
+
+  $('#startHour').change(function() {
+    if($('#startHour') >= $('#endHour')) {
+      $('#endHour').val(18);
+    }
+  });
+
+  $('#endHour').change(function() {
+    if($('#endHour').val() <= $('#startHour').val()) {
+      $('#startHour').val(9);
+    }
+  });
+
+  $('.input-group.date').datepicker()
+    .on('changeDate', () => {
+      if($('#startDate').val() != $('#endDate').val()) {
+        $('#startHour').val(9);
+        $('#endHour').val(18);
+        $('#time').val('fullDay');
+        $('#type').hide();
+        $('#hours').hide();
+      }
+      else {
+        $('#type').show();
+      }
+    });
+
 });
 </script>
 @endsection
