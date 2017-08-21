@@ -23,14 +23,18 @@ class LeaverequestController extends Controller
   {
     $user = DB::select('SELECT e.id,e.type,e.department,e.carry_annual_leave,u.email FROM users u join employees e on e.email=u.email where u.id= ?' , [Auth::id()]  );
 
-    $leave_annual = DB::select('select count(l.leave_date) as leave_annual_used from leaverequest_of_employee l where l.id= ? and leave_type= ? and year(l.leave_date)= ? ' ,
+    $leave_annual = DB::select('select SUM(l.totalhours)*0.125 as leave_annual_used from leaverequest_of_employee l
+    where l.id= ? and leave_type= ? and year(l.leave_date)= ? ' ,
     [$user[0]->id,'Annual Leave', date("Y") ] );
 
-    $leave_personal = DB::select('select count(l.leave_date) as leave_personal_used from leaverequest_of_employee l where l.id= ? and leave_type= ? and year(l.leave_date)= ? ' ,
+    $leave_personal = DB::select('select SUM(l.totalhours)*0.125 as leave_personal_used from leaverequest_of_employee l
+    where l.id= ? and leave_type= ? and year(l.leave_date)= ? ' ,
     [$user[0]->id,'Personal Leave', date("Y") ] );
 
-    $leave_sick = DB::select('select count(l.leave_date) as leave_sick_used from leaverequest_of_employee l where l.id= ? and leave_type= ? and year(l.leave_date)= ? ' ,
+    $leave_sick =DB::select('select SUM(l.totalhours)*0.125 as leave_sick_used from leaverequest_of_employee l
+    where l.id= ? and leave_type= ? and year(l.leave_date)= ? ' ,
     [$user[0]->id,'Sick Leave', date("Y") ] );
+
 
     $remain_leave_annual = 0;
     $remain_leave_personal = 6;

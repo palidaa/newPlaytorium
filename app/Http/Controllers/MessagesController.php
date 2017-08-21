@@ -19,12 +19,12 @@ use DateTime;
 use DateInterval;
 
 class MessagesController extends Controller
-{	
+{
 	public function __construct()
   {
       $this->middleware('auth');
   }
-  
+
     public function submit(Request $request){
       $this->validate($request,[
         'email' => 'required' ,
@@ -36,18 +36,18 @@ class MessagesController extends Controller
         echo 'incorrect';
 		else return view('/timesheet');
     }
-    
+
  public function export(Request $request){
     if($request->input('type')=="Timesheet"){
 		if($request->input('year')=="" or $request->input('month')=="" or $request->input('project')=="") return redirect('report');
       Excel::create('timesheet' , function ($excel)use ($request) {
         $excel -> sheet('sheet' , function($sheet)use ($request){
-			
+
           $employee = Auth::id();
           $project = $request->input('project');
           $year = $request->input('year');
           $month = $request->input('month');
-         
+
           $month = date("m",strtotime($month."/01/2017"));
 
             $sheet->setFreeze('A8');
@@ -182,25 +182,27 @@ class MessagesController extends Controller
                 SEC_TO_TIME(sum(TIME_TO_SEC(cal_ot_holiday_wk(t.date,t.time_in,time_out)))) as sum_ot_hwk,
                 SEC_TO_TIME(sum(TIME_TO_SEC(cal_ot_holiday_non_wk(t.date,t.time_in,time_out)))) as sum_ot_hnwk,
                 SEC_TO_TIME(sum(TIME_TO_SEC(cal_ot_wk(t.date,t.time_in,time_out)))+sum(TIME_TO_SEC(cal_ot_holiday_wk(t.date,t.time_in,time_out)))+sum(TIME_TO_SEC(cal_ot_holiday_non_wk(t.date,t.time_in,time_out)))) as sum_ot from timesheets t
-                where t.id=? and date_format(t.time_in,?)=? and t.prj_no=?' , 
+                where t.id=? and date_format(t.time_in,?)=? and t.prj_no=?' ,
                 [$employee,'%Y-%m',$year.'-'.$month,$project]);
                 $total_work_day_per_month = DB::select('select sum(TIME_TO_SEC(cal_works(t.time_in,t.time_out)))/(8*60*60) as sum_wk
                     from timesheets t
-                    where t.id=? and date_format(t.time_in,?)=? and t.prj_no=?' , 
+                    where t.id=? and date_format(t.time_in,?)=? and t.prj_no=?' ,
                     [$employee,'%Y-%m',$year.'-'.$month,$project]);
-                $sick_leave = DB::select('select ifnull(count(l.leave_date),0) as sick_leave from leaverequest_of_employee l where l.id= ? and month(l.leave_date)= ? and leave_type= ? 
-                  and year(l.leave_date)= ? ' , 
-                    [$employee ,$month,'Sick leave',$year ]);
-                $private_leave = DB::select('select ifnull(count(l.leave_date),0) as private_leave from leaverequest_of_employee l where l.id= ? and month(l.leave_date)= ? and leave_type= ? and year(l.leave_date)= ? ' , 
+
+							  $sick_leave =DB::select('select ifnull(SUM(l.totalhours)*0.125,0) as sick_leave from leaverequest_of_employee l
+								where l.id= ? and month(l.leave_date)= ? and leave_type= ? and year(l.leave_date)= ? ' ,
+						     [$employee ,$month,'Sick leave',$year ]);
+                $private_leave = DB::select('select  ifnull(SUM(l.totalhours)*0.125,0) as private_leave from leaverequest_of_employee l where l.id= ? and month(l.leave_date)= ? and leave_type= ? and year(l.leave_date)= ? ' ,
                     [$employee ,$month,'Personal leave',$year ]);
                 $public_holiday = DB::select('select count(*) as public_holiday
                     from holidays h
-                    where year(h.holiday)=? and month(h.holiday)= ? ' , 
+                    where year(h.holiday)=? and month(h.holiday)= ? ' ,
                     [$year , $month ]);
-                $annual_leave = DB::select('select ifnull(count(l.leave_date),0) as annual_leave from leaverequest_of_employee l where l.id= ? and month(l.leave_date)= ? and leave_type= ? and year(l.leave_date)= ? ;' , 
+                $annual_leave = DB::select('select  ifnull(SUM(l.totalhours)*0.125,0) as annual_leave from leaverequest_of_employee l where l.id= ? and month(l.leave_date)= ? and leave_type= ? and year(l.leave_date)= ? ;' ,
                     [$employee ,$month,'Annual leave',$year]);
-                $holiday = DB::select('select date_format(h.holiday,?) as holiday,h.date_name 
-                  from holidays h 
+
+                $holiday = DB::select('select date_format(h.holiday,?) as holiday,h.date_name
+                  from holidays h
                   where year(h.holiday)=? and month(h.holiday)= ?',['%m/%d/%Y',$year,$month]);
                 $leave = DB::select('select date_format(l.leave_date, ? ) as leave_date,l.leave_type from leaverequest_of_employee l where id= ? and year(l.leave_date)= ? and month(l.leave_date)= ?',
                   ['%m/%d/%Y',$employee,$year,$month]);
@@ -373,7 +375,7 @@ class MessagesController extends Controller
 				   $cells->setValignment('center');
 					$cells->setFontWeight('bold');
 				 });
-				 
+
 				 $rowCount++;
 
 				 $sheet ->mergeCells('A'.$rowCount.':'.'C'.$rowCount);
@@ -629,17 +631,18 @@ class MessagesController extends Controller
 								$sheet -> SetCellValue(chr(69+$query2_v->month).$currentRow,$query2_v->effort);
 							}
 							$currentRow++;
-							
+
 						}
 						$sheet ->mergeCells('D'.$currentRow.':'.'E'.$currentRow);
 						$sheet->SetCellValue('D'.$currentRow,"Non project code");
-						$query3 = DB::select('SELECT loe.leave_date FROM leaverequest_of_employee loe join employees e on loe.id=e.id where loe.id= ? and year(loe.leave_date)= ? and loe.status="Accepted"',[$query0_v->id,$year]);
+						$query3 = DB::select('SELECT loe.leave_date,loe.totalhours FROM leaverequest_of_employee loe
+												join employees e on loe.id=e.id where loe.id= ? and year(loe.leave_date)= ? and loe.status="Accepted"',[$query0_v->id,$year]);
 
 						for($i =1;$i<13;$i++){
 							$month[$i] = 0;
 						}
 						foreach($query3 as $query3_v){
-								$month[(int)date('m', strtotime($query3_v->leave_date))]++;
+								$month[(int)date('m', strtotime($query3_v->leave_date))]+=$query3_v->totalhours*0.125;
 						}
 						for($i =1;$i<13;$i++){
 							if($month[$i]>0){
@@ -713,8 +716,8 @@ class MessagesController extends Controller
     }
 
     public function import(){
-      /*$inputFileName = 'C:/Users/ice_2/OneDrive/Work/internship/Project/Timsheet/timesheet_Feb/Playtorium_Timesheet_Anuchit_CPM.xlsx'; 
-      $sheetname = 'Feb 17'; 
+      /*$inputFileName = 'C:/Users/ice_2/OneDrive/Work/internship/Project/Timsheet/timesheet_Feb/Playtorium_Timesheet_Anuchit_CPM.xlsx';
+      $sheetname = 'Feb 17';
 
       $id = '10005';
       $project = 'PS170006';
@@ -722,16 +725,16 @@ class MessagesController extends Controller
       $inputFileType = PHPExcel_IOFactory::identify($inputFileName);
       $objReader = PHPExcel_IOFactory::createReader($inputFileType);
 
-      $objReader->setLoadSheetsOnly($sheetname); 
+      $objReader->setLoadSheetsOnly($sheetname);
 
-      $objPHPExcel = $objReader->load($inputFileName); 
-      
-      $sheet = $objPHPExcel->getSheet(0); 
-      $highestRow = $sheet->getHighestRow(); 
+      $objPHPExcel = $objReader->load($inputFileName);
+
+      $sheet = $objPHPExcel->getSheet(0);
+      $highestRow = $sheet->getHighestRow();
       $highestColumn = $sheet->getHighestColumn();
 
       //  Loop through each row of the worksheet in turn
-      for ($row = 8; $row <= $highestRow; $row++){ 
+      for ($row = 8; $row <= $highestRow; $row++){
           //  Read a row of data into an array
           $rowData = $sheet->rangeToArray('A' . $row . ':' . $highestColumn . $row,
                                           NULL,
@@ -739,13 +742,13 @@ class MessagesController extends Controller
                                           FALSE);
           //  Insert row data array into your database of choice here
           if($rowData[0][1]!=NULL and $rowData[0][1] != 'Holiday' and strrpos($rowData[0][2],"Leave")==false and $rowData[0][1] != 'ลาพักร้อน'){
-            DB::insert('insert into timesheets  values ( ? , ?, ? , ? , ? , ? , ? )', 
+            DB::insert('insert into timesheets  values ( ? , ?, ? , ? , ? , ? , ? )',
             [$id,$project,date("Y-m-d", PHPExcel_Shared_Date::ExcelToPHP($rowData[0][0]))
             ,$rowData[0][1],$rowData[0][2],PHPExcel_Style_NumberFormat::toFormattedString($rowData[0][3],'hh:mm:ss')
             ,PHPExcel_Style_NumberFormat::toFormattedString($rowData[0][4]
               ,'hh:mm:ss')] );
           }
-          
+
       }*/
     }
 

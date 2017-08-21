@@ -68,12 +68,12 @@
     </div>
   </div>
 </div>
-<script type="text/javascript">
-  showDiv(document.getElementById('type'));
-</script>
 </div>
 </div>
 @endsection
+
+@section('script')
+<script src="{{ asset('js/report.js') }}"></script>
 
 
 <script type="text/javascript">
@@ -103,6 +103,4 @@ function showDiv(elem){
 }
 </script>
 
-@section('script')
-<script src="{{ asset('js/report.js') }}"></script>
 @endsection
