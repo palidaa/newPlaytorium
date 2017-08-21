@@ -15,7 +15,7 @@ new Vue({
       time_out: '18:00',
       description: ''
     }],
-    errors: []
+    errors: false
   },
   mounted: function() {
     pace.start()
@@ -64,6 +64,10 @@ new Vue({
       this.tasks.splice(index, 1)
     },
     submit: function() {
+      if(this.selectedProject == '') {
+        this.errors = true
+        scroll(0, 0)
+      }
       let promises = []
       for(let i = 0; i < this.tasks.length; i++) {
         promises.push(axios.post('/timesheet/store', {
@@ -84,7 +88,6 @@ new Vue({
         }))
         .catch(error => {
           console.log(error)
-          this.errors = error
         })
     }
   }

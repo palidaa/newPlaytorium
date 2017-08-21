@@ -18,15 +18,18 @@
         </div>
 
         <!-- date -->
+        <label>Date</label>
         <div class="row">
           <div class="form-group col-md-3">
-            <label>Date</label>
             <div class="input-group date">
               <input type="text" class="form-control" id="dateInput" v-model="date" readonly>
               <div class="input-group-addon">
                 <span class="glyphicon glyphicon-th"></span>
               </div>
             </div>
+          </div>
+          <div class="col-md-9">
+            <a href="/timesheet/new" class="btn btn-default pull-right">New task</a>
           </div>
         </div>
 
@@ -55,8 +58,6 @@
           </div>
         </div>
         <p v-if="timesheets.length == 0">No task has been added.</p>
-
-        <a href="/timesheet/new" class="btn btn-default">New task</a>
 
         <!-- Modal -->
         <div class="modal fade" id="edit" role="dialog">

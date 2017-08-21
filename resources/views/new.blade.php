@@ -4,6 +4,15 @@
 
 @section('content')
 <div id="new" v-cloak>
+  <div v-if="errors" class="alert alert-danger">
+    <div class="container" style="padding-bottom: 0px">
+      <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+          <strong>Please select a project!</strong>
+        </div>
+      </div>
+    </div>
+  </div>
   <div class="container">
     <div class="row">
       <div class="col-md-8 col-md-offset-2">
@@ -13,11 +22,6 @@
         <!-- head form -->
         <div class="form-group">
           <div class="row">
-            @if ($errors->has('prj_no'))
-                <span class="help-block">
-                    <strong>{{ $errors->first('prj_no') }}</strong>
-                </span>
-            @endif
             <div class="col-md-4">
               <label class="control-label">Project</label>
               <select class="form-control" v-model="selectedProject">

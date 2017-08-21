@@ -88,14 +88,14 @@ new Vue({
       time_out: '18:00',
       description: ''
     }],
-    errors: []
+    errors: false
   },
   mounted: function mounted() {
     var _this = this;
 
     pace.start();
 
-    axios.get('/project/fetchNew').then(function (response) {
+    axios.get('/project/fetch').then(function (response) {
       _this.projects = response.data;
     }).catch(function (error) {
       console.log(error);
@@ -137,8 +137,10 @@ new Vue({
       this.tasks.splice(index, 1);
     },
     submit: function submit() {
-      var _this2 = this;
-
+      if (this.selectedProject == '') {
+        this.errors = true;
+        scroll(0, 0);
+      }
       var promises = [];
       for (var i = 0; i < this.tasks.length; i++) {
         promises.push(axios.post('/timesheet/store', {
@@ -161,7 +163,6 @@ new Vue({
         window.location.href = '/timesheet';
       })).catch(function (error) {
         console.log(error);
-        _this2.errors = error;
       });
     }
   }
