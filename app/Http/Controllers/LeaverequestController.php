@@ -264,14 +264,14 @@ class LeaverequestController extends Controller
         );
 
         $modmail = array('test@pass.playtorium.co.th');
-		foreach($modmail as $eachmail){
-			Mail::send('mail',
-			 $mail, function($message) use ($data,$eachmail) {
-			   $message->to($eachmail, 'Leave Moderator') ->subject
-				  ('Leave Request from '.$data[0]->first_name.' '.$data[0]->last_name) ;
-			   $message->from($data[0]->email,$data[0]->first_name.' '.$data[0]->last_name) ;
-			});
-        }
+		// foreach($modmail as $eachmail){
+		// 	Mail::send('mail',
+		// 	 $mail, function($message) use ($data,$eachmail) {
+		// 	   $message->to($eachmail, 'Leave Moderator') ->subject
+		// 		  ('Leave Request from '.$data[0]->first_name.' '.$data[0]->last_name) ;
+		// 	   $message->from($data[0]->email,$data[0]->first_name.' '.$data[0]->last_name) ;
+		// 	});
+    //     }
 		$begin = new DateTime($request->input('from'));
 		$interval = new DateInterval( "P1D" );
 		$end = new DateTime($request->input('to'));
@@ -284,7 +284,18 @@ class LeaverequestController extends Controller
 				if($holiday->holiday==$period_v->format('Y-m-d'))$notinholiday = false;
 			}
 			if(date('N', $period_v->getTimestamp())<6 and $notinholiday){
-				DB::insert('insert into leaverequest_of_employee values (?,?,?,?,?,?,?,?)', [$user[0]->id,$period_v,$request->input('from'),$request->input('to'),$request->input('leave_type'),'Pending',$request->input('purpose') , $code]);
+        $subtractor = 0;
+        if ($this->includeBreakTime($request->input('startHour'), $request->input('endHour'))) {
+          $subtractor = 1;
+        }
+				DB::insert('insert into leaverequest_of_employee values (?,?,?,?,?,?,?,?,?)',
+        [$user[0]->id,$period_v,$request->input('from').' '.$request->input('startHour'),
+          $request->input('to').' '.$request->input('endHour'),$request->input('leave_type'),
+          'Pending',
+          $request->input('purpose'),
+          $code,
+          $request->input('endHour') - $request->input('startHour') - $subtractor
+        ]);
 			}
 		}
 
@@ -298,6 +309,12 @@ class LeaverequestController extends Controller
 
     return redirect()->route('leave_request');
 
+  }
+
+  private function includeBreakTime($startHour, $endHour) {
+    if ($startHour <= 12 && $endHour >= 13) {
+      return true;
+    }
   }
 
 }

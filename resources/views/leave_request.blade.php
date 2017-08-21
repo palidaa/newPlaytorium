@@ -35,9 +35,9 @@
               <li>Personal leave</li>
               <li>Sick leave</li>
             </div>
-              <li>{{$remain_annual}}</li>
-              <li>{{$remain_personal}}</li>
-              <li>{{$remain_sick}}</li>
+              <li>{{ (int) $remain_annual }} days {{ ($remain_annual - (int) $remain_annual) * 8 }} hours</li>
+              <li>{{ (int) $remain_personal }} days {{ ($remain_personal - (int) $remain_personal) * 8 }} hours</li>
+              <li>{{ (int) $remain_sick }} days {{ ($remain_sick - (int) $remain_sick) * 8}} hours</li>
           </ul>
           <form action="/leave_request_history">
           <button type="submit" class="btn btn-default">Leave History</button>
@@ -133,7 +133,7 @@
 
       <div class="row">
         <div class="form-group col-md-3">
-          <select class="form-control" name="" id="time">
+          <select class="form-control" name="type" id="time">
             <option value="fullDay">Full day</option>
             <option value="specificTime">Specific time</option>
           </select>
@@ -145,17 +145,20 @@
           <label for="">Time (hrs)</label>
         </div>
         <div class="form-group col-md-2">
-          <select class="form-control" name="">
-            @for ($i = 9; $i <= 18; $i++)
+          <select class="form-control" name="startHour">
+            <option value="9" selected>09:00</option>
+            @for ($i = 10; $i <= 18; $i++)
               <option value="{{ $i }}">{{ $i }}:00</option>
             @endfor
           </select>
         </div>
         <div class="form-group col-md-2">
-          <select class="form-control" name="">
-            @for ($i = 9; $i <= 18; $i++)
+          <select class="form-control" name="endHour">
+            <option value="9">09:00</option>
+            @for ($i = 10; $i <= 17; $i++)
               <option value="{{ $i }}">{{ $i }}:00</option>
             @endfor
+            <option value="18" selected>18:00</option>
           </select>
         </div>
       </div>
