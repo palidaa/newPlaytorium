@@ -263,11 +263,11 @@ class LeaverequestController extends Controller
          ,'leave_day'=>$leave_days[0]->leave_days , 'accept_path' => $accept_path , 'reject_path' => $reject_path
         );
 
-        $modmail = array('test@pass.playtorium.co.th');
+        $modmail = DB::select('SELECT email from users where user_type="Admin"');
 		foreach($modmail as $eachmail){
 			Mail::send('mail',
 			 $mail, function($message) use ($data,$eachmail) {
-			   $message->to($eachmail, 'Leave Moderator') ->subject
+			   $message->to($eachmail->email, 'Leave Moderator') ->subject
 				  ('Leave Request from '.$data[0]->first_name.' '.$data[0]->last_name) ;
 			   $message->from($data[0]->email,$data[0]->first_name.' '.$data[0]->last_name) ;
 			});
