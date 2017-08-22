@@ -263,7 +263,7 @@ class LeaverequestController extends Controller
          ,'leave_day'=>$leave_days[0]->leave_days , 'accept_path' => $accept_path , 'reject_path' => $reject_path
         );
 
-        $modmail = DB::select('SELECT email from users where user_type="Admin"');
+        $modmail = DB::select('SELECT email FROM users WHERE user_type="Admin"');
 		foreach($modmail as $eachmail){
 			Mail::send('mail',
 			 $mail, function($message) use ($data,$eachmail) {
