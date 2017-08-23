@@ -29,8 +29,13 @@
     <td>
       <br>
       &emsp;&emsp;&emsp;
-      <font size="3" >มีความประสงค์จะขอ{{$leave_type}} เหตุผลในการลา คือ {{$purpose}} ตั้งแต่วันที่ {{$date_from}} {{$month_from}} {{$year_from}} ถึงวันที่
+      @if( $type=='fullDay' )
+        <font size="3" >มีความประสงค์จะขอ{{$leave_type}} เหตุผลในการลา คือ {{$purpose}} ตั้งแต่วันที่ {{$date_from}} {{$month_from}} {{$year_from}} ถึงวันที่
         {{$date_to}} {{$month_to}} {{$year_to}} รวม {{$leave_day}} วัน </font>
+      @else
+        <font size="3" >มีความประสงค์จะขอ{{$leave_type}} เหตุผลในการลา คือ {{$purpose}} ตั้งแต่วันที่ {{$date_from}} {{$month_from}} {{$year_from}} เวลา {{$startHour}}:00 น. ถึงวันที่
+        {{$date_to}} {{$month_to}} {{$year_to}} เวลา {{$endHour}}:00 น. รวม {{$leave_times}} ชั่วโมง </font>
+      @endif
     </td>
   </tr>
 </table>
@@ -86,15 +91,15 @@ th, td {
   </colgroup>
   <tr>
     <td><font size="3" color = "#6E6E6E">สิทธิที่ได้รับประจำปี</font></td>
-    <td><font size="3" color = "#6E6E6E">:  {{$line1}}</font></td>
+    <td><font size="3" color = "#6E6E6E">:  {{$line1}} วัน</font></td>
   </tr>
   <tr>
     <td><font size="3" color = "#6E6E6E">ขอสิทธิไปแล้วโดยไม่รวมลาครั้งนี้</font></td>
-    <td><font size="3" color = "#6E6E6E">:  {{$line2}}</font></td>
+    <td><font size="3" color = "#6E6E6E">:  {{(int)$line2}} วัน {{ ($line2 - (int) $line2) * 8 }} ชั่วโมง</font></td>
   </tr>
   <tr>
     <td><font size="3" color = "#6E6E6E">คงเหลือสิทธิที่ใช้ได้ </font></td>
-    <td><font size="3" color = "#6E6E6E">:  {{$line3}}</font></td>
+    <td><font size="3" color = "#6E6E6E">:  {{(int)$line3}} วัน {{ ($line3 - (int) $line3) * 8 }} ชั่วโมง</font></td>
   </tr>
 </table>
 </body>

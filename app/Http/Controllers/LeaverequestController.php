@@ -123,8 +123,13 @@ class LeaverequestController extends Controller
 
       $data = DB::select('SELECT * FROM employees WHERE id = ? ', [Auth::id()] );
       $user = DB::select('SELECT e.id,e.type,e.department,e.carry_annual_leave,u.email FROM users u join employees e on e.email=u.email where u.id= ?' , [Auth::id()]  );
-      $leave = DB::select('select count(l.leave_date) as leave_used from leaverequest_of_employee l where l.id= ? and leave_type= ? and year(l.leave_date)= year(?)' , [$user[0]->id,$request->input('leave_type'), $request->input('to') ] );
+      $leave = DB::select('select SUM(l.totalhours)*0.125 as leave_used from leaverequest_of_employee l where l.id= ? and leave_type= ? and year(l.leave_date)= year(?)' , [$user[0]->id,$request->input('leave_type'), $request->input('to') ] );
       $leave_days= DB::select('select cal_days(?,?) as leave_days ' , [$request->input('from'),$request->input('to')]  );
+      $subtractor = 0;
+      if ($this->includeBreakTime($request->input('startHour'), $request->input('endHour'))) {
+        $subtractor = 1;
+      }
+      $leave_times= $request->input('endHour') - $request->input('startHour') - $subtractor;
       $year_leave = 0;
       $from = explode('-' ,$request->input('from') );
       $to = explode('-' ,$request->input('to') );
@@ -260,7 +265,9 @@ class LeaverequestController extends Controller
          'leave_type' => $leave_type ,'purpose'=> $request->input('purpose'),
          'date_to'=>$to[2],'month_to'=>$month_to, 'year_to'=> ($to[0]+543)
          ,'data' => $data ,'line1'=> $year_leave , 'line2'=>$leave[0]->leave_used, 'line3'=>( $year_leave -$leave[0]->leave_used)
-         ,'leave_day'=>$leave_days[0]->leave_days , 'accept_path' => $accept_path , 'reject_path' => $reject_path
+         ,'leave_day'=>$leave_days[0]->leave_days , 'accept_path' => $accept_path , 'reject_path' => $reject_path,
+         'leave_times'=>$leave_times, 'type'=>$request->input('type'),'endHour'=>$request->input('endHour'),
+         'startHour'=>$request->input('startHour')
         );
 
         $modmail = DB::select('SELECT email FROM users WHERE user_type="Admin"');
