@@ -29,7 +29,7 @@ class ProjectController extends Controller
       }
       else {
         $projects = Project::join('works', 'projects.prj_no', '=', 'works.prj_no')
-                      ->where('works.id', Auth::id
+                      ->where('works.id', Auth::id)
                       ->where('projects.prj_no', '<>', 'PS00000')
                       ->orderBy('projects.status','desc')
                       ->orderBy('projects.prj_no','desc')
