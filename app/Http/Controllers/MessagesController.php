@@ -615,7 +615,7 @@ class MessagesController extends Controller
 						$currentRow++;
 						$query1 = DB::select('select w.prj_no,p.prj_name
 							from (employees e join works w on e.id=w.id join timesheets t on e.id= t.id and t.prj_no=w.prj_no) join projects p on p.prj_no=w.prj_no
-							where year(date)= ? and e.id = ? and w.prj_no != "nonprj"
+							where year(date)= ? and e.id = ? and w.prj_no != "PS00000"
 							group by w.prj_no,p.prj_name',[$year,$query0_v->id]);
 						$test = 30;
 						foreach($query1 as $query1_v){
@@ -624,7 +624,7 @@ class MessagesController extends Controller
 									->SetCellValue('E'.$currentRow,$query1_v->prj_name);
 							$query2 = DB::select('select month(date) as month,sum(TIME_TO_SEC(cal_works(t.date,t.time_in,t.time_out)))/(8*60*60) as effort
 								from employees e join works w on e.id=w.id join timesheets t on e.id= t.id and t.prj_no=w.prj_no
-								where year(date) = ? and e.id = ? and w.prj_no = ? and w.prj_no != "nonprj"
+								where year(date) = ? and e.id = ? and w.prj_no = ? and w.prj_no != "PS00000"
 								group by e.id,w.prj_no,month(date)
 								order by e.id',[$year,$query0_v->id,$query1_v->prj_no]);
 							foreach($query2 as $query2_v){
@@ -637,7 +637,7 @@ class MessagesController extends Controller
 						$sheet->SetCellValue('D'.$currentRow,"Non project code");
 						$query3 = DB::select('SELECT loe.leave_date,loe.totalhours FROM leaverequest_of_employee loe
 												join employees e on loe.id=e.id where loe.id= ? and year(loe.leave_date)= ? and loe.status="Accepted"',[$query0_v->id,$year]);
-            $querynon = DB::select('SELECT *,cal_works(t.date,t.time_in,t.time_out) as cal_work FROM timesheets t WHERE t.prj_no=? and t.id =?',['nonprj',$query0_v->id]);
+            $querynon = DB::select('SELECT *,cal_works(t.date,t.time_in,t.time_out) as cal_work FROM timesheets t WHERE t.prj_no=? and t.id =?',['PS00000',$query0_v->id]);
 
 						for($i =1;$i<13;$i++){
 							$month[$i] = 0;
