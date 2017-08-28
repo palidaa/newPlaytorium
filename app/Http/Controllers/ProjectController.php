@@ -21,14 +21,16 @@ class ProjectController extends Controller
 
     public function fetch() {
       if(Auth::user()->isAdmin()) {
-        $projects = Project::orderBy('projects.status','desc')
+        $projects = Project::where('projects.prj_no', '<>', 'PS00000')
+                    ->orderBy('projects.status','desc')
                     ->orderBy('prj_no','desc')
                     ->get();
         return $projects;
       }
       else {
         $projects = Project::join('works', 'projects.prj_no', '=', 'works.prj_no')
-                      ->where('works.id', Auth::id())
+                      ->where('works.id', Auth::id
+                      ->where('projects.prj_no', '<>', 'PS00000')
                       ->orderBy('projects.status','desc')
                       ->orderBy('projects.prj_no','desc')
                       ->get();

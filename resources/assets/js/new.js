@@ -20,7 +20,7 @@ new Vue({
   mounted: function() {
     pace.start()
 
-    axios.get('/project/fetch')
+    axios.get('/project/fetchNew')
       .then(response => {
         this.projects = response.data
       })
