@@ -84,4 +84,16 @@ class ProjectController extends Controller
       return redirect()->back();
     }
 
+    public function changeStatus(Request $request) {
+      $project = Project::find($request->input('prj_no'));
+      if($project->status == "In Progress") {
+        $project->status = "Done";
+      }
+      else {
+        $project->status = "In Progress";
+      }
+      $project->save();
+      return redirect()->back();
+    }
+
 }

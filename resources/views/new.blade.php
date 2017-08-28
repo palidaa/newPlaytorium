@@ -34,6 +34,7 @@
               <select class="form-control" v-model="task_name">
                 <option>Dev</option>
                 <option>Testing</option>
+                <option>Design</option>
                 <option>Training</option>
                 <option>Meeting</option>
               </select>

@@ -61,6 +61,8 @@ Route::post('/project/store', 'ProjectController@store');
 // delete project
 Route::delete('/project/destroy', 'ProjectController@destroy');
 
+Route::post('/project/changeStatus', 'ProjectController@changeStatus');
+
 // insert Member
 Route::post('/project/insertMember', 'ProjectController@insertMember');
 

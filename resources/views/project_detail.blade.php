@@ -51,6 +51,21 @@
         <p style="font-size:18px;">{{ $project->description}}</p>
       </div>
     </div>
+    <div class="row">
+      <div class="col-md-3">
+        <p style="font-size:18px; font-weight:bold;">Status</p>
+      </div>
+      <div class="col-md-2">
+        <p style="font-size:18px;">{{ $project->status}}</p>
+      </div>
+      <div class="col-md-7">
+        <form action="/project/changeStatus" method="post">
+          {{ csrf_field() }}
+          <input type="hidden" name="prj_no" value="{{ $project->prj_no }}">
+          <button class="btn btn-default" type="submit">Change</button>
+        </form>
+      </div>
+    </div>
     <br>
     <hr>
 
