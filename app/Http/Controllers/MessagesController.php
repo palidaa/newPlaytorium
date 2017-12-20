@@ -207,8 +207,8 @@ class MessagesController extends Controller
                 $leave = DB::select('select date_format(l.leave_date, ? ) as leave_date,l.leave_type from leaverequest_of_employee l where id= ? and year(l.leave_date)= ? and month(l.leave_date)= ?',
                   ['%m/%d/%Y',$employee,$year,$month]);
 
-                $strStartDate = $month."/01/2017";
-                $strEndDate = date ("m/d/Y", strtotime("-1 day", strtotime(($month+1)."/01/2017")));
+                $strStartDate = $month."/01/".$year;
+                $strEndDate = date ("m/d/Y", strtotime("last day of this month", strtotime($strStartDate)));
 
                 $sheet ->fromArray(array(
                  array (null , null,'TIMESHEET'),
@@ -221,9 +221,6 @@ class MessagesController extends Controller
                 ) , NULL , 'A1',false,false );
 
            $sheet -> getStyle('F6') -> getAlignment() -> setWrapText(true);
-
-            $strStartDate = $month."/01/2017";
-            $strEndDate = date ("m/d/Y", strtotime("-1 day", strtotime(($month+1)."/01/2017")));
 
            $intWorkDay = 0;
            $intHoliday = 0;
