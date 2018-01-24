@@ -12,11 +12,11 @@
         <hr>
 
         <div class="progress">
-          <div class="progress-bar" role="progressbar" :style="{width: totalTimesheets/daysInMonth*100 + '%'}">
-            @{{ parseInt(totalTimesheets/daysInMonth*100) }}%
+          <div class="progress-bar" role="progressbar" :style="{width: totalTimesheets/workingDay*100 + '%'}">
+            @{{ parseInt(totalTimesheets/workingDay*100) }}%
           </div>
         </div>
-
+        @{{ workingDay }}
         <!-- date -->
         <label>Date</label>
         <div class="row">

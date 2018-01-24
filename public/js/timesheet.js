@@ -75,7 +75,7 @@ new Vue({
   el: '#timesheet',
   data: {
     date: moment().format('YYYY-MM'),
-    daysInMonth: moment().daysInMonth(),
+    workingDay: 1,
     totalTimesheets: 0,
     timesheets: [],
     selectedTimesheet: {
@@ -92,6 +92,7 @@ new Vue({
   mounted: function mounted() {
     var _this = this;
 
+    this.workingDay = this.getWorkingDayInMonth(this.date);
     this.fetch();
 
     // fetch project
@@ -110,7 +111,7 @@ new Vue({
       autoclose: true
     }).on('changeDate', function () {
       _this.date = $('#dateInput').val();
-      _this.daysInMonth = moment(_this.date).daysInMonth();
+      _this.workingDay = _this.getWorkingDayInMonth(_this.date);
       _this.fetch();
     });
   },
@@ -123,7 +124,6 @@ new Vue({
           date: this.date
         }
       }).then(function (response) {
-        console.log(response);
         _this2.timesheets = response.data;
         _this2.timesheets.forEach(function (timesheet) {
           timesheet.dayOfWeek = moment(timesheet.date).format('ddd');
@@ -161,7 +161,6 @@ new Vue({
                 prj_no: _this3.timesheets[key].prj_no
               }
             }).then(function (response) {
-              console.log(response);
               Vue.delete(_this3.timesheets, key);
               _this3.totalTimesheets = _this3.getTotalTimesheets();
             }).catch(function (error) {
@@ -183,7 +182,6 @@ new Vue({
         new_time_out: this.selectedTimesheet.time_out,
         new_description: this.selectedTimesheet.description
       }).then(function (response) {
-        console.log(response);
         _this4.timesheets[_this4.selectedKey].prj_no = _this4.selectedTimesheet.prj_no;
         _this4.timesheets[_this4.selectedKey].task_name = _this4.selectedTimesheet.task_name;
         _this4.timesheets[_this4.selectedKey].time_in = _this4.selectedTimesheet.time_in;
@@ -216,6 +214,17 @@ new Vue({
         return true;
       }
       return false;
+    },
+    getWorkingDayInMonth: function getWorkingDayInMonth(date) {
+      startDate = moment(date).format('YYYY-MM-01');
+      endDate = moment(date).format('YYYY-MM-') + moment(date).daysInMonth();
+      workingDay = 0;
+      for (var m = moment(startDate); m.diff(endDate, 'days') <= 0; m.add(1, 'days')) {
+        if (m.isoWeekday() != 6 && m.isoWeekday() != 7) {
+          workingDay++;
+        }
+      }
+      return workingDay;
     }
   }
 });

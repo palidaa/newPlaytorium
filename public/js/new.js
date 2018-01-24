@@ -96,7 +96,7 @@ new Vue({
 
     pace.start();
 
-    axios.get('/project/fetchNew').then(function (response) {
+    axios.get('/project/fetchOwnProject').then(function (response) {
       _this.projects = response.data;
     }).catch(function (error) {
       console.log(error);

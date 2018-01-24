@@ -53,7 +53,8 @@ Route::get('/project', 'ProjectController@index')->name('project');
 // fetch project
 Route::get('/project/fetch', 'ProjectController@fetch');
 
-Route::get('/project/fetchNew', 'ProjectController@fetchNew');
+// fetch only own project in new page
+Route::get('/project/fetchOwnProject', 'ProjectController@fetchOwnProject');
 
 // insert project
 Route::post('/project/store', 'ProjectController@store');

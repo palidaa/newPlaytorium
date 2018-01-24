@@ -2,7 +2,7 @@ new Vue({
   el: '#timesheet',
   data: {
     date: moment().format('YYYY-MM'),
-    daysInMonth: moment().daysInMonth(),
+    workingDay: 1,
     totalTimesheets: 0,
     timesheets: [],
     selectedTimesheet: {
@@ -17,6 +17,7 @@ new Vue({
     projects: []
   },
   mounted: function() {
+    this.workingDay = this.getWorkingDayInMonth(this.date);
     this.fetch();
 
     // fetch project
@@ -37,7 +38,7 @@ new Vue({
       autoclose: true
     }).on('changeDate', () => {
       this.date = $('#dateInput').val();
-      this.daysInMonth = moment(this.date).daysInMonth();
+      this.workingDay = this.getWorkingDayInMonth(this.date);
       this.fetch();
     });
   },
@@ -49,7 +50,6 @@ new Vue({
         }
       })
         .then(response => {
-          console.log(response);
           this.timesheets = response.data;
           this.timesheets.forEach(timesheet => {
             timesheet.dayOfWeek = moment(timesheet.date).format('ddd');
@@ -87,7 +87,6 @@ new Vue({
               }
             })
               .then(response => {
-                console.log(response);
                 Vue.delete(this.timesheets, key);
                 this.totalTimesheets = this.getTotalTimesheets();
               })
@@ -109,7 +108,6 @@ new Vue({
         new_description: this.selectedTimesheet.description
       })
         .then(response => {
-          console.log(response);
           this.timesheets[this.selectedKey].prj_no = this.selectedTimesheet.prj_no;
           this.timesheets[this.selectedKey].task_name = this.selectedTimesheet.task_name;
           this.timesheets[this.selectedKey].time_in = this.selectedTimesheet.time_in;
@@ -134,6 +132,17 @@ new Vue({
         return true;
       }
       return false;
+    },
+    getWorkingDayInMonth: function(date) {
+      startDate = moment(date).format('YYYY-MM-01');
+      endDate = moment(date).format('YYYY-MM-') + moment(date).daysInMonth();
+      workingDay = 0;
+      for (let m = moment(startDate); m.diff(endDate, 'days') <= 0; m.add(1, 'days')) {
+        if(m.isoWeekday() != 6 && m.isoWeekday() != 7) {
+          workingDay++;
+        }
+      }
+      return workingDay;
     }
   }
 });
