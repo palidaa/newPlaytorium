@@ -55,7 +55,7 @@ class ProjectController extends Controller
 
     public function insertMember(Request $request) {
         $work = new Work;
-        $work->id = Auth::id();
+        $work->id = $request->input('id');
         $work->prj_no = $request->input('prj_no');
         $work->position = $request->input('position');
         $work->save();

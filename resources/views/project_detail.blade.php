@@ -16,7 +16,7 @@
         <p style="font-size:18px; font-weight:bold;">Project Number</p>
       </div>
       <div class="col-md-9">
-        <p style="font-size:18px;">{{ $project->prj_no}}</p>
+        <p style="font-size:18px;">{{ $project->prj_no }}</p>
       </div>
     </div>
     <div class="row">
@@ -24,7 +24,7 @@
         <p style="font-size:18px; font-weight:bold;">Project Name</p>
       </div>
       <div class="col-md-9">
-        <p style="font-size:18px;">{{ $project->prj_name}}</p>
+        <p style="font-size:18px;">{{ $project->prj_name }}</p>
       </div>
     </div>
     <div class="row">
@@ -32,7 +32,7 @@
         <p style="font-size:18px; font-weight:bold;">Customer </p>
       </div>
       <div class="col-md-9">
-        <p style="font-size:18px;">{{ $project->customer}}</p>
+        <p style="font-size:18px;">{{ $project->customer }}</p>
       </div>
     </div>
     <div class="row">
@@ -40,7 +40,7 @@
         <p style="font-size:18px; font-weight:bold;">Quotation number</p>
       </div>
       <div class="col-md-9">
-        <p style="font-size:18px;">{{ $project->quo_no}}</p>
+        <p style="font-size:18px;">{{ $project->quo_no }}</p>
       </div>
     </div>
     <div class="row">
@@ -48,7 +48,7 @@
         <p style="font-size:18px; font-weight:bold;">Description</p>
       </div>
       <div class="col-md-9">
-        <p style="font-size:18px;">{{ $project->description}}</p>
+        <p style="font-size:18px;">{{ $project->description }}</p>
       </div>
     </div>
     <div class="row">
@@ -56,7 +56,7 @@
         <p style="font-size:18px; font-weight:bold;">Status</p>
       </div>
       <div class="col-md-2">
-        <p style="font-size:18px;">{{ $project->status}}</p>
+        <p style="font-size:18px;">{{ $project->status }}</p>
       </div>
       <div class="col-md-7">
         <form action="/project/changeStatus" method="post">
@@ -98,7 +98,7 @@
                   <input type="hidden" name="prj_no" value="{{ $project->prj_no}}">
                 <div class="row">
                   <div class="col-md-4">
-                    <label for="">Emp.No.</label>
+                    <label for="">Employee ID</label>
                     <input type="text" class="form-control" name="id" value="">
                   </div>
                   <div class="col-md-4 col-md-offset-1">
@@ -126,7 +126,7 @@
          <th>Name</th>
          <th>Position</th>
          <th>Role</th>
-         @if(Auth::user()->user_type=="Admin")
+         @if(Auth::user()->user_type == "Admin")
           <th></th>
          @endif
        </tr>
@@ -142,7 +142,7 @@
              {{ csrf_field() }}
            <input type="hidden" name="id" value="{{$member->id}}">
            <input type="hidden" name="prj_no" value="{{ $project->prj_no}}">
-            <td><button type="submit" class="btn btn-primary" >x</a></td>
+            <td><button type="submit" class="btn btn-primary" >Delete</a></td>
           </form>
          @endif
        </tr>
