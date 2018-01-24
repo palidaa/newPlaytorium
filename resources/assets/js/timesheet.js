@@ -51,6 +51,9 @@ new Vue({
         .then(response => {
           console.log(response);
           this.timesheets = response.data;
+          this.timesheets.forEach(timesheet => {
+            timesheet.dayOfWeek = moment(timesheet.date).format('ddd');
+          });
           this.totalTimesheets = this.getTotalTimesheets();
         })
         .catch(error => {
@@ -125,6 +128,12 @@ new Vue({
         }
       }
       return count;
+    },
+    isWeekend: function(timesheet) {
+      if(timesheet.dayOfWeek == 'Sat' || timesheet.dayOfWeek == 'Sun') {
+        return true;
+      }
+      return false;
     }
   }
 });

@@ -11,6 +11,7 @@ new Vue({
     endDate: now,
     tasks: [{
       date: now,
+      dayOfWeek: moment(now).format('ddd'),
       time_in: '09:00',
       time_out: '18:00',
       description: ''
@@ -53,6 +54,7 @@ new Vue({
       for (var m = startDate; m.diff(endDate, 'days') <= 0; m.add(1, 'days')) {
         var task = {
           date: moment(m).format('YYYY-MM-DD'),
+          dayOfWeek: moment(m).format('ddd'),
           time_in: '09:00',
           time_out: '18:00',
           description: ''
@@ -89,6 +91,12 @@ new Vue({
         .catch(error => {
           console.log(error)
         })
+    },
+    isWeekend: function(task) {
+      if(task.dayOfWeek == 'Sat' || task.dayOfWeek == 'Sun') {
+        return true;
+      }
+      return false;
     }
   }
 })

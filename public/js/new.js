@@ -63,12 +63,12 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 154);
+/******/ 	return __webpack_require__(__webpack_require__.s = 167);
 /******/ })
 /************************************************************************/
 /******/ ({
 
-/***/ 121:
+/***/ 133:
 /***/ (function(module, exports) {
 
 var now = moment().format('YYYY-MM-DD');
@@ -84,6 +84,7 @@ new Vue({
     endDate: now,
     tasks: [{
       date: now,
+      dayOfWeek: moment(now).format('ddd'),
       time_in: '09:00',
       time_out: '18:00',
       description: ''
@@ -99,10 +100,10 @@ new Vue({
       _this.projects = response.data;
     }).catch(function (error) {
       console.log(error);
-    }
+    });
 
     //setup datepicker
-    );$('.input-group.date').datepicker({
+    $('.input-group.date').datepicker({
       maxViewMode: 2,
       format: 'yyyy-mm-dd',
       orientation: 'bottom auto',
@@ -126,6 +127,7 @@ new Vue({
       for (var m = startDate; m.diff(endDate, 'days') <= 0; m.add(1, 'days')) {
         var task = {
           date: moment(m).format('YYYY-MM-DD'),
+          dayOfWeek: moment(m).format('ddd'),
           time_in: '09:00',
           time_out: '18:00',
           description: ''
@@ -164,16 +166,22 @@ new Vue({
       })).catch(function (error) {
         console.log(error);
       });
+    },
+    isWeekend: function isWeekend(task) {
+      if (task.dayOfWeek == 'Sat' || task.dayOfWeek == 'Sun') {
+        return true;
+      }
+      return false;
     }
   }
 });
 
 /***/ }),
 
-/***/ 154:
+/***/ 167:
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(121);
+module.exports = __webpack_require__(133);
 
 
 /***/ })

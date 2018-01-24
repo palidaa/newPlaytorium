@@ -63,12 +63,12 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 156);
+/******/ 	return __webpack_require__(__webpack_require__.s = 169);
 /******/ })
 /************************************************************************/
 /******/ ({
 
-/***/ 123:
+/***/ 135:
 /***/ (function(module, exports) {
 
 new Vue({
@@ -125,6 +125,9 @@ new Vue({
       }).then(function (response) {
         console.log(response);
         _this2.timesheets = response.data;
+        _this2.timesheets.forEach(function (timesheet) {
+          timesheet.dayOfWeek = moment(timesheet.date).format('ddd');
+        });
         _this2.totalTimesheets = _this2.getTotalTimesheets();
       }).catch(function (error) {
         console.log(error);
@@ -207,16 +210,22 @@ new Vue({
         _loop(d);
       }
       return count;
+    },
+    isWeekend: function isWeekend(timesheet) {
+      if (timesheet.dayOfWeek == 'Sat' || timesheet.dayOfWeek == 'Sun') {
+        return true;
+      }
+      return false;
     }
   }
 });
 
 /***/ }),
 
-/***/ 156:
+/***/ 169:
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(123);
+module.exports = __webpack_require__(135);
 
 
 /***/ })
