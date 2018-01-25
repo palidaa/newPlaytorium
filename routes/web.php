@@ -64,6 +64,7 @@ Route::delete('/project/destroy', 'ProjectController@destroy');
 
 Route::post('/project/changeStatus', 'ProjectController@changeStatus');
 
+
 // insert Member
 Route::post('/project/insertMember', 'ProjectController@insertMember');
 
@@ -82,6 +83,9 @@ Route::get('/export2' , 'MessagesController@export2');
 Route::get('/sendbasicmail','MailController@html_email');
 
 Route::get('/leave_request_history', 'LeaverequestController@index')->name('leave_request_history');
+
+// delete leaverequest
+Route::delete('/leave_request_history/destroy', 'LeaverequestController@destroy');
 
 Route::post('/timesheet/addLeave', 'LeaverequestController@addLeave');
 

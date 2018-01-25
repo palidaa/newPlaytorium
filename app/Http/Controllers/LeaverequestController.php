@@ -100,6 +100,10 @@ class LeaverequestController extends Controller
         return view('already_mail');
   }
 
+  public function destroy(Request $request) {
+    DB::delete('delete from leaverequest_of_employee where id=? AND leave_date=?', [Auth::id(),$request->input('leave_date')]);
+  }
+
   public function addLeave(Request $request)
   {
 

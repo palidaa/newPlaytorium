@@ -122,6 +122,21 @@ new Vue({
       }).catch(function (error) {
         console.log(error);
       });
+    },
+    destroy(index) {
+      axios.delete('/leave_request_history/destroy', {
+        params: {
+          id: this.leaveHistorys[index].id,
+          leave_date: this.leaveHistorys[index].leave_date
+        }
+      })
+        .then(response => {
+          console.log(response)
+          this.leaveHistorys.splice(index, 1)
+        })
+        .catch(error => {
+          console.log(error)
+        })
     }
   }
 });
