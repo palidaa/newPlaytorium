@@ -66,7 +66,7 @@
         <hr>
 
         <div v-for="(task, index) in tasks">
-          <div class="panel panel-default" :class="{ 'panel-danger': isWeekend(task) }">
+          <div class="panel panel-default" :class="{ 'panel-warning': isWeekend(task) }">
             <div class="panel-heading">
               @{{ task.date }}, @{{ task.dayOfWeek }}
               <span class="close" @click="removeTask(task, index)">&times;</span>

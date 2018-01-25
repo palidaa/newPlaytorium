@@ -34,7 +34,7 @@
         </div>
 
         <!-- timesheet -->
-        <div class="panel panel-default" :class="{ 'panel-danger': isWeekend(timesheet) }" v-for="(timesheet, key) in timesheets">
+        <div class="panel panel-default" :class="{ 'panel-warning': isWeekend(timesheet) }" v-for="(timesheet, key) in timesheets">
           <div class="panel-heading">@{{ timesheet.prj_no }} - @{{ timesheet.prj_name }}
             <div class="btn-group pull-right">
               <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" style="-webkit-box-shadow: none;">
