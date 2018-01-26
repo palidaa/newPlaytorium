@@ -57,7 +57,11 @@ return [
 
     'from' => [
         'address' => env('MAIL_FROM_ADDRESS'),
+<<<<<<< HEAD
         'name' => env('MAIL_FROM_NAME'),
+=======
+        'name' => env('MAIL_FROM_NAME', 'Example'),
+>>>>>>> a570d50ff63ec93119801bcee6a9b9a9ada830dd
     ],
 
     /*
@@ -71,7 +75,7 @@ return [
     |
     */
 
-    'encryption' => env('MAIL_ENCRYPTION', 'tls'),
+    'encryption' => env('MAIL_ENCRYPTION'),
 
     /*
     |--------------------------------------------------------------------------

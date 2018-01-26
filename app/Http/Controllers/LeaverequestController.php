@@ -24,16 +24,16 @@ class LeaverequestController extends Controller
     $user = DB::select('SELECT e.id,e.type,e.department,e.carry_annual_leave,u.email FROM users u join employees e on e.email=u.email where u.id= ?' , [Auth::id()]  );
 
     $leave_annual = DB::select('select SUM(l.totalhours)*0.125 as leave_annual_used from leaverequest_of_employee l
-    where l.id= ? and leave_type= ? and year(l.leave_date)= ? ' ,
-    [$user[0]->id,'Annual Leave', date("Y") ] );
+    where l.id= ? and leave_type= ? and year(l.leave_date)= ? and l.status !=?' ,
+    [$user[0]->id,'Annual Leave', date("Y"), 'Rejected' ] );
 
     $leave_personal = DB::select('select SUM(l.totalhours)*0.125 as leave_personal_used from leaverequest_of_employee l
-    where l.id= ? and leave_type= ? and year(l.leave_date)= ? ' ,
-    [$user[0]->id,'Personal Leave', date("Y") ] );
+    where l.id= ? and leave_type= ? and year(l.leave_date)= ? and l.status !=?' ,
+    [$user[0]->id,'Personal Leave', date("Y"), 'Rejected' ] );
 
     $leave_sick =DB::select('select SUM(l.totalhours)*0.125 as leave_sick_used from leaverequest_of_employee l
-    where l.id= ? and leave_type= ? and year(l.leave_date)= ? ' ,
-    [$user[0]->id,'Sick Leave', date("Y") ] );
+    where l.id= ? and leave_type= ? and year(l.leave_date)= ? and l.status !=?' ,
+    [$user[0]->id,'Sick Leave', date("Y"), 'Rejected' ] );
 
 
     $remain_leave_annual = 0;
@@ -82,7 +82,10 @@ class LeaverequestController extends Controller
   public function accept($code)
   {
       $check_status = DB::select( 'select l.status from leaverequest_of_employee l WHERE l.code = ?' , [$code] );
-      if($check_status[0]->status == 'Pending'){
+      if ($check_status == NULL){
+          return view('cancelled_mail');
+      }
+      else if($check_status[0]->status == 'Pending'){
         DB::update( 'UPDATE leaverequest_of_employee l SET l.status=? WHERE l.code = ? and l.status = ? ' , ['Accepted',$code,'Pending'] );
         return view('accepted_mail');
       }
@@ -92,12 +95,19 @@ class LeaverequestController extends Controller
   public function reject($code)
   {
       $check_status = DB::select( 'select l.status from leaverequest_of_employee l WHERE l.code = ?' , [$code] );
-      if($check_status[0]->status == 'Pending'){
+      if ($check_status == NULL){
+          return view('cancelled_mail');
+      }
+      else if($check_status[0]->status == 'Pending'){
         DB::update( 'UPDATE leaverequest_of_employee l SET l.status=? WHERE l.code = ? and l.status = ? ' , ['Rejected',$code,'Pending'] );
         return view('denied_mail');
       }
       else
         return view('already_mail');
+  }
+
+  public function destroy(Request $request) {
+    DB::delete('delete from leaverequest_of_employee where id=? AND leave_from=? AND leave_to=?', [Auth::id(),$request->input('leave_from'),$request->input('leave_to')]);
   }
 
   public function addLeave(Request $request)
@@ -123,8 +133,8 @@ class LeaverequestController extends Controller
 
       $data = DB::select('SELECT * FROM employees WHERE id = ? ', [Auth::id()] );
       $user = DB::select('SELECT e.id,e.type,e.department,e.carry_annual_leave,u.email FROM users u join employees e on e.email=u.email where u.id= ?' , [Auth::id()]  );
-      $leave = DB::select('select SUM(l.totalhours)*0.125 as leave_used from leaverequest_of_employee l where l.id= ? and leave_type= ? and year(l.leave_date)= year(?)' , [$user[0]->id,$request->input('leave_type'), $request->input('to') ] );
-      $leave_days= DB::select('select cal_days(?,?) as leave_days ' , [$request->input('from'),$request->input('to')]);
+      $leave = DB::select('select SUM(l.totalhours)*0.125 as leave_used from leaverequest_of_employee l where l.id= ? and leave_type= ? and year(l.leave_date)= year(?) and l.status !=?' , [$user[0]->id,$request->input('leave_type'), $request->input('to'), 'Rejected' ] );
+      $leave_days= DB::select('select cal_days(?,?) as leave_days ' , [$request->input('from'),$request->input('to')]  );
       $subtractor = 0;
       if ($this->includeBreakTime($request->input('startHour'), $request->input('endHour'))) {
         $subtractor = 1;
@@ -133,8 +143,8 @@ class LeaverequestController extends Controller
       $year_leave = 0;
       $from = explode('-' ,$request->input('from') );
       $to = explode('-' ,$request->input('to') );
-      $accept_path = 'http://pass.playtorium.co.th/verify/accept/'.$code ;
-      $reject_path = 'http://pass.playtorium.co.th/verify/reject/'.$code ;
+      $accept_path = 'http://localhost:8000/verify/accept/'.$code ;
+      $reject_path = 'http://localhost:8000/verify/reject/'.$code ;
       $month_from = "";
       $month_to = "";
       $leave_type = "";

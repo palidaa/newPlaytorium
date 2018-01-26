@@ -38,6 +38,7 @@
                <th>To</th>
                <th>Purpose</th>
                <th>Status</th>
+               <th></th>
              </tr>
 
              <!-- @for ($i = 0;$i<sizeof($leave_request_history);$i++)
@@ -51,12 +52,14 @@
               </tr>
              @endfor -->
 
-              <tr v-for="leaveHistory in leaveHistorys">
+              <tr v-for="(leaveHistory, index) in leaveHistorys">
                 <td>@{{ leaveHistory.leave_type }}</td>
                 <td>@{{ leaveHistory.leave_from }}</td>
                 <td>@{{ leaveHistory.leave_to }}</td>
                 <td>@{{ leaveHistory.purpose }}</td>
                 <td style="color:#C4B20F;">@{{ leaveHistory.status }}</td>
+                <td v-if="leaveHistory.status=='Pending'"><a href="#" @click.prevent.stop="destroy(index)">Cancel</td>
+                <td v-else><a href =""></td>
               </tr>
 
           </table>
