@@ -52,7 +52,7 @@
           </div>
       </div>
 
-      <form  action="/timesheet/addLeave" method="post">
+      <form action="/timesheet/addLeave" method="post">
       {{ csrf_field() }}
 
       <div class="row">

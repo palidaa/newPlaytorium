@@ -11,6 +11,8 @@
       <h2>Report</h2>
       <hr>
 
+		<a href="/report/trueexport">Download</a>
+
       <!-- Detail -->
 	  <form action="/report/export" method="post">
       {{ csrf_field() }}
