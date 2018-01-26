@@ -101,7 +101,7 @@ class LeaverequestController extends Controller
   }
 
   public function destroy(Request $request) {
-    DB::delete('delete from leaverequest_of_employee where id=? AND leave_date=?', [Auth::id(),$request->input('leave_date')]);
+    DB::delete('delete from leaverequest_of_employee where id=? AND leave_from=? AND leave_to=?', [Auth::id(),$request->input('leave_from'),$request->input('leave_to')]);
   }
 
   public function addLeave(Request $request)

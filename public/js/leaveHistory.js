@@ -127,7 +127,8 @@ new Vue({
       axios.delete('/leave_request_history/destroy', {
         params: {
           id: this.leaveHistorys[index].id,
-          leave_date: this.leaveHistorys[index].leave_date
+          leave_from: this.leaveHistorys[index].leave_from,
+          leave_to: this.leaveHistorys[index].leave_to
         }
       })
         .then(response => {
