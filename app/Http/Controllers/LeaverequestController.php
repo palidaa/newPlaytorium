@@ -74,7 +74,7 @@ class LeaverequestController extends Controller
 
   public function getYear(Request $request)
   {
-    $leave_request_historys = DB::select('SELECT year(leave_date) as year FROM leaverequest_of_employee WHERE id = ? and leave_type like ? and leave_date=leave_from group by year', [Auth::id(),"%".$request->input('leave_type')."%"]);
+    $leave_request_historys = DB::select('SELECT DISTINCT year(leave_date) as year FROM leaverequest_of_employee WHERE id = ? ', [Auth::id()]);
 
       return $leave_request_historys;
   }
