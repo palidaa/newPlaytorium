@@ -45,7 +45,9 @@
              <td>@{{ project.customer }}</td>
              <td>@{{ project.quo_no }}</td>
              <td style="color: #C4B20F;">@{{ project.status }}</td>
-             <td><a href="#" @click.prevent.stop="destroy(index)">Delete</a></td>
+             @if(Auth::user()->isAdmin())
+              <td><a href="#" @click.prevent.stop="destroy(index)">Delete</a></td>
+             @endif
            </tr>
         </table>
 
