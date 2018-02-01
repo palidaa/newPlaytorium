@@ -12,6 +12,7 @@ use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use App\Employee;
 use App\Timesheet;
 use App\Holiday;
+use App\Project;
 use DB;
 
 class ReportController extends Controller
@@ -48,21 +49,25 @@ class ReportController extends Controller
 
   public function export(Request $request)
   {
-	  	//Generate a timesheet template of the month
+	  	//Get number of days in month
 		$daysInMonth = cal_days_in_month(CAL_GREGORIAN, $request->input('month'), $request->input('year'));
+		//Get holidays
 		$holidays = Holiday::selectRaw('DATE_FORMAT(holiday, "%e") AS date, date_name')
 							->whereMonth('holiday', $request->input('month'))
 							->get();
+		//Get leaves days
+		$sick_leave = $this->get_total_leave_days('Sick Leave', $request->input('year'), $request->input('month'));
+		$annual_leave = $this->get_total_leave_days('Annual Leave', $request->input('year'), $request->input('month'));
+		$personal_leave = $this->get_total_leave_days('Personal Leave', $request->input('year'), $request->input('month'));
 		$timesheets = [];
+		//Generate a timesheet template of the month
 		for($date = 1; $date <= $daysInMonth; $date++) {
 			$dayOfWeek = date('w', strtotime($request->input('year') . '-' . $request->input('month') . '-' . $date));
 			$timesheet = (object)[
 				'date' => $date . '/' . $request->input('month') . '/' . substr($request->input('year'), 2, 2),
 				'task_name' => '',
 				'description' => '',
-				'time_in' => '9:00',
-				'time_out' => '18:00',
-				'is_holiday' => false			
+				'is_holiday' => false
 			];
 			if($dayOfWeek == 0 || $dayOfWeek == 6) {
 				$timesheet->is_holiday = true;
@@ -87,33 +92,62 @@ class ReportController extends Controller
 		$employee = Employee::where('id', Auth::id())->get();
 		$sheet->setCellValue('B3', $employee[0]->role);
 		$sheet->setCellValue('C4', 'MFEC');
-		//$timesheets = Timesheet::where('id', Auth::id())
-		//						->whereYear('date', $request->input('year'))
-		//						->whereMonth('date', $request->input('monnth'))
-		//						->where('prj_no', $request->innput('project'))
-		//						->orderBy('date', 'asc')
-		//						->get();
-		//$sheet->setCellValue('A8', $timesheets[0]->prj_no);
 		foreach($timesheets as $index => $timesheet) {
 			$row = $index + 8;
 			$spreadsheet->getActiveSheet()
     					->setCellValue('A' . $row, $timesheet->date)
 						->setCellValue('B' . $row, $timesheet->task_name)
 						->setCellValue('C' . $row, $timesheet->description)
-						->setCellValue('D' . $row, $timesheet->time_in)
-						->setCellValue('E' . $row, $timesheet->time_out);
+						->setCellValue('L' . $row, $timesheet->is_holiday);
+			if($timesheet->is_holiday) {
+				$spreadsheet->getActiveSheet()
+							->getStyle('A' . $row . ':' . 'J' . $row)->getFill()
+							->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
+							->getStartColor()->setARGB('B8CCE4');
+			}
+		}
+		//Get timesheets from database
+		$db_timesheets = Timesheet::selectRaw('*, DAY(date) - 1 AS idx')
+								->where('id', Auth::id())
+								->whereYear('date', $request->input('year'))
+								->whereMonth('date', $request->input('month'))
+								->where('prj_no', $request->input('project'))
+								->orderBy('date', 'asc')
+								->get();
+		//Set excel header and footer cell
+		$project = Project::where('prj_no', $db_timesheets[0]->prj_no)->get();
+		$spreadsheet->getActiveSheet()
+					->setCellValue('C4', $project[0]->customer)
+					->setCellValue('E3', 1 . ' ' . date('M', strtotime($db_timesheets[0]->date)) . ' - ' . $daysInMonth . ' ' . date('M', strtotime($db_timesheets[0]->date)) . ' ' . $request->input('year'))
+					->setCellValue('H2', Date::PHPToExcel(strtotime('19:00:00')))
+					->setCellValue('D44', $sick_leave)
+					->setCellValue('D45', $annual_leave)
+					->setCellValue('D46', $personal_leave)
+					->setCellValue('D47', count($holidays));
+		//Replace timesheets to excel
+		foreach($db_timesheets as $timesheet) {
+			$row = $timesheet->idx + 8;
+			$spreadsheet->getActiveSheet()
+						->setCellValue('B' . $row, $timesheet->task_name)
+						->setCellValue('C' . $row, $timesheet->description)
+						->setCellValue('D' . $row, Date::PHPToExcel(strtotime($timesheet->time_in)))
+						->setCellValue('E' . $row, Date::PHPToExcel(strtotime($timesheet->time_out)));
 		}
 		//Export
 		$writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
-    	header('Content-Type: application/vnd.ms-excel');
-    	header('Content-Disposition: attachment; filename="Timesheet.xlsx"');
-    	$writer->save("php://output");
+		header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+		header('Content-Disposition: attachment; filename="Timesheet.xlsx"');
+    	$writer->save('php://output');
   }
-
   
-  #Convert date from YYYY-MM-DD to DD/MM/YY
-  private function convertDateFormat($date)
+  private function get_total_leave_days($type, $year, $month)
   {
-		return substr($date, 8, 2) . '/' . substr($date, 5, 2) . '/' . substr($date, 2, 2);
+		$days = DB::table('leaverequest_of_employee')
+				->whereYear('leave_date', $year)
+				->whereMonth('leave_date', $month)
+				->where('leave_type', $type)
+				->where('status', 'Accepted')
+				->count();
+	  	return $days;
   }
 }
