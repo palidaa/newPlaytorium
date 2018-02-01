@@ -18,7 +18,12 @@ class HolidayController extends Controller
     }
 
     public function fetch(Request $request) {
-      $holiday = Holiday::whereMonth('holiday', $request->input('month'))->get();
+      if($request->input('month') != NULL) {
+        $holiday = Holiday::whereMonth('holiday', $request->input('month'))->get();
+      }
+      else {
+        $holiday = Holiday::selectRaw('DATE_FORMAT(holiday, "%m-%d") AS date, date_name')->get();
+      }
       return $holiday;
     }
 

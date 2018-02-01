@@ -89,6 +89,7 @@ new Vue({
       time_out: '18:00',
       description: ''
     }],
+    holidays: [],
     errors: false
   },
   mounted: function mounted() {
@@ -98,6 +99,13 @@ new Vue({
 
     axios.get('/project/fetchOwnProject').then(function (response) {
       _this.projects = response.data;
+    }).catch(function (error) {
+      console.log(error);
+    });
+
+    // fetch holidays
+    axios.get('/holiday/fetch').then(function (response) {
+      _this.holidays = response.data;
     }).catch(function (error) {
       console.log(error);
     });
@@ -130,8 +138,19 @@ new Vue({
           dayOfWeek: moment(m).format('ddd'),
           time_in: '09:00',
           time_out: '18:00',
-          description: ''
+          description: '',
+          isHoliday: false
         };
+        for (var i = 0; i < this.holidays.length; i++) {
+          if (task.date.substr(5, 5) == this.holidays[i].date) {
+            task.isHoliday = true;
+            task.holidayName = '(' + this.holidays[i].date_name + ')';
+            break;
+          }
+        }
+        if (task.dayOfWeek == 'Sat' || task.dayOfWeek == 'Sun') {
+          task.isHoliday = true;
+        }
         this.tasks.push(task);
       }
     },
@@ -166,12 +185,6 @@ new Vue({
       })).catch(function (error) {
         console.log(error);
       });
-    },
-    isWeekend: function isWeekend(task) {
-      if (task.dayOfWeek == 'Sat' || task.dayOfWeek == 'Sun') {
-        return true;
-      }
-      return false;
     }
   }
 });

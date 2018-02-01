@@ -14,7 +14,7 @@
 		<a href="/report/trueexport">Download</a>
 
       <!-- Detail -->
-	  <form action="/report/export" method="post">
+	  <form action="/report/trueexport" method="post">
       {{ csrf_field() }}
 		  <div class="container-fluid">
 			<div class="row">

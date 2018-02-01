@@ -14,13 +14,21 @@ new Vue({
       description: ''
     },
     selectedKey: 0,
-    projects: []
+    projects: [],
+    holidays: []
   },
   mounted: function() {
-    this.workingDay = this.getWorkingDayInMonth(this.date);
-    this.fetch();
+    // fetch holidays
+    axios.get('/holiday/fetch')
+      .then(response => {
+        this.holidays = response.data;
+        this.fetch();
+      })
+      .catch(error => {
+        console.log(error)
+      });
 
-    // fetch project
+    // fetch projects
     axios.get('/project/fetch')
       .then(response => {
         this.projects = response.data;
@@ -28,6 +36,8 @@ new Vue({
       .catch(error => {
         console.log(error);
       });
+
+    this.workingDay = this.getWorkingDayInMonth(this.date);
 
     // datepicker setup
     $('.input-group.date').datepicker({
@@ -52,7 +62,18 @@ new Vue({
         .then(response => {
           this.timesheets = response.data;
           this.timesheets.forEach(timesheet => {
+            timesheet.isHoliday = false;
             timesheet.dayOfWeek = moment(timesheet.date).format('ddd');
+            for(let i = 0; i < this.holidays.length; i++) {
+              if(timesheet.date.substr(5, 5) == this.holidays[i].date) {
+                timesheet.isHoliday = true;
+                timesheet.holidayName = '(' + this.holidays[i].date_name + ')';
+                break;
+              }
+            }
+            if(timesheet.dayOfWeek == 'Sat' || timesheet.dayOfWeek == 'Sun') {
+              timesheet.isHoliday = true;
+            }
           });
           this.totalTimesheets = this.getTotalTimesheets();
         })
@@ -127,19 +148,16 @@ new Vue({
       }
       return count;
     },
-    isWeekend: function(timesheet) {
-      if(timesheet.dayOfWeek == 'Sat' || timesheet.dayOfWeek == 'Sun') {
-        return true;
-      }
-      return false;
-    },
     getWorkingDayInMonth: function(date) {
       startDate = moment(date).format('YYYY-MM-01');
       endDate = moment(date).format('YYYY-MM-') + moment(date).daysInMonth();
-      workingDay = 0;
+      workingDay = moment(date).daysInMonth();
       for (let m = moment(startDate); m.diff(endDate, 'days') <= 0; m.add(1, 'days')) {
-        if(m.isoWeekday() != 6 && m.isoWeekday() != 7) {
-          workingDay++;
+        for(let i = 0; i < this.holidays.length; i++) {
+          if(moment(m).format('MM-DD') == this.holidays[i].date || m.isoWeekday() == 6 || m.isoWeekday() == 7) {
+            workingDay--;
+            break;
+          }
         }
       }
       return workingDay;

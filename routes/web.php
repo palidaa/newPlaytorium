@@ -80,7 +80,7 @@ Route::post('/report/export' , 'MessagesController@export');
 
 Route::get('/export2' , 'MessagesController@export2');
 
-Route::get('/report/trueexport', 'ReportController@export');
+Route::post('/report/trueexport', 'ReportController@export');
 
 Route::get('/sendbasicmail','MailController@html_email');
 

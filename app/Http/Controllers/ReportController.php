@@ -11,6 +11,7 @@ use PhpOffice\PhpSpreadsheet\Shared\Date;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use App\Employee;
 use App\Timesheet;
+use App\Holiday;
 use DB;
 
 class ReportController extends Controller
@@ -47,8 +48,38 @@ class ReportController extends Controller
 
   public function export(Request $request)
   {
-	  	//Load template file from the server storage
-		$spreadsheet = IOFactory::load('storage/Playtorium_Timesheet_V2.xlsx');
+	  	//Generate a timesheet template of the month
+		$daysInMonth = cal_days_in_month(CAL_GREGORIAN, $request->input('month'), $request->input('year'));
+		$holidays = Holiday::selectRaw('DATE_FORMAT(holiday, "%e") AS date, date_name')
+							->whereMonth('holiday', $request->input('month'))
+							->get();
+		$timesheets = [];
+		for($date = 1; $date <= $daysInMonth; $date++) {
+			$dayOfWeek = date('w', strtotime($request->input('year') . '-' . $request->input('month') . '-' . $date));
+			$timesheet = (object)[
+				'date' => $date . '/' . $request->input('month') . '/' . substr($request->input('year'), 2, 2),
+				'task_name' => '',
+				'description' => '',
+				'time_in' => '9:00',
+				'time_out' => '18:00',
+				'is_holiday' => false			
+			];
+			if($dayOfWeek == 0 || $dayOfWeek == 6) {
+				$timesheet->is_holiday = true;
+				$timesheet->task_name = 'Holiday';
+				$timesheet->description = 'Weekend';
+			}
+			foreach($holidays as $holiday) {
+				if($date == $holiday->date) {
+					$timesheet->is_holiday = true;
+					$timesheet->task_name = 'Holiday';
+					$timesheet->description = $holiday->date_name;
+				}
+			}
+			array_push($timesheets, $timesheet);
+		}
+		//Load a template file from the server storage
+		$spreadsheet = IOFactory::load('storage/Playtorium_Timesheet_template.xlsx');
 		//Select a sheet
 		$sheet = $spreadsheet->getActiveSheet();
 		//Fill data into a cell
@@ -56,26 +87,33 @@ class ReportController extends Controller
 		$employee = Employee::where('id', Auth::id())->get();
 		$sheet->setCellValue('B3', $employee[0]->role);
 		$sheet->setCellValue('C4', 'MFEC');
-		$timesheets = Timesheet::where('id', Auth::id())
-								->whereYear('date', '2017')
-								->whereMonth('date', '01')
-								->where('prj_no', 'PS170001')
-								->orderBy('date', 'asc')
-								->get();
-		$sheet->setCellValue('A8', $timesheets[0]->prj_no);
+		//$timesheets = Timesheet::where('id', Auth::id())
+		//						->whereYear('date', $request->input('year'))
+		//						->whereMonth('date', $request->input('monnth'))
+		//						->where('prj_no', $request->innput('project'))
+		//						->orderBy('date', 'asc')
+		//						->get();
+		//$sheet->setCellValue('A8', $timesheets[0]->prj_no);
 		foreach($timesheets as $index => $timesheet) {
 			$row = $index + 8;
 			$spreadsheet->getActiveSheet()
-    					->setCellValue('A' . $row, Date::PHPToExcel($timesheet->date))
+    					->setCellValue('A' . $row, $timesheet->date)
 						->setCellValue('B' . $row, $timesheet->task_name)
 						->setCellValue('C' . $row, $timesheet->description)
-						->setCellValue('D' . $row, Date::PHPToExcel($timesheet->date . ' ' . $timesheet->time_in))
-						->setCellValue('E' . $row, Date::PHPToExcel($timesheet->date . ' ' . $timesheet->time_out));
+						->setCellValue('D' . $row, $timesheet->time_in)
+						->setCellValue('E' . $row, $timesheet->time_out);
 		}
 		//Export
 		$writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
     	header('Content-Type: application/vnd.ms-excel');
     	header('Content-Disposition: attachment; filename="Timesheet.xlsx"');
     	$writer->save("php://output");
+  }
+
+  
+  #Convert date from YYYY-MM-DD to DD/MM/YY
+  private function convertDateFormat($date)
+  {
+		return substr($date, 8, 2) . '/' . substr($date, 5, 2) . '/' . substr($date, 2, 2);
   }
 }

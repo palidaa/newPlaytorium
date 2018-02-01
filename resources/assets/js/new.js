@@ -16,6 +16,7 @@ new Vue({
       time_out: '18:00',
       description: ''
     }],
+    holidays: [],
     errors: false
   },
   mounted: function() {
@@ -24,6 +25,15 @@ new Vue({
     axios.get('/project/fetchOwnProject')
       .then(response => {
         this.projects = response.data
+      })
+      .catch(error => {
+        console.log(error)
+      })
+
+    // fetch holidays
+    axios.get('/holiday/fetch')
+      .then(response => {
+        this.holidays = response.data;
       })
       .catch(error => {
         console.log(error)
@@ -51,13 +61,24 @@ new Vue({
     appendTask: function(startDate, endDate) {
       startDate = moment(startDate)
       endDate = moment(endDate)
-      for (var m = startDate; m.diff(endDate, 'days') <= 0; m.add(1, 'days')) {
-        var task = {
+      for (let m = startDate; m.diff(endDate, 'days') <= 0; m.add(1, 'days')) {
+        let task = {
           date: moment(m).format('YYYY-MM-DD'),
           dayOfWeek: moment(m).format('ddd'),
           time_in: '09:00',
           time_out: '18:00',
-          description: ''
+          description: '',
+          isHoliday: false,
+        }
+        for(let i = 0; i < this.holidays.length; i++) {
+          if(task.date.substr(5, 5) == this.holidays[i].date) {
+            task.isHoliday = true
+            task.holidayName = '(' + this.holidays[i].date_name + ')';
+            break;
+          }
+        }
+        if(task.dayOfWeek == 'Sat' || task.dayOfWeek == 'Sun') {
+          task.isHoliday = true
         }
         this.tasks.push(task)
       }
@@ -91,12 +112,6 @@ new Vue({
         .catch(error => {
           console.log(error)
         })
-    },
-    isWeekend: function(task) {
-      if(task.dayOfWeek == 'Sat' || task.dayOfWeek == 'Sun') {
-        return true;
-      }
-      return false;
     }
   }
 })
