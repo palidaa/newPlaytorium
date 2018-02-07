@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use DB;
 use App\Project;
 use App\Work;
+use App\Employee;
 
 class ProjectController extends Controller
 {
@@ -64,12 +65,17 @@ class ProjectController extends Controller
     }
 
     public function insertMember(Request $request) {
-        $work = new Work;
-        $work->id = $request->input('id');
-        $work->prj_no = $request->input('prj_no');
-        $work->position = $request->input('position');
-        $work->save();
-        return redirect()->back();
+        $member = Employee::find($request->input('id'));
+        if($member != NULL) {
+          $work = new Work;
+          $work->id = $request->input('id');
+          $work->prj_no = $request->input('prj_no');
+          $work->position = $request->input('position');
+          $work->save();
+          return redirect()->back();
+        }else {
+          return redirect()->back()->withErrors(['No member found!']);
+        }
     }
 
     public function show($prj_no) {
