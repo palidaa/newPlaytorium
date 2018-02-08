@@ -16,7 +16,9 @@
               <label>Report type</label>
               <select class="form-control" v-model="type">
                 <option>Timesheet</option>
-                <option>Summary Timesheet</option>
+                @if(Auth::user()->isAdmin())
+                  <option>Summary Timesheet</option>
+                @endif
               </select>
             </div>
           </div>
