@@ -58,7 +58,7 @@
                 <td>@{{ leaveHistory.leave_to }}</td>
                 <td>@{{ leaveHistory.purpose }}</td>
                 <td style="color:#C4B20F;">@{{ leaveHistory.status }}</td>
-                <td v-if="leaveHistory.status=='Pending'"><a href="#" @click.prevent.stop="destroy(index)">Cancel</td>
+                <td v-if="leaveHistory.status=='Pending'"><a href="#" @click.prevent="remove(index)">Cancel</td>
                 <td v-else><a href =""></td>
               </tr>
 

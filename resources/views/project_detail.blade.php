@@ -4,9 +4,16 @@
 
 @section('content')
 
-<div class="container">
+<div class="container" >
   <div class="row">
     <div class="col-md-10 col-md-offset-1">
+
+    @if($errors->any())
+      <div class="alert alert-danger alert-dismissable fade in" style="margin-top: 10px">
+        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+        <strong>{{ $errors->first() }}</strong>
+      </div>
+    @endif
 
     <!-- Project Detail -->
     <h2>Project Detail</h2>
