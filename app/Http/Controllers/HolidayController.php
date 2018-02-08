@@ -18,12 +18,9 @@ class HolidayController extends Controller
     }
 
     public function fetch(Request $request) {
-      if($request->input('month') != NULL) {
-        $holiday = Holiday::whereMonth('holiday', $request->input('month'))->get();
-      }
-      else {
-        $holiday = Holiday::selectRaw('DATE_FORMAT(holiday, "%m-%d") AS date, date_name')->get();
-      }
+      $holiday = Holiday::whereYear('holiday', $request->input('year'))
+                        ->whereMonth('holiday', $request->input('month'))
+                        ->get();
       return $holiday;
     }
 
@@ -36,5 +33,10 @@ class HolidayController extends Controller
 
     public function destroy(Request $request) {
       Holiday::destroy($request->input('date'));
+    }
+
+    public function get_year() {
+      $years = Holiday::selectRaw('YEAR(holiday) AS year')->distinct()->get();
+      return $years;
     }
 }

@@ -74,13 +74,15 @@ Route::post('/project/deleteMember', 'ProjectController@deleteMember');
 // view project by prj_no
 Route::get('/project/{prj_no}', 'ProjectController@show');
 
-Route::get('/report', 'ReportController@getdata');
+Route::get('/report', 'ReportController@index')->name('report');
 
 Route::post('/report/export' , 'MessagesController@export');
 
 Route::get('/export2' , 'MessagesController@export2');
 
-Route::post('/report/trueexport', 'ReportController@export');
+Route::get('/report/export-timesheet', 'ReportController@export');
+
+Route::get('/report/export-summary-timesheet', 'MessagesController@export');
 
 Route::get('/sendbasicmail','MailController@html_email');
 
@@ -88,6 +90,8 @@ Route::get('/leave_request_history', 'LeaverequestController@index')->name('leav
 
 // delete leaverequest
 Route::delete('/leave_request_history/destroy', 'LeaverequestController@destroy');
+
+Route::get('/leave_request/get-leaves-in-month', 'LeaverequestController@get_leaves_in_month');
 
 Route::post('/timesheet/addLeave', 'LeaverequestController@addLeave');
 
@@ -101,13 +105,15 @@ Route::get('/holiday/fetch', 'HolidayController@fetch');
 
 Route::post('/holiday/store', 'HolidayController@store');
 
+Route::get('/holiday/get-year', 'HolidayController@get_year');
+
 Route::delete('/holiday/destroy', 'HolidayController@destroy');
 
-Route::get('/report/getYear', 'ReportController@getYear');
+Route::get('/report/getyear', 'ReportController@getYear');
 
-Route::get('/report/getMonth', 'ReportController@getMonth');
+Route::get('/report/getmonth', 'ReportController@getMonth');
 
-Route::get('/report/getProject', 'ReportController@getProject');
+Route::get('/report/getproject', 'ReportController@getProject');
 
 Route::get('/leave_request_history/fetch', 'LeaverequestController@fetch');
 

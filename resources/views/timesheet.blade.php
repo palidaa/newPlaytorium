@@ -11,8 +11,8 @@
         <h2>Timesheet</h2>
         <hr>
         <div class="progress">
-          <div class="progress-bar" role="progressbar" :style="{width: (parseInt(totalTimesheets/workingDay*100) >= 100 ? 100 : parseInt(totalTimesheets/workingDay*100)) + '%'}">
-            @{{ parseInt(totalTimesheets/workingDay*100) >= 100 ? 100 : parseInt(totalTimesheets/workingDay*100) }}%
+          <div class="progress-bar" role="progressbar" :style="{width: parseInt(totalTimesheets/workingDay*100) + '%'}">
+            @{{ parseInt(totalTimesheets/workingDay*100) }}%
           </div>
         </div>
         <!-- date -->

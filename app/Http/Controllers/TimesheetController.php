@@ -14,7 +14,7 @@ class TimesheetController extends Controller
         $this->middleware('auth');
     }
 
-    public function index(Request $request)
+    public function index()
     {
         return view('timesheet');
     }
@@ -34,32 +34,6 @@ class TimesheetController extends Controller
 
     public function store(Request $request)
     {
-        // $timesheet = Timesheet::where([
-        //   'id' => Auth::id(),
-        //   'date' => $request->input('date'),
-        //   'prj_no' => $request->input('prj_no')
-        // ])->first();
-        // if(empty($timesheet)) {
-        //   $timesheet = new Timesheet;
-        //   $timesheet->id = Auth::id();
-        //   $timesheet->date = $request->input('date');
-        //   $timesheet->prj_no = $request->input('prj_no');
-        //   $timesheet->time_in = $request->input('time_in');
-        //   $timesheet->time_out = $request->input('time_out');
-        //   $timesheet->task_name = $request->input('task_name');
-        //   $timesheet->description = $request->input('description');
-        //   $timesheet->save();
-        // }
-        // else {
-        //   $timesheet = Timesheet::where(['id' => Auth::id(), 'prj_no' => $request->input('prj_no'), 'date' => $request->input('date')])
-        //                         ->update([
-        //                           'time_in' => $request->input('time_in'),
-        //                           'time_out' => $request->input('time_out'),
-        //                           'prj_no' => $request->input('prj_no'),
-        //                           'task_name' => $request->input('task_name'),
-        //                           'description' => $request->input('description')
-        //                         ]);
-        // }
         $validator = $this->validate($request, [
           'prj_no' => 'required',
           'task_name' => 'required',

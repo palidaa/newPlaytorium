@@ -42,6 +42,7 @@ class ProjectController extends Controller
       $projects = Project::join('works', 'projects.prj_no', '=', 'works.prj_no')
                       ->where('works.id', Auth::id())
                       ->where('projects.prj_no', '<>', 'PS00000')
+                      ->where('projects.status', 'In Progress')
                       ->orderBy('projects.status', 'desc')
                       ->orderBy('projects.prj_no', 'desc')
                       ->get();

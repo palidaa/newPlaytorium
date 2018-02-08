@@ -63,50 +63,53 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 170);
+/******/ 	return __webpack_require__(__webpack_require__.s = 154);
 /******/ })
 /************************************************************************/
 /******/ ({
 
-/***/ 135:
+/***/ 121:
 /***/ (function(module, exports) {
+
+var now = moment().format('YYYY-MM-DD');
 
 new Vue({
   el: '#report',
   data: {
-    type: 'Timesheet',
-    years: [],
+    month: "",
     months: [],
+    year: "",
+    years: [],
     projects: [],
-    selectedYear: '',
-    selectedMonth: '',
-    selectedProject: ''
+    type: ""
   },
   mounted: function mounted() {
-    this.getYear();
-  },
+    var _this = this;
 
+    //this.fetch();
+  },
   watch: {
-    selectedYear: function selectedYear() {
-      this.getMonth();
+    type: function type() {
+      this.getYear();
     },
-    selectedMonth: function selectedMonth() {
+    year: function year() {
+      this.getMonth();
+      this.getProject();
+    },
+    month: function month() {
       this.getProject();
     }
   },
   methods: {
     getYear: function getYear() {
-      var _this = this;
+      var _this2 = this;
 
-      axios.get('/report/getyear', {
+      axios.get('/report/getYear',{
         params: {
           type: this.type
         }
       }).then(function (response) {
-        _this.years = response.data.map(function (x) {
-          return x.year;
-        });
-        _this.selectedYear = _this.years[0];
+        _this2.years = response.data;
       }).catch(function (error) {
         console.log(error);
       });
@@ -114,50 +117,39 @@ new Vue({
     getMonth: function getMonth() {
       var _this2 = this;
 
-      axios.get('/report/getmonth', {
+      axios.get('/report/getMonth',{
         params: {
-          year: this.selectedYear
+          year: this.year
         }
       }).then(function (response) {
-        _this2.months = response.data.map(function (x) {
-          return x.month;
-        });
-        _this2.selectedMonth = _this2.months[0];
+        _this2.months = response.data;
       }).catch(function (error) {
         console.log(error);
       });
     },
     getProject: function getProject() {
-      var _this3 = this;
+      var _this2 = this;
 
-      axios.get('/report/getproject', {
+      axios.get('/report/getProject', {
         params: {
-          year: this.selectedYear,
-          month: this.selectedMonth
+          year: this.year,
+          month: this.month
         }
       }).then(function (response) {
-        _this3.projects = response.data;
-        _this3.selectedProject = _this3.projects[0].prj_no + ' - ' + _this3.projects[0].prj_name;
+        _this2.projects = response.data;
       }).catch(function (error) {
         console.log(error);
       });
-    },
-    download: function download() {
-      if (this.type == 'Timesheet') {
-        window.location = '/report/export-timesheet?year=' + this.selectedYear + '&month=' + this.selectedMonth + '&project=' + this.selectedProject.substr(0, 8);
-      } else if (this.type == 'Summary Timesheet') {
-        window.location = '/report/export-summary-timesheet?year=' + this.selectedYear + '&type=Summary Timesheet';
-      }
     }
   }
 });
 
 /***/ }),
 
-/***/ 170:
+/***/ 154:
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(135);
+module.exports = __webpack_require__(121);
 
 
 /***/ })

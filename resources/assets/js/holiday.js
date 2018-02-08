@@ -2,16 +2,19 @@ new Vue({
   el: '#holiday',
   data: {
     holidays: [],
+    selectedYear: moment().format('YYYY'),
+    years: [],
     month: '01',
     date: '',
     date_name: ''
   },
   mounted() {
     this.fetch()
+    this.getYear()
     $('.input-group.date').datepicker({
       format: "yyyy/mm/dd",
-      startView: 1,
-      maxViewMode: 1,
+      startView: 0,
+      maxViewMode: 2,
       orientation: "bottom auto",
       autoclose: true
     })
@@ -22,6 +25,9 @@ new Vue({
     )
   },
   watch: {
+    selectedYear() {
+      this.fetch()
+    },
     month() {
       this.fetch()
     }
@@ -30,6 +36,7 @@ new Vue({
     fetch() {
       axios.get('/holiday/fetch',{
         params: {
+          year: this.selectedYear,
           month: this.month
         }
       })
@@ -82,6 +89,15 @@ new Vue({
           }
         }
       })
+    },
+    getYear() {
+      axios.get('/holiday/get-year')
+        .then(response => {
+          this.years = response.data.map(x => x.year)
+        })
+        .catch(error => {
+          console.log(error)
+        })
     }
   }
 })
