@@ -180,7 +180,7 @@ class ReportController extends Controller
 		//Export
 		$writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
 		header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-		header('Content-Disposition: attachment; filename="Timesheet.xlsx"');
+		header('Content-Disposition: attachment; filename=Timesheet_' . $request->input('year') . '_' . $request->input('month') . '_' . $request->input('project') . '.xlsx');
     $writer->save('php://output');
   }
   
