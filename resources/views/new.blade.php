@@ -66,9 +66,9 @@
         <hr>
 
         <div v-for="(task, index) in tasks">
-          <div class="panel panel-default" :class="{ 'panel-danger': task.isHoliday }">
+          <div class="panel panel-default" :class="{ 'panel-danger': task.isHoliday || task.isLeaveDay }">
             <div class="panel-heading">
-              @{{ task.date }}, @{{ task.dayOfWeek }} @{{ task.holidayName }}
+              @{{ task.date }}, @{{ task.dayOfWeek }}
               <span class="close" @click="removeTask(task, index)">&times;</span>
             </div>
             <div class="panel-body">

@@ -334,4 +334,13 @@ class LeaverequestController extends Controller
     }
   }
 
+  public function get_leaves_in_month(Request $request) {
+    $leave_days = DB::table('leaverequest_of_employee')
+                    ->where('id', Auth::id())
+                    ->whereYear('leave_date', $request->input('year'))
+                    ->whereMonth('leave_date', $request->input('month'))
+                    ->where('status', 'Accepted')
+                    ->get();
+    return $leave_days;
+  }
 }

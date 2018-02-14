@@ -2,7 +2,7 @@ new Vue({
   el: '#timesheet',
   data: {
     date: moment().format('YYYY-MM'),
-    workingDay: 1,
+    workingDay: 30,
     totalTimesheets: 0,
     timesheets: [],
     selectedTimesheet: {
@@ -15,29 +15,19 @@ new Vue({
     },
     selectedKey: 0,
     projects: [],
-    holidays: []
+    holidays: [],
+    leaveDays: []
   },
   mounted: function() {
-    // fetch holidays
-    axios.get('/holiday/fetch')
-      .then(response => {
-        this.holidays = response.data;
-        this.fetch();
-      })
-      .catch(error => {
-        console.log(error)
-      });
-
+    this.fetch()
     // fetch projects
-    axios.get('/project/fetch')
+    axios.get('/project/fetchOwnProject')
       .then(response => {
         this.projects = response.data;
       })
       .catch(error => {
         console.log(error);
       });
-
-    this.workingDay = this.getWorkingDayInMonth(this.date);
 
     // datepicker setup
     $('.input-group.date').datepicker({
@@ -48,12 +38,13 @@ new Vue({
       autoclose: true
     }).on('changeDate', () => {
       this.date = $('#dateInput').val();
-      this.workingDay = this.getWorkingDayInMonth(this.date);
       this.fetch();
     });
   },
   methods: {
     fetch: function() {
+      this.fetchHoliday()
+      this.fetchLeaveDays()
       axios.get('/timesheet/fetch', {
         params: {
           date: this.date
@@ -65,7 +56,7 @@ new Vue({
             timesheet.isHoliday = false;
             timesheet.dayOfWeek = moment(timesheet.date).format('ddd');
             for(let i = 0; i < this.holidays.length; i++) {
-              if(timesheet.date.substr(5, 5) == this.holidays[i].date) {
+              if(timesheet.date == this.holidays[i].holiday) {
                 timesheet.isHoliday = true;
                 timesheet.holidayName = '(' + this.holidays[i].date_name + ')';
                 break;
@@ -75,6 +66,10 @@ new Vue({
               timesheet.isHoliday = true;
             }
           });
+          //Wait until holiday is fetched
+          setTimeout(() => {
+            this.workingDay = this.getWorkingDayInMonth(this.date);
+          }, 200)
           this.totalTimesheets = this.getTotalTimesheets();
         })
         .catch(error => {
@@ -149,18 +144,50 @@ new Vue({
       return count;
     },
     getWorkingDayInMonth: function(date) {
-      startDate = moment(date).format('YYYY-MM-01');
-      endDate = moment(date).format('YYYY-MM-') + moment(date).daysInMonth();
-      workingDay = moment(date).daysInMonth();
+      startDate = moment(date).format('YYYY-MM-01')
+      endDate = moment(date).format('YYYY-MM-') + moment(date).daysInMonth()
+      workingDay = moment(date).daysInMonth()
       for (let m = moment(startDate); m.diff(endDate, 'days') <= 0; m.add(1, 'days')) {
         for(let i = 0; i < this.holidays.length; i++) {
-          if(moment(m).format('MM-DD') == this.holidays[i].date || m.isoWeekday() == 6 || m.isoWeekday() == 7) {
-            workingDay--;
-            break;
+          if(moment(m).format('YYYY-MM-DD') == this.holidays[i].holiday || m.isoWeekday() == 6 || m.isoWeekday() == 7) {
+            workingDay--
+            break
           }
         }
       }
-      return workingDay;
+      workingDay -= this.leaveDays.length
+      console.log(workingDay)
+      return workingDay
+    },
+    fetchHoliday() {
+      axios.get('/holiday/fetch', {
+        params: {
+          year: moment(this.date).format('YYYY'),
+          month: moment(this.date).format('MM')
+        }
+      })
+        .then(response => {
+          console.log('holiday')
+          this.holidays = response.data
+        })
+        .catch(error => {
+          console.log(error)
+        })
+    },
+    fetchLeaveDays() {
+      axios.get('/leave_request/get-leaves-in-month', {
+        params: {
+          year: moment(this.date).format('YYYY'),
+          month: moment(this.date).format('MM')
+        }
+      })
+        .then(response => {
+          console.log('leave')
+          this.leaveDays = response.data
+        })
+        .catch(error => {
+          console.log(error)
+        })
     }
   }
 });
