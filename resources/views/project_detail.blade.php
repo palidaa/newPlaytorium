@@ -52,6 +52,73 @@
     </div>
     <div class="row">
       <div class="col-md-3">
+        <p style="font-size:18px; font-weight:bold;">From</p>
+      </div>
+      <div class="col-md-2">
+        <p style="font-size:18px;">{{ $project->prj_from }}</p>
+      </div>
+      <div class="col-md-1">
+        <p style="font-size:18px; font-weight:bold;">To</p>
+      </div>
+      <div class="col-md-2">
+        <p style="font-size:18px;">{{ $project->prj_to }}</p>
+      </div>
+      <div class="col-md-1">
+        @if(Auth::user()->user_type=="Admin")
+        <!-- add project button -->
+        <button type="button" class="btn btn-default pull-right" data-toggle="modal" data-target="#updateDuration">
+          Change
+        </button>
+      
+        <!-- Modal -->
+        <div class="modal fade" id="updateDuration" role="dialog">
+          <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Change Duration</h4>
+              </div>
+              <div class="modal-body">
+                <form id="updateForm" action="/project/updateDuration" method="post">
+                  {{ csrf_field() }}
+                  <input type="hidden" name="prj_no" value="{{ $project->prj_no}}">
+                <div class="row">
+                  <div class="col-md-6">
+                    <label for="">From</label>
+                    <div class="input-group date">
+                      <input type="text" class="form-control" name="prj_from" id="prj_from" readonly>
+                      <div class="input-group-addon">
+                        <span class="glyphicon glyphicon-th"></span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <label for="">To</label>
+                    <div class="input-group date" id="to">
+                      <input type="text" class="form-control" name="prj_to" id="prj_to" readonly>
+                      <div class="input-group-addon">
+                        <span class="glyphicon glyphicon-th"></span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                  </form>
+              </div>
+
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-primary" form="updateForm">Change</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        @endif
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-3">
         <p style="font-size:18px; font-weight:bold;">Description</p>
       </div>
       <div class="col-md-9">
@@ -75,6 +142,8 @@
     </div>
     <br>
     <hr>
+
+    
 
     <!-- Project Members -->
     <div class="row">
@@ -161,4 +230,22 @@
 
 
 
+@endsection
+
+@section('script')
+<script>
+  $('#prj_from').val('{{ $project->prj_from }}');
+  $('#prj_to').val('{{ $project->prj_to }}');
+  $('.input-group.date').datepicker({
+      maxViewMode: 2,
+      format: 'yyyy-mm-dd',
+      orientation: 'bottom auto',
+      autoclose: true,
+    }).on('changeDate', () => {
+      if(moment($('#prj_to').val()) < moment($('#prj_from').val())) {
+        $('#prj_to').val($('#prj_from').val())
+      }
+      $('#to').datepicker('setStartDate', $('#prj_from').val());
+    });
+</script>
 @endsection

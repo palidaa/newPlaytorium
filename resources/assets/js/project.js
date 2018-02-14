@@ -1,3 +1,5 @@
+let now = moment().format('YYYY-MM-DD')
+
 new Vue({
   el: '#project',
   data: {
@@ -7,10 +9,28 @@ new Vue({
     prj_no: '',
     prj_name: '',
     quo_no: '',
+    prj_from: now,
+    prj_to: now,
     customer: '',
     description: ''
   },
   mounted() {
+    // datepicker setup
+    $('.input-group.date').datepicker({
+      maxViewMode: 2,
+      format: 'yyyy-mm-dd',
+      orientation: 'bottom auto',
+      autoclose: true,
+    }).on('changeDate', () => {
+      this.prj_from = $('#prj_from').val();
+      this.prj_to = $('#prj_to').val();
+      if(moment(this.prj_to) < moment(this.prj_from)) {
+        this.prj_to = this.prj_from
+        $('#prj_to').val(this.prj_from)
+      }
+      console.log(this.prj_from)
+      $('#to').datepicker('setStartDate', this.prj_from)
+    });
     this.fetch()
     console.log(this.filtered)
   },
@@ -51,6 +71,8 @@ new Vue({
         prj_name: this.prj_name,
         quo_no: this.quo_no,
         customer: this.customer,
+        prj_from: this.prj_from,
+        prj_to: this.prj_to,
         description: this.description,
         status: 'In Progress'
       }

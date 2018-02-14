@@ -55,9 +55,19 @@ class ProjectController extends Controller
         $project->prj_name = $request->input('prj_name');
         $project->customer = $request->input('customer');
         $project->quo_no = $request->input('quo_no');
+        $project->prj_from = $request->input('prj_from');
+        $project->prj_to = $request->input('prj_to');
         $project->description = $request->input('description');
         $project->status = 'In Progress';
         $project->save();
+    }
+
+    public function updateDuration(Request $request) {
+      $project = Project::find($request->input('prj_no'));
+      $project->prj_from = $request->input('prj_from');
+      $project->prj_to = $request->input('prj_to');
+      $project->save();
+      return redirect()->back();
     }
 
     public function destroy(Request $request) {

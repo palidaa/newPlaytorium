@@ -59,6 +59,9 @@ Route::get('/project/fetchOwnProject', 'ProjectController@fetchOwnProject');
 // insert project
 Route::post('/project/store', 'ProjectController@store');
 
+// change project date
+Route::post('/project/updateDuration', 'ProjectController@updateDuration');
+
 // delete project
 Route::delete('/project/destroy', 'ProjectController@destroy');
 

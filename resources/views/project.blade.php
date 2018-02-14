@@ -36,6 +36,8 @@
              <th>Name</th>
              <th>Customer</th>
              <th>Quo.No.</th>
+             <th>From</th>
+             <th>To</th>
              <th>Status</th>
              <th><th>
            </tr>
@@ -44,6 +46,8 @@
              <td>@{{ project.prj_name }}</td>
              <td>@{{ project.customer }}</td>
              <td>@{{ project.quo_no }}</td>
+             <td>@{{ project.prj_from }}</td>
+             <td>@{{ project.prj_to }}</td>
              <td style="color: #C4B20F;">@{{ project.status }}</td>
              @if(Auth::user()->isAdmin())
               <td><a href="#" @click.prevent.stop="destroy(index)">Delete</a></td>
@@ -80,6 +84,26 @@
                   <div class="col-md-6">
                     <label for="">Customer</label>
                     <input type="text" class="form-control" name="customer" v-model="customer">
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-6">
+                    <label for="">From</label>
+                    <div class="input-group date">
+                      <input type="text" class="form-control" id="prj_from" v-model="prj_from" readonly>
+                      <div class="input-group-addon">
+                        <span class="glyphicon glyphicon-th"></span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <label for="">To</label>
+                    <div class="input-group date" id="to">
+                      <input type="text" class="form-control" id="prj_to" v-model="prj_to" readonly>
+                      <div class="input-group-addon">
+                        <span class="glyphicon glyphicon-th"></span>
+                      </div>
+                    </div>
                   </div>
                 </div>
                 <div class="row">
