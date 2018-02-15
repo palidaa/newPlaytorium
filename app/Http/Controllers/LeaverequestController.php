@@ -339,7 +339,7 @@ class LeaverequestController extends Controller
                     ->where('id', Auth::id())
                     ->whereYear('leave_date', $request->input('year'))
                     ->whereMonth('leave_date', $request->input('month'))
-                    ->where('status', 'Accepted')
+                    ->whereIn('status', ['Accepted', 'Pending'])
                     ->get();
     return $leave_days;
   }

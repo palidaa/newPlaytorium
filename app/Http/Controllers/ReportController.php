@@ -87,7 +87,7 @@ class ReportController extends Controller
 		$leave_days = DB::table('leaverequest_of_employee')
 										->selectRaw('DATE_FORMAT(leave_date, "%e") AS date, leave_type')
 										->where('id', Auth::id())
-										->where('status', 'Accepted')
+										->whereIn('status', ['Accepted', 'Pending'])
 										->where('totalhours', 8)
 										->whereYear('leave_date', $request->input('year'))
 										->whereMonth('leave_date', $request->input('month'))
@@ -190,7 +190,7 @@ class ReportController extends Controller
 								->whereYear('leave_date', $year)
 								->whereMonth('leave_date', $month)
 								->where('leave_type', $type)
-								->where('status', 'Accepted')
+								->whereIn('status', ['Accepted', 'Pending'])
 								->count();
 	  return $days;
   }
