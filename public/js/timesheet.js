@@ -199,6 +199,9 @@ new Vue({
         new_description: this.selectedTimesheet.description
       }).then(function (response) {
         _this4.timesheets[_this4.selectedKey].prj_no = _this4.selectedTimesheet.prj_no;
+        _this4.timesheets[_this4.selectedKey].prj_name = _this4.projects.find(function (project) {
+          return project.prj_no == _this4.selectedTimesheet.prj_no;
+        }).prj_name;
         _this4.timesheets[_this4.selectedKey].task_name = _this4.selectedTimesheet.task_name;
         _this4.timesheets[_this4.selectedKey].time_in = _this4.selectedTimesheet.time_in;
         _this4.timesheets[_this4.selectedKey].time_out = _this4.selectedTimesheet.time_out;
