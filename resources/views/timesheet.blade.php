@@ -72,8 +72,8 @@
                   <div class="row">
                     <div class="col-md-6">
                       <label>Project</label>
-                      <select class="form-control">
-                        <option v-for="project in projects">@{{ project.prj_no }} - @{{ project.prj_name }}</option>
+                      <select class="form-control" v-model="selectedTimesheet.prj_no">
+                        <option :value="project.prj_no" v-for="project in projects">@{{ project.prj_no }} - @{{ project.prj_name }}</option>
                       </select>
                     </div>
                     <div class="col-md-6">

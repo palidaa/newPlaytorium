@@ -23,7 +23,7 @@ new Vue({
     // fetch projects
     axios.get('/project/fetchOwnProject')
       .then(response => {
-        this.projects = response.data;
+        this.projects = response.data
       })
       .catch(error => {
         console.log(error);
@@ -124,11 +124,14 @@ new Vue({
         new_description: this.selectedTimesheet.description
       })
         .then(response => {
-          this.timesheets[this.selectedKey].prj_no = this.selectedTimesheet.prj_no;
-          this.timesheets[this.selectedKey].task_name = this.selectedTimesheet.task_name;
-          this.timesheets[this.selectedKey].time_in = this.selectedTimesheet.time_in;
-          this.timesheets[this.selectedKey].time_out = this.selectedTimesheet.time_out;
-          this.timesheets[this.selectedKey].description = this.selectedTimesheet.description;
+          this.timesheets[this.selectedKey].prj_no = this.selectedTimesheet.prj_no
+          this.timesheets[this.selectedKey].prj_name = this.projects.find(project => {
+            return project.prj_no == this.selectedTimesheet.prj_no
+          }).prj_name
+          this.timesheets[this.selectedKey].task_name = this.selectedTimesheet.task_name
+          this.timesheets[this.selectedKey].time_in = this.selectedTimesheet.time_in
+          this.timesheets[this.selectedKey].time_out = this.selectedTimesheet.time_out
+          this.timesheets[this.selectedKey].description = this.selectedTimesheet.description
         })
         .catch(error => {
           console.log(error);
