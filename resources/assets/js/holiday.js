@@ -36,8 +36,7 @@ new Vue({
     fetch() {
       axios.get('/holiday/fetch',{
         params: {
-          year: this.selectedYear,
-          month: this.month
+          year: this.selectedYear
         }
       })
         .then(response => {

@@ -19,7 +19,7 @@ class HolidayController extends Controller
 
     public function fetch(Request $request) {
       $holiday = Holiday::whereYear('holiday', $request->input('year'))
-                        ->whereMonth('holiday', $request->input('month'))
+                        ->orderBy('holiday')
                         ->get();
       return $holiday;
     }

@@ -41,6 +41,7 @@
           </ul>
           <form action="/leave_request_history">
           <button type="submit" class="btn btn-default">Leave History</button>
+          <button type="button" class="btn btn-default" onclick="location.href = '/holiday';">View Holidays</button>
           </form>
         </div>
       </div>
