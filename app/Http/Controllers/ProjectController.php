@@ -8,6 +8,7 @@ use DB;
 use App\Project;
 use App\Work;
 use App\Employee;
+use App\File;
 
 class ProjectController extends Controller
 {
@@ -95,7 +96,8 @@ class ProjectController extends Controller
                     ->join('works', 'employees.id', '=', 'works.id')
                     ->where('works.prj_no', $prj_no)
                     ->get();
-      return view('project_detail', compact('project', 'members'));
+      $files = File::where('prj_no', $prj_no)->get();
+      return view('project_detail', compact('project', 'members', 'files'));
     }
 
      public function deleteMember(Request $request){
