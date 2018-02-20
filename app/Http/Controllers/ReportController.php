@@ -13,7 +13,7 @@ use App\Employee;
 use App\Timesheet;
 use App\Holiday;
 use App\Project;
-use App\work;
+use App\Work;
 use DB;
 
 class ReportController extends Controller

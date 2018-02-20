@@ -96,8 +96,13 @@ class ProjectController extends Controller
                     ->join('works', 'employees.id', '=', 'works.id')
                     ->where('works.prj_no', $prj_no)
                     ->get();
-      $files = File::where('prj_no', $prj_no)->get();
-      return view('project_detail', compact('project', 'members', 'files'));
+      if(Auth::user()->isAdmin()) {
+        $files = File::where('prj_no', $prj_no)->get();
+        return view('project_detail', compact('project', 'members', 'files')); 
+      }
+      else {
+        return view('project_detail', compact('project', 'members'));
+      }
     }
 
      public function deleteMember(Request $request){
