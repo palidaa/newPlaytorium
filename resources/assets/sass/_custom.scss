@@ -80,3 +80,15 @@ input[readonly].form-control{
   width: 100%;
   height: 2px;
 }
+
+th {
+  cursor: pointer;
+}
+
+.glyphicon.glyphicon-triangle-top {
+  font-size: 10px;
+}
+
+.glyphicon.glyphicon-triangle-bottom {
+  font-size: 10px;
+}
