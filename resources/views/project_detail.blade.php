@@ -134,6 +134,7 @@
       <div class="col-md-2">
         <p style="font-size:18px;">{{ $project->status }}</p>
       </div>
+      @if(Auth::user()->user_type=="Admin")
       <div class="col-md-7">
         <form action="/project/changeStatus" method="post">
           {{ csrf_field() }}
@@ -141,6 +142,7 @@
           <button class="btn btn-default" type="submit">Change</button>
         </form>
       </div>
+      @endif
     </div>
     @if(Auth::user()->user_type=="Admin")
     <div class="row">
