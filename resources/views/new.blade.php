@@ -74,10 +74,10 @@
             <div class="panel-body">
               <div class="row">
                 <div class="col-md-3">
-                  <input type="time" class="form-control" v-model="task.time_in">
+                  <input type="time" pattern="([1]?[0-9]|2[0-3]):[0-5][0-9]" class="form-control" v-model="task.time_in">
                 </div>
                 <div class="col-md-3">
-                  <input type="time" class="form-control" v-model="task.time_out">
+                  <input type="time" pattern="([1]?[0-9]|2[0-3]):[0-5][0-9]" class="form-control" v-model="task.time_out">
                 </div>
               </div>
               <br>
