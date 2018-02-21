@@ -171,11 +171,15 @@ class ReportController extends Controller
 		//Replace timesheets to excel
 		foreach($db_timesheets as $timesheet) {
 			$row = $timesheet->idx + 8;
+			$timeout = Date::PHPToExcel(strtotime($timesheet->timeout));
+			if($timesheet->time_out == '00:00:00') {
+				$timeout = Date::PHPToExcel(strtotime('00:00:00 +1 day'));
+			}
 			$spreadsheet->getActiveSheet()
 									->setCellValue('B' . $row, $timesheet->task_name)
 									->setCellValue('C' . $row, $timesheet->description)
 									->setCellValue('D' . $row, Date::PHPToExcel(strtotime($timesheet->time_in)))
-									->setCellValue('E' . $row, Date::PHPToExcel(strtotime($timesheet->time_out)));
+									->setCellValue('E' . $row, $timeout);
 		}
 		//Export
 		$writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
