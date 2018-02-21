@@ -7,7 +7,7 @@
 <div id="project" v-cloak>
   <div class="container">
     <div class="row">
-      <div class="col-md-12">
+      <div class="col-md-10 col-md-offset-12">
         <h2>Project</h2>
         <hr>
 
@@ -64,7 +64,7 @@
            </tr>
            <tr class="click-table" v-for="(project, index) in filtered" @click="show(project)">
              <td>@{{ project.prj_no }}</td>
-             <td>@{{ project.prj_name }}</td>
+             <td style="width: 30%;">@{{ project.prj_name }}</td>
              <td>@{{ project.customer }}</td>
              <td>@{{ project.quo_no }}</td>
              <td>@{{ project.prj_from }}</td>
