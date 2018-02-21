@@ -172,10 +172,10 @@ class ReportController extends Controller
 								->setCellValue('E2', Auth::id())
 								->setCellValue('E3', 1 . ' ' . date('M', strtotime($db_timesheets[0]->date)) . ' - ' . $daysInMonth . ' ' . date('M', strtotime($db_timesheets[0]->date)) . ' ' . $request->input('year'))
 								->setCellValue('H2', Date::PHPToExcel(strtotime('19:00:00')))
-								->setCellValue('D44', $sick_leave)
-								->setCellValue('D45', $annual_leave)
-								->setCellValue('D46', $personal_leave)
-								->setCellValue('D47', count($holidays));
+								->setCellValue('D43', $sick_leave)
+								->setCellValue('D44', $annual_leave)
+								->setCellValue('D45', $personal_leave)
+								->setCellValue('D46', count($holidays));
 		//Replace timesheets to excel
 		foreach($db_timesheets as $timesheet) {
 			$row = $timesheet->idx + 8;
@@ -195,6 +195,7 @@ class ReportController extends Controller
   private function get_total_leave_days($type, $year, $month)
   {
 		$days = DB::table('leaverequest_of_employee')
+								->where('id', Auth::id())
 								->whereYear('leave_date', $year)
 								->whereMonth('leave_date', $month)
 								->where('leave_type', $type)
