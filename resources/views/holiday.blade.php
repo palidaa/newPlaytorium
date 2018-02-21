@@ -66,7 +66,9 @@
           <tr v-for="(holiday, key) in holidays">
             <td>@{{ holiday.holiday }}</td>
             <td>@{{ holiday.date_name }}</td>
-            <td><a href="#" @click.prevent="destroy(key)">Delete</a></td>
+            @if(Auth::user()->isAdmin())
+              <td><a href="#" @click.prevent="destroy(key)">Delete</a></td>
+            @endif
           </tr>
         </table>
       </div>
