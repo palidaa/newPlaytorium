@@ -12,7 +12,17 @@ new Vue({
     prj_from: now,
     prj_to: now,
     customer: '',
-    description: ''
+    description: '',
+    sortKey: '',
+    sortOrders: {
+      'prj_no': -1,
+      'prj_name': -1,
+      'customer': -1,
+      'quo_no': -1,
+      'prj_from': -1,
+      'prj_to': -1,
+      'status': -1
+    }
   },
   mounted() {
     // datepicker setup
@@ -32,7 +42,7 @@ new Vue({
       $('#to').datepicker('setStartDate', this.prj_from)
     });
     this.fetch()
-    console.log(this.filtered)
+    console.log(this.projects)
   },
   watch: {
     search(val) {
@@ -98,6 +108,20 @@ new Vue({
         .catch(error => {
           console.log(error)
         })
+    },
+    sortBy(key) {
+      this.sortKey = key
+      this.sortOrders[key] *= -1
+      this.filtered.sort(this.sortFunction)
+    },
+    sortFunction(a, b) {
+      if (a[this.sortKey] < b[this.sortKey]) {
+        return -1 * this.sortOrders[this.sortKey]
+      }
+      else if (a[this.sortKey] > b[this.sortKey]) {
+        return 1 * this.sortOrders[this.sortKey]
+      }
+      return 0
     }
   }
 })

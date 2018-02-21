@@ -13,6 +13,7 @@ use App\Employee;
 use App\Timesheet;
 use App\Holiday;
 use App\Project;
+use App\Work;
 use DB;
 
 class ReportController extends Controller
@@ -132,10 +133,6 @@ class ReportController extends Controller
 		//Select a sheet
 		$sheet = $spreadsheet->getActiveSheet();
 		//Fill data into a cell
-		$sheet->setCellValue('B2', Auth::user()->name);
-		$employee = Employee::where('id', Auth::id())->get();
-		$sheet->setCellValue('B3', $employee[0]->role);
-		$sheet->setCellValue('C4', 'MFEC');
 		foreach($timesheets as $index => $timesheet) {
 			$row = $index + 8;
 			$spreadsheet->getActiveSheet()
@@ -159,9 +156,20 @@ class ReportController extends Controller
 															->orderBy('date', 'asc')
 															->get();
 		//Set excel header and footer cell
-		$project = Project::where('prj_no', $db_timesheets[0]->prj_no)->get();
+		$employee = Employee::where('id', Auth::id())->first();
+		$project = Project::where('prj_no', $db_timesheets[0]->prj_no)->first();
+		$work = Work::where('id', Auth::id())->where('prj_no', $db_timesheets[0]->prj_no)->first();
+		if($work->position == NULL) {
+			$role = $employee->role;
+		}
+		else {
+			$role = $work->position;
+		}
 		$spreadsheet->getActiveSheet()
-								->setCellValue('C4', $project[0]->customer)
+								->setCellValue('B2', Auth::user()->name)
+								->setCellValue('B3', $role)
+								->setCellValue('C4', $project->customer)
+								->setCellValue('E2', Auth::id())
 								->setCellValue('E3', 1 . ' ' . date('M', strtotime($db_timesheets[0]->date)) . ' - ' . $daysInMonth . ' ' . date('M', strtotime($db_timesheets[0]->date)) . ' ' . $request->input('year'))
 								->setCellValue('H2', Date::PHPToExcel(strtotime('19:00:00')))
 								->setCellValue('D44', $sick_leave)

@@ -142,6 +142,35 @@
         </form>
       </div>
     </div>
+    @if(Auth::user()->user_type=="Admin")
+    <div class="row">
+      <div class="col-md-3">
+        <p style="font-size:18px; font-weight:bold;">Files</p>
+      </div>
+    </div>
+    <form action="/upload" method="post" enctype="multipart/form-data">
+      {{ csrf_field() }}
+      <input type="file" name="fileToUpload">
+      <input type="hidden" name="prj_no" value="{{ $project->prj_no }}">
+      <br>
+      <button class="btn btn-default" type="submit">
+        Upload
+        <span class="glyphicon glyphicon-upload"></span>
+      </button>
+    </form>
+    <br>
+      @foreach($files as $file)
+      <div class="row">
+        <div class="col-md-12">
+          <span class="glyphicon glyphicon-file"></span>
+          <a href="/download?prj_no={{ $file->prj_no }}&name={{ $file->name }}">{{ $file->name }}</a>
+          ({{ $file->size }} bytes)
+          <span style="font-style:italic">{{ $file->updated_at}}</span>
+          <span>[<a href="/delete?prj_no={{ $file->prj_no }}&name={{ $file->name }}">Delete</a>]</span>
+        </div>
+      </div>
+      @endforeach
+    @endif
     <br>
     <hr>
 

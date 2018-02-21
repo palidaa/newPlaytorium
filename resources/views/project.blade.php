@@ -7,7 +7,7 @@
 <div id="project" v-cloak>
   <div class="container">
     <div class="row">
-      <div class="col-md-10 col-md-offset-1">
+      <div class="col-md-12">
         <h2>Project</h2>
         <hr>
 
@@ -32,13 +32,34 @@
 
         <table class="table table-hover table-striped">
           <tr style="font-size:20px;">
-             <th>Prj.No.</th>
-             <th>Name</th>
-             <th>Customer</th>
-             <th>Quo.No.</th>
-             <th>From</th>
-             <th>To</th>
-             <th>Status</th>
+             <th @click="sortBy('prj_no')">
+              Prj.No.
+              <span :class="sortOrders['prj_no'] > 0 ? 'glyphicon glyphicon-triangle-bottom' : 'glyphicon glyphicon-triangle-top'"></span>
+            </th>
+            <th @click="sortBy('prj_name')">
+              Name
+              <span :class="sortOrders['prj_name'] > 0 ? 'glyphicon glyphicon-triangle-bottom' : 'glyphicon glyphicon-triangle-top'"></span>
+            </th>
+            <th @click="sortBy('customer')">
+              Customer
+              <span :class="sortOrders['customer'] > 0 ? 'glyphicon glyphicon-triangle-bottom' : 'glyphicon glyphicon-triangle-top'"></span>
+            </th>
+            <th @click="sortBy('quo_no')">
+              Quo.No.
+              <span :class="sortOrders['quo_no'] > 0 ? 'glyphicon glyphicon-triangle-bottom' : 'glyphicon glyphicon-triangle-top'"></span>
+            </th>
+            <th @click="sortBy('prj_from')">
+              From
+              <span :class="sortOrders['prj_from'] > 0 ? 'glyphicon glyphicon-triangle-bottom' : 'glyphicon glyphicon-triangle-top'"></span>
+            </th>
+            <th @click="sortBy('prj_to')">
+              To
+              <span :class="sortOrders['prj_to'] > 0 ? 'glyphicon glyphicon-triangle-bottom' : 'glyphicon glyphicon-triangle-top'"></span>
+            </th>
+            <th @click="sortBy('status')">
+              Status
+              <span :class="sortOrders['status'] > 0 ? 'glyphicon glyphicon-triangle-bottom' : 'glyphicon glyphicon-triangle-top'"></span>
+            </th>
              <th><th>
            </tr>
            <tr class="click-table" v-for="(project, index) in filtered" @click="show(project)">

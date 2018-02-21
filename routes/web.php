@@ -125,3 +125,9 @@ Route::get('/leave_request_history/getYear', 'LeaverequestController@getYear');
 Route::get('/updatepassword', 'Auth\UpdatePasswordController@index');
 
 Route::post('/updatepassword/update', 'Auth\UpdatePasswordController@update');
+
+Route::post('/upload', 'FileController@upload');
+
+Route::get('/download', 'FileController@download');
+
+Route::get('/delete', 'FileController@delete');
