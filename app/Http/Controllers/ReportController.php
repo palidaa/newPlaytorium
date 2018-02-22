@@ -179,7 +179,7 @@ class ReportController extends Controller
 		//Replace timesheets to excel
 		foreach($db_timesheets as $timesheet) {
 			$row = $timesheet->idx + 8;
-			$timeout = Date::PHPToExcel(strtotime($timesheet->timeout));
+			$timeout = Date::PHPToExcel(strtotime($timesheet->time_out));
 			if($timesheet->time_out == '00:00:00') {
 				$timeout = Date::PHPToExcel(strtotime('00:00:00 +1 day'));
 			}
