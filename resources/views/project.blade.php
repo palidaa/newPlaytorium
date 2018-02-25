@@ -71,7 +71,7 @@
              <td>@{{ project.prj_to }}</td>
              <td style="color: #C4B20F;">@{{ project.status }}</td>
              @if(Auth::user()->isAdmin())
-              <td><a href="#" @click.prevent.stop="destroy(index)">Delete</a></td>
+              <td><a href="#" v-if="project.hasMembers==false"  @click.prevent.stop="destroy(index)">Delete</a></td>
              @endif
            </tr>
         </table>

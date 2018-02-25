@@ -144,6 +144,17 @@ new Vue({
       axios.get('/project/fetch').then(function (response) {
         console.log(response);
         _this3.projects = response.data;
+        _this3.projects.forEach(function (project) {
+          axios.get('/project/hasMembers', {
+            params: {
+              prj_no: project.prj_no
+            }
+          }).then(function (response2) {
+            project.hasMembers = response2.data.hasMembers;
+          }).catch(function (error2) {
+            console.log(error2);
+          });
+        });
         _this3.filtered = _this3.projects;
       }).catch(function (error) {
         console.log(error);
@@ -175,9 +186,30 @@ new Vue({
     destroy: function destroy(index) {
       var _this5 = this;
 
-      axios.delete('/project/destroy', {
-        params: {
-          prj_no: this.projects[index].prj_no
+      bootbox.confirm({
+        title: 'Delete confirmation',
+        message: 'Do you really want to cancel this project ?',
+        buttons: {
+          cancel: {
+            label: 'No'
+          },
+          confirm: {
+            label: 'Yes'
+          }
+        },
+        callback: function callback(confirm) {
+          if (confirm) {
+            axios.delete('/project/destroy', {
+              params: {
+                prj_no: _this5.projects[index].prj_no
+              }
+            }).then(function (response) {
+              console.log(response);
+              _this5.projects.splice(index, 1);
+            }).catch(function (error) {
+              console.log(error);
+            });
+          }
         }
       }).then(function (response) {
         console.log(response);

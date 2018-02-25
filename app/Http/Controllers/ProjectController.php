@@ -121,5 +121,10 @@ class ProjectController extends Controller
       $project->save();
       return redirect()->back();
     }
+    public function hasMembers(Request $request) {
+      $members = Work::where('prj_no', $request->input('prj_no'))->first();
+      if($members == NULL)  return response()->json(['hasMembers' => false]);
+      else return response()->json(['hasMembers' => true]);
+    }
 
 }

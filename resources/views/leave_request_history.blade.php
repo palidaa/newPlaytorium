@@ -8,9 +8,14 @@
 <div class="container">
   <div class="row">
     <div class="col-md-10 col-md-offset-1">
-
-
-    <h2>Leave request history</h2>
+    <div class="row">
+        <div class="col-md-11">
+          <h2>Leave request history</h2>
+        </div>
+        <div class="col-md-1 ">
+          <button style="margin-top:50%;" type="buttom" class="btn btn-default " onclick="location.href = '/leave_request';" >Back</button>
+        </div>
+        </div>
     <hr>
     <div class="row">
       <div class="col-md-3">

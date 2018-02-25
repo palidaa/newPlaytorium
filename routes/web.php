@@ -53,6 +53,9 @@ Route::get('/project', 'ProjectController@index')->name('project');
 // fetch project
 Route::get('/project/fetch', 'ProjectController@fetch');
 
+//add hasmember in fatch
+Route::get('/project/hasMembers', 'ProjectController@hasMembers');
+
 // fetch only own project in new page
 Route::get('/project/fetchOwnProject', 'ProjectController@fetchOwnProject');
 
