@@ -34,7 +34,7 @@ class Kernel extends ConsoleKernel
             $annualDay = 0;
 
             foreach($employees as $employee){
-                if($employee->type == 1){
+                if($employee->type <= 1){
                     $annualDay = 6;
                 }
                 else if($employee->type > 1 &&  $employee->type < 8){
