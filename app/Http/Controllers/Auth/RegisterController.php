@@ -82,7 +82,7 @@ class RegisterController extends Controller
         }
 
         DB::insert('insert into employees values (?,?,?,?,?,?,?,?)', [$data['id'],$sName[0],$lastName,$data['role'],$data['type'],$data['email'],$data['department'], 0]);
-        DB::insert('insert into works values (?,?,?)', [$data['id'], 'PS00000', '']);
+        DB::insert('insert into works values (?,?,?)', [$data['id'], 'PS000000', '']);
 
         $user = [
           'email' => $data['email'],
