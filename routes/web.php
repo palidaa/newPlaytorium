@@ -133,4 +133,4 @@ Route::post('/upload', 'FileController@upload');
 
 Route::get('/download', 'FileController@download');
 
-Route::get('/delete', 'FileController@delete');
+Route::delete('/delete', 'FileController@delete');
