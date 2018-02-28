@@ -77,6 +77,7 @@
              
            </tr>
         </table>
+<<<<<<< HEAD
 
         <div align="center">
           <nav aria-label="...">
@@ -91,6 +92,11 @@
             </ul>
           </nav>  
         </div>
+=======
+        <button @click="changePage(currentPage - 1)">prev</button>
+        @{{ currentPage }}
+        <button @click="changePage(currentPage + 1)">next</button>
+>>>>>>> 9ca0d1ca05473fa724f2d09357a0243c1ae645c2
 
         <!-- Modal -->
         <div class="modal fade" id="addProject" role="dialog">
