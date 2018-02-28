@@ -149,8 +149,8 @@ new Vue({
       if(this.currentPage < 1) {
         this.currentPage = 1
       }
-      if(this.currentPage > this.projects.length / 10 + 1) {
-        this.currentPage = parseInt(this.projects.length / 10 + 1)
+      if(this.currentPage > Math.ceil(this.projects.length / 10)) {
+        this.currentPage = Math.ceil(this.projects.length / 10)
       }
     }
   }

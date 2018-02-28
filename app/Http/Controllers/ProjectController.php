@@ -44,6 +44,14 @@ class ProjectController extends Controller
                       ->orderBy('projects.status', 'desc')
                       ->orderBy('projects.prj_no', 'desc')
                       ->get();
+        foreach($projects as $project) {
+          if($this->hasMembers($project->prj_no)) {
+            $project->hasMembers = true;
+          }
+          else {
+            $project->hasMembers = false;
+          }
+        }
         return $projects;
       }
     }
@@ -56,6 +64,14 @@ class ProjectController extends Controller
                       ->orderBy('projects.status', 'desc')
                       ->orderBy('projects.prj_no', 'desc')
                       ->get();
+       foreach($projects as $project) {
+          if($this->hasMembers($project->prj_no)) {
+            $project->hasMembers = true;
+          }
+          else {
+            $project->hasMembers = false;
+          }
+        }
       return $projects;
     }
 

@@ -78,9 +78,19 @@
            </tr>
         </table>
 
-        <button @click="changePage(currentPage - 1)">prev</button>
-        @{{ currentPage }}
-        <button @click="changePage(currentPage + 1)">next</button>
+        <div align="center">
+          <nav aria-label="...">
+            <ul class="pagination">
+              <li><a href="#" @click.prevent.stop="changePage(currentPage - 1)" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
+                <template v-for="n in Math.ceil(projects.length/10)">
+                
+                  <li v-if="n==currentPage" class="active"><a href="#" @click.prevent.stop="changePage(n)">@{{ n }}<span class="sr-only">(current)</span></a></li>
+                  <li v-else><a href="#" @click.prevent.stop="changePage(n)" >@{{ n }} <span class="sr-only">(current)</span></a></li>
+                </template>
+              <li><a href="#"  @click.prevent.stop="changePage(currentPage + 1)" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>
+            </ul>
+          </nav>  
+        </div>
 
         <!-- Modal -->
         <div class="modal fade" id="addProject" role="dialog">
