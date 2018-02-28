@@ -7,7 +7,7 @@
 <div id="project" v-cloak>
   <div class="container">
     <div class="row">
-      <div class="col-md-10 col-md-offset-1">
+      <div class="col-md-12">
         <h2>Project</h2>
         <hr>
 
@@ -62,7 +62,7 @@
             </th>
              <th><th>
            </tr>
-           <tr class="click-table" v-for="(project, index) in filtered" @click="show(project)">
+           <tr class="click-table" v-for="(project, index) in filteredProject" @click="show(project)">
              <td>@{{ project.prj_no }}</td>
              <td style="width: 30%;">@{{ project.prj_name }}</td>
              <td>@{{ project.customer }}</td>
@@ -77,6 +77,10 @@
              
            </tr>
         </table>
+
+        <button @click="changePage(currentPage - 1)">prev</button>
+        @{{ currentPage }}
+        <button @click="changePage(currentPage + 1)">next</button>
 
         <!-- Modal -->
         <div class="modal fade" id="addProject" role="dialog">

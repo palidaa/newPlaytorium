@@ -27,6 +27,14 @@ class ProjectController extends Controller
                     ->orderBy('projects.status','desc')
                     ->orderBy('prj_no','desc')
                     ->get();
+        foreach($projects as $project) {
+          if($this->hasMembers($project->prj_no)) {
+            $project->hasMembers = true;
+          }
+          else {
+            $project->hasMembers = false;
+          }
+        }
         return $projects;
       }
       else {
@@ -121,10 +129,9 @@ class ProjectController extends Controller
       $project->save();
       return redirect()->back();
     }
-    public function hasMembers(Request $request) {
-      $members = Work::where('prj_no', $request->input('prj_no'))->first();
-      if($members == NULL)  return response()->json(['hasMembers' => false]);
-      else return response()->json(['hasMembers' => true]);
+    private function hasMembers($prj_no) {
+      $members = Work::where('prj_no', $prj_no)->first();
+      if($members == NULL)  return false;
+      else return true;
     }
-
 }

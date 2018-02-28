@@ -78,7 +78,6 @@ new Vue({
   data: {
     projects: [],
     search: '',
-    filtered: [],
     prj_no: '',
     prj_name: '',
     quo_no: '',
@@ -95,7 +94,8 @@ new Vue({
       'prj_from': -1,
       'prj_to': -1,
       'status': -1
-    }
+    },
+    currentPage: 1
   },
   mounted: function mounted() {
     var _this = this;
@@ -113,49 +113,36 @@ new Vue({
         _this.prj_to = _this.prj_from;
         $('#prj_to').val(_this.prj_from);
       }
-      console.log(_this.prj_from);
       $('#to').datepicker('setStartDate', _this.prj_from);
     });
     this.fetch();
-    console.log(this.projects);
   },
 
-  watch: {
-    search: function search(val) {
-      var _this2 = this;
-
-      this.filtered = [];
-      if (val.lenght < 2) {
-        this.filtered = this.projects;
-      } else {
-        var regexp = new RegExp(val, 'i');
-        this.projects.forEach(function (project) {
-          if (regexp.test(project.prj_no) || regexp.test(project.prj_name) || regexp.test(project.customer) || regexp.test(project.quo_no)) {
-            _this2.filtered.push(project);
-          }
-        });
-      }
+  computed: {
+    filteredProject: function filteredProject() {
+      var filteredProject = [];
+      var regexp = new RegExp(this.search, 'i');
+      // Filter
+      this.projects.forEach(function (project) {
+        if (regexp.test(project.prj_no) || regexp.test(project.prj_name) || regexp.test(project.customer) || regexp.test(project.quo_no)) {
+          filteredProject.push(project);
+        }
+      });
+      // Sort
+      filteredProject.sort(this.sortFunction);
+      // Paging
+      startIndex = (this.currentPage - 1) * 10;
+      endIndex = startIndex + 10;
+      filteredProject = filteredProject.slice(startIndex, endIndex);
+      return filteredProject;
     }
   },
   methods: {
     fetch: function fetch() {
-      var _this3 = this;
+      var _this2 = this;
 
       axios.get('/project/fetch').then(function (response) {
-        console.log(response);
-        _this3.projects = response.data;
-        _this3.projects.forEach(function (project) {
-          axios.get('/project/hasMembers', {
-            params: {
-              prj_no: project.prj_no
-            }
-          }).then(function (response2) {
-            project.hasMembers = response2.data.hasMembers;
-          }).catch(function (error2) {
-            console.log(error2);
-          });
-        });
-        _this3.filtered = _this3.projects;
+        _this2.projects = response.data;
       }).catch(function (error) {
         console.log(error);
       });
@@ -164,7 +151,7 @@ new Vue({
       window.location.href = '/project/' + project.prj_no;
     },
     store: function store() {
-      var _this4 = this;
+      var _this3 = this;
 
       var project = {
         prj_no: this.prj_no,
@@ -178,13 +165,13 @@ new Vue({
       };
       axios.post('/project/store', project).then(function (response) {
         console.log(response);
-        _this4.projects.unshift(project);
+        _this3.projects.unshift(project);
       }).catch(function (error) {
         console.log(error);
       });
     },
     destroy: function destroy(index) {
-      var _this5 = this;
+      var _this4 = this;
 
       bootbox.confirm({
         title: 'Delete confirmation',
@@ -201,11 +188,11 @@ new Vue({
           if (confirm) {
             axios.delete('/project/destroy', {
               params: {
-                prj_no: _this5.projects[index].prj_no
+                prj_no: _this4.projects[index].prj_no
               }
             }).then(function (response) {
               console.log(response);
-              _this5.projects.splice(index, 1);
+              _this4.projects.splice(index, 1);
             }).catch(function (error) {
               console.log(error);
             });
@@ -213,7 +200,7 @@ new Vue({
         }
       }).then(function (response) {
         console.log(response);
-        _this5.projects.splice(index, 1);
+        _this4.projects.splice(index, 1);
       }).catch(function (error) {
         console.log(error);
       });
@@ -221,7 +208,6 @@ new Vue({
     sortBy: function sortBy(key) {
       this.sortKey = key;
       this.sortOrders[key] *= -1;
-      this.filtered.sort(this.sortFunction);
     },
     sortFunction: function sortFunction(a, b) {
       if (a[this.sortKey] < b[this.sortKey]) {
@@ -230,6 +216,15 @@ new Vue({
         return 1 * this.sortOrders[this.sortKey];
       }
       return 0;
+    },
+    changePage: function changePage(page) {
+      this.currentPage = page;
+      if (this.currentPage < 1) {
+        this.currentPage = 1;
+      }
+      if (this.currentPage > this.projects.length / 10 + 1) {
+        this.currentPage = parseInt(this.projects.length / 10 + 1);
+      }
     }
   }
 });

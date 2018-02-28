@@ -5,7 +5,6 @@ new Vue({
   data: {
     projects: [],
     search: '',
-    filtered: [],
     prj_no: '',
     prj_name: '',
     quo_no: '',
@@ -22,7 +21,8 @@ new Vue({
       'prj_from': -1,
       'prj_to': -1,
       'status': -1
-    }
+    },
+    currentPage: 1
   },
   mounted() {
     // datepicker setup
@@ -38,47 +38,34 @@ new Vue({
         this.prj_to = this.prj_from
         $('#prj_to').val(this.prj_from)
       }
-      console.log(this.prj_from)
       $('#to').datepicker('setStartDate', this.prj_from)
     });
     this.fetch()
-    console.log(this.projects)
   },
-  watch: {
-    search(val) {
-      this.filtered = []
-      if(val.lenght < 2 ) {
-        this.filtered = this.projects
-      }
-      else {
-        var regexp = new RegExp(val, 'i')
-        this.projects.forEach(project => {
-          if(regexp.test(project.prj_no) || regexp.test(project.prj_name) || regexp.test(project.customer) || regexp.test(project.quo_no)) {
-            this.filtered.push(project)
-          }
-        })
-      }
+  computed: {
+    filteredProject() {
+      let filteredProject = []
+      let regexp = new RegExp(this.search, 'i')
+      // Filter
+      this.projects.forEach(project => {
+        if(regexp.test(project.prj_no) || regexp.test(project.prj_name) || regexp.test(project.customer) || regexp.test(project.quo_no)) {
+          filteredProject.push(project)
+        }
+      })
+      // Sort
+      filteredProject.sort(this.sortFunction)
+      // Paging
+      startIndex = (this.currentPage -1) * 10
+      endIndex = startIndex + 10
+      filteredProject = filteredProject.slice(startIndex, endIndex)
+      return filteredProject
     }
   },
   methods: {
     fetch() {
       axios.get('/project/fetch')
         .then(response => {
-          console.log(response)
           this.projects = response.data
-          this.projects.forEach(project => {
-            axios.get('/project/hasMembers', {
-              params: {
-                prj_no: project.prj_no
-              }
-            }).then(response2 => {
-              project.hasMembers = response2.data.hasMembers
-            })
-            .catch(error2 => {
-              console.log(error2)
-            })
-          })
-          this.filtered = this.projects
         })
         .catch(error => {
           console.log(error)
@@ -147,7 +134,6 @@ new Vue({
     sortBy(key) {
       this.sortKey = key
       this.sortOrders[key] *= -1
-      this.filtered.sort(this.sortFunction)
     },
     sortFunction(a, b) {
       if (a[this.sortKey] < b[this.sortKey]) {
@@ -157,6 +143,15 @@ new Vue({
         return 1 * this.sortOrders[this.sortKey]
       }
       return 0
+    },
+    changePage(page) {
+      this.currentPage = page
+      if(this.currentPage < 1) {
+        this.currentPage = 1
+      }
+      if(this.currentPage > this.projects.length / 10 + 1) {
+        this.currentPage = parseInt(this.projects.length / 10 + 1)
+      }
     }
   }
 })
