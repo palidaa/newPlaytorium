@@ -168,7 +168,7 @@
           <a href="/download?prj_no={{ $file->prj_no }}&name={{ $file->name }}">{{ $file->name }}</a>
           ({{ $file->size }} bytes)
           <span style="font-style:italic">{{ $file->updated_at}}</span>
-          <span>[<a href="/delete?prj_no={{ $file->prj_no }}&name={{ $file->name }}">Delete</a>]</span>
+          <span>[<a href="#" onclick="deleteFile(event, '{{ $file->prj_no }}', '{{ $file->name }}')">Delete</a>]</span>
         </div>
       </div>
       @endforeach
@@ -280,5 +280,32 @@
       }
       $('#to').datepicker('setStartDate', $('#prj_from').val());
     });
+  
+  deleteFile = (e, prj_no, name) => {
+    e.preventDefault()
+    bootbox.confirm({
+      title: 'Delete confirmation',
+      message: 'Do you really want to delete this file ? ' + name,
+      buttons: {
+        confirm: {
+          label: 'Yes'
+        },
+        cancel: {
+          label: 'No'
+        }
+      },
+      callback: (confirm) => {
+        if(confirm) {
+          axios.delete('/delete', {
+          params: {
+            prj_no: prj_no,
+            name: name
+            }
+          })
+          location.reload()
+        }
+      }
+    })
+  }
 </script>
 @endsection
