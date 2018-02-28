@@ -221,6 +221,18 @@ new Vue({
         }) >= 0) {
           count++;
         }
+        //day = moment(moment(this.date).format('YYYY-MM-') + d)
+        day = moment(moment(_this5.date).format('YYYY-MM-') + d);
+        for (var i = 0; i < _this5.holidays.length; i++) {
+          if (_this5.timesheets.findIndex(function (timesheet) {
+            return timesheet.date.substr(8, 2) == d;
+          }) >= 0) {
+            if (moment(day).format('YYYY-MM-DD') == _this5.holidays[i].holiday || day.isoWeekday() == 6 || day.isoWeekday() == 7) {
+              count--;
+              break;
+            }
+          }
+        }
       };
 
       for (var d = 1; d <= moment(this.date).daysInMonth(); d++) {

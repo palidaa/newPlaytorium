@@ -143,6 +143,16 @@ new Vue({
         if(this.timesheets.findIndex(timesheet => timesheet.date.substr(8, 2) == d) >= 0) {
           count++;
         }
+        //day = moment(moment(this.date).format('YYYY-MM-') + d)
+        day = moment(moment(this.date).format('YYYY-MM-') + d)
+        for (let i = 0; i<this.holidays.length; i++) {
+          if(this.timesheets.findIndex(timesheet => timesheet.date.substr(8, 2) == d) >= 0) {
+            if(moment(day).format('YYYY-MM-DD') == this.holidays[i].holiday || day.isoWeekday() == 6 || day.isoWeekday() == 7) {
+              count--
+              break
+            }
+          }
+        }
       }
       return count;
     },
