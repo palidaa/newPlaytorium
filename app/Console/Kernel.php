@@ -52,11 +52,7 @@ class Kernel extends ConsoleKernel
            if($sum_leave>=5) { $sum_leave=5; }
            else if($sum_leave<=0) { $sum_leave=0; }
 
-            DB::update('update timesheet.employees set carry_annual_leave = ? where timesheet.employees.id =?', [$sum_leave,$employee->id]);
-
-            
-
-
+            DB::update('update employees set carry_annual_leave = ? where employees.id =?', [$sum_leave,$employee->id]);
             }
            // DB::update('update timesheet.employees set carry_annual_leave = ? where timesheet.employees.id =10002', [rand(1,100)]);
 

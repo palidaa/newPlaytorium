@@ -72,7 +72,9 @@
              <td style="color: #C4B20F;">@{{ project.status }}</td>
              @if(Auth::user()->isAdmin())
               <td><a href="#" v-if="project.hasMembers==false"  @click.prevent.stop="destroy(index)">Delete</a></td>
+              <td><v-else></td>
              @endif
+             
            </tr>
         </table>
 
@@ -148,8 +150,12 @@
   </div>
 </div>
 
+
+
 @endsection
 
 @section('script')
 <script src="{{ asset('js/project.js') }}"></script>
 @endsection
+
+
