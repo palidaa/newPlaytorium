@@ -75,7 +75,6 @@
              @endif
            </tr>
         </table>
-
         <button @click="changePage(currentPage - 1)">prev</button>
         @{{ currentPage }}
         <button @click="changePage(currentPage + 1)">next</button>

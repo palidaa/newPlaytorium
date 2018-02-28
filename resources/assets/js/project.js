@@ -14,13 +14,13 @@ new Vue({
     description: '',
     sortKey: '',
     sortOrders: {
-      'prj_no': -1,
-      'prj_name': -1,
-      'customer': -1,
-      'quo_no': -1,
-      'prj_from': -1,
-      'prj_to': -1,
-      'status': -1
+      'prj_no': 1,
+      'prj_name': 1,
+      'customer': 1,
+      'quo_no': 1,
+      'prj_from': 1,
+      'prj_to': 1,
+      'status': 1
     },
     currentPage: 1
   },
@@ -41,6 +41,7 @@ new Vue({
       $('#to').datepicker('setStartDate', this.prj_from)
     });
     this.fetch()
+    this.sortBy('prj_from')
   },
   computed: {
     filteredProject() {
@@ -136,10 +137,16 @@ new Vue({
       this.sortOrders[key] *= -1
     },
     sortFunction(a, b) {
-      if (a[this.sortKey] < b[this.sortKey]) {
+      if(a[this.sortKey] == null) {
+        return 1
+      }
+      else if(b[this.sortKey] == null) {
+        return -1
+      }
+      if(a[this.sortKey] < b[this.sortKey]) {
         return -1 * this.sortOrders[this.sortKey]
       }
-      else if (a[this.sortKey] > b[this.sortKey]) {
+      else if(a[this.sortKey] > b[this.sortKey]) {
         return 1 * this.sortOrders[this.sortKey]
       }
       return 0
