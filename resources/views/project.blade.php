@@ -72,7 +72,9 @@
              <td style="color: #C4B20F;">@{{ project.status }}</td>
              @if(Auth::user()->isAdmin())
               <td><a href="#" v-if="project.hasMembers==false"  @click.prevent.stop="destroy(index)">Delete</a></td>
+              <td><v-else></td>
              @endif
+             
            </tr>
         </table>
         <button @click="changePage(currentPage - 1)">prev</button>
@@ -151,8 +153,12 @@
   </div>
 </div>
 
+
+
 @endsection
 
 @section('script')
 <script src="{{ asset('js/project.js') }}"></script>
 @endsection
+
+
