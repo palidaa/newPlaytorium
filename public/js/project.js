@@ -95,7 +95,8 @@ new Vue({
       'prj_to': 1,
       'status': 1
     },
-    currentPage: 1
+    currentPage: 1,
+    totalPages: 1
   },
   mounted: function mounted() {
     var _this = this;
@@ -129,6 +130,7 @@ new Vue({
           filteredProject.push(project);
         }
       });
+      this.totalPages = Math.ceil(filteredProject.length / 10);
       // Sort
       filteredProject.sort(this.sortFunction);
       // Paging
@@ -171,7 +173,7 @@ new Vue({
         console.log(error);
       });
     },
-    destroy: function destroy(index) {
+    destroy: function destroy(prj_no) {
       var _this4 = this;
 
       bootbox.confirm({
@@ -189,21 +191,16 @@ new Vue({
           if (confirm) {
             axios.delete('/project/destroy', {
               params: {
-                prj_no: _this4.projects[index].prj_no
+                prj_no: prj_no
               }
             }).then(function (response) {
-              console.log(response);
-              _this4.projects.splice(index, 1);
+              // this.projects.splice(index, 1)
+              _this4.fetch();
             }).catch(function (error) {
               console.log(error);
             });
           }
         }
-      }).then(function (response) {
-        console.log(response);
-        _this4.projects.splice(index, 1);
-      }).catch(function (error) {
-        console.log(error);
       });
     },
     sortBy: function sortBy(key) {
@@ -228,8 +225,8 @@ new Vue({
       if (this.currentPage < 1) {
         this.currentPage = 1;
       }
-      if (this.currentPage > Math.ceil(this.projects.length / 10)) {
-        this.currentPage = Math.ceil(this.projects.length / 10);
+      if (this.currentPage > this.totalPages) {
+        this.currentPage = this.totalPages;
       }
     }
   }

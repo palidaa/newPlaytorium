@@ -71,7 +71,7 @@
              <td>@{{ project.prj_to }}</td>
              <td style="color: #C4B20F;">@{{ project.status }}</td>
              @if(Auth::user()->isAdmin())
-              <td><a href="#" v-if="project.hasMembers==false"  @click.prevent.stop="destroy(index)">Delete</a></td>
+              <td><a href="#" v-if="project.hasMembers==false"  @click.prevent.stop="destroy(project.prj_no)">Delete</a></td>
               <td><v-else></td>
              @endif
              
@@ -82,8 +82,7 @@
           <nav aria-label="...">
             <ul class="pagination">
               <li><a href="#" @click.prevent.stop="changePage(currentPage - 1)" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
-                <template v-for="n in Math.ceil(projects.length/10)">
-                
+                <template v-for="n in totalPages">
                   <li v-if="n==currentPage" class="active"><a href="#" @click.prevent.stop="changePage(n)">@{{ n }}<span class="sr-only">(current)</span></a></li>
                   <li v-else><a href="#" @click.prevent.stop="changePage(n)" >@{{ n }} <span class="sr-only">(current)</span></a></li>
                 </template>
