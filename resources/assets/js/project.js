@@ -22,7 +22,8 @@ new Vue({
       'prj_to': 1,
       'status': 1
     },
-    currentPage: 1
+    currentPage: 1,
+    totalPages: 1
   },
   mounted() {
     // datepicker setup
@@ -53,6 +54,7 @@ new Vue({
           filteredProject.push(project)
         }
       })
+      this.totalPages = Math.ceil(filteredProject.length/10)
       // Sort
       filteredProject.sort(this.sortFunction)
       // Paging
@@ -95,7 +97,7 @@ new Vue({
           console.log(error)
         })
     },
-    destroy(index) {
+    destroy(prj_no) {
       bootbox.confirm({
         title: 'Delete confirmation',
         message: 'Do you really want to cancel this project ?',
@@ -111,12 +113,12 @@ new Vue({
           if(confirm) {
             axios.delete('/project/destroy', {
               params: {
-                prj_no: this.projects[index].prj_no
+                prj_no: prj_no
               }
             })
             .then(response => {
-              console.log(response)
-              this.projects.splice(index, 1)
+              // this.projects.splice(index, 1)
+              this.fetch()
             })
             .catch(error => {
               console.log(error)
@@ -124,13 +126,6 @@ new Vue({
           }
         }
       })
-        .then(response => {
-          console.log(response)
-          this.projects.splice(index, 1)
-        })
-        .catch(error => {
-          console.log(error)
-        })
     },
     sortBy(key) {
       this.sortKey = key
@@ -156,8 +151,8 @@ new Vue({
       if(this.currentPage < 1) {
         this.currentPage = 1
       }
-      if(this.currentPage > Math.ceil(this.projects.length / 10)) {
-        this.currentPage = Math.ceil(this.projects.length / 10)
+      if(this.currentPage > this.totalPages) {
+        this.currentPage = this.totalPages
       }
     }
   }

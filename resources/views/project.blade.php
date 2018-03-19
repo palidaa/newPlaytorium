@@ -71,16 +71,24 @@
              <td>@{{ project.prj_to }}</td>
              <td style="color: #C4B20F;">@{{ project.status }}</td>
              @if(Auth::user()->isAdmin())
-              <td><a href="#" v-if="project.hasMembers==false"  @click.prevent.stop="destroy(index)">Delete</a></td>
+              <td><a href="#" v-if="project.hasMembers==false"  @click.prevent.stop="destroy(project.prj_no)">Delete</a></td>
               <td><v-else></td>
              @endif
            </tr>
         </table>
+<<<<<<< HEAD
+=======
+
+>>>>>>> 07dab622fc04ff297090ce5c5982c212340ba6e6
         <div align="center">
           <nav aria-label="...">
             <ul class="pagination">
               <li><a href="#" @click.prevent.stop="changePage(currentPage - 1)" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
+<<<<<<< HEAD
                 <template v-for="n in Math.ceil(projects.length/10)">
+=======
+                <template v-for="n in totalPages">
+>>>>>>> 07dab622fc04ff297090ce5c5982c212340ba6e6
                   <li v-if="n==currentPage" class="active"><a href="#" @click.prevent.stop="changePage(n)">@{{ n }}<span class="sr-only">(current)</span></a></li>
                   <li v-else><a href="#" @click.prevent.stop="changePage(n)" >@{{ n }} <span class="sr-only">(current)</span></a></li>
                 </template>
@@ -88,6 +96,10 @@
             </ul>
           </nav>  
         </div>
+<<<<<<< HEAD
+=======
+
+>>>>>>> 07dab622fc04ff297090ce5c5982c212340ba6e6
         <!-- Modal -->
         <div class="modal fade" id="addProject" role="dialog">
           <div class="modal-dialog">
