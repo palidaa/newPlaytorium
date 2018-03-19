@@ -56,7 +56,10 @@ class Kernel extends ConsoleKernel
             }
            // DB::update('update timesheet.employees set carry_annual_leave = ? where timesheet.employees.id =10002', [rand(1,100)]);
 
-        });
+        })->cron('0 0 1 1 *');
+
+        // ProjectWarning
+        $schedule->call('\App\Http\Controllers\ProjectController@deadlineWarning')->cron('0 8 * * *');
     
     }
 

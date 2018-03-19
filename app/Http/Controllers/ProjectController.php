@@ -4,11 +4,13 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use DB;
 use App\Project;
 use App\Work;
 use App\Employee;
 use App\File;
+use App\Mail\ProjectWarning;
 
 class ProjectController extends Controller
 {
@@ -149,5 +151,18 @@ class ProjectController extends Controller
       $members = Work::where('prj_no', $prj_no)->first();
       if($members == NULL)  return false;
       else return true;
+    }
+
+    public function deadlineWarning() {
+      $projects = Project::all();
+      foreach($projects as $project) {
+        $now = strtotime(date('Y-m-d'));
+        $date = strtotime($project->prj_to);
+        $diff = $date - $now;
+        $diff = floor($diff / (60*60*24));
+        if($diff == 40) {
+          Mail::to('j_pcr@hotmail.com')->send(new ProjectWarning($project));
+        }
+      }
     }
 }
