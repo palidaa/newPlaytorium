@@ -74,17 +74,13 @@
               <td><a href="#" v-if="project.hasMembers==false"  @click.prevent.stop="destroy(index)">Delete</a></td>
               <td><v-else></td>
              @endif
-             
            </tr>
         </table>
-<<<<<<< HEAD
-
         <div align="center">
           <nav aria-label="...">
             <ul class="pagination">
               <li><a href="#" @click.prevent.stop="changePage(currentPage - 1)" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
                 <template v-for="n in Math.ceil(projects.length/10)">
-                
                   <li v-if="n==currentPage" class="active"><a href="#" @click.prevent.stop="changePage(n)">@{{ n }}<span class="sr-only">(current)</span></a></li>
                   <li v-else><a href="#" @click.prevent.stop="changePage(n)" >@{{ n }} <span class="sr-only">(current)</span></a></li>
                 </template>
@@ -92,12 +88,6 @@
             </ul>
           </nav>  
         </div>
-=======
-        <button @click="changePage(currentPage - 1)">prev</button>
-        @{{ currentPage }}
-        <button @click="changePage(currentPage + 1)">next</button>
->>>>>>> 9ca0d1ca05473fa724f2d09357a0243c1ae645c2
-
         <!-- Modal -->
         <div class="modal fade" id="addProject" role="dialog">
           <div class="modal-dialog">
