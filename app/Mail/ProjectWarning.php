@@ -28,7 +28,7 @@ class ProjectWarning extends Mailable
      */
     public function build()
     {
-        return $this->from('noppawit.trr@gmail.com')
+        return $this->from('system@pass.playtorium.co.th')
                     ->markdown('emails.project.warning')
                     ->with('project', $this->project);
     }

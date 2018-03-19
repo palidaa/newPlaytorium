@@ -161,7 +161,7 @@ class ProjectController extends Controller
         $diff = $date - $now;
         $diff = floor($diff / (60*60*24));
         if($diff == 40) {
-          Mail::to('j_pcr@hotmail.com')->send(new ProjectWarning($project));
+          Mail::to('office@playtorium.co.th')->send(new ProjectWarning($project));
         }
       }
     }
