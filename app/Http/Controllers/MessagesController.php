@@ -633,7 +633,7 @@ class MessagesController extends Controller
 						$sheet ->mergeCells('D'.$currentRow.':'.'E'.$currentRow);
 						$sheet->SetCellValue('D'.$currentRow,"Leave");
 						$query3 = DB::select('SELECT loe.leave_date,loe.totalhours FROM leaverequest_of_employee loe
-												join employees e on loe.id=e.id where loe.id= ? and year(loe.leave_date)= ? and loe.status="Accepted"',[$query0_v->id,$year]);
+												join employees e on loe.id=e.id where loe.id= ? and year(loe.leave_date)= ? and loe.status in ("Accepted","Pending")',[$query0_v->id,$year]);
             $querynon = DB::select('SELECT *,cal_works(t.date,t.time_in,t.time_out) as cal_work FROM timesheets t WHERE t.prj_no=? and t.id =?',['PS00000',$query0_v->id]);
 
 						for($i =1;$i<13;$i++){

@@ -93,6 +93,7 @@ class ReportController extends Controller
 										->whereYear('leave_date', $request->input('year'))
 										->whereMonth('leave_date', $request->input('month'))
 										->get();
+		//$leave_days = DB::table('')
 		$sick_leave = $this->get_total_leave_days('Sick Leave', $request->input('year'), $request->input('month'));
 		$annual_leave = $this->get_total_leave_days('Annual Leave', $request->input('year'), $request->input('month'));
 		$personal_leave = $this->get_total_leave_days('Personal Leave', $request->input('year'), $request->input('month'));
@@ -198,13 +199,22 @@ class ReportController extends Controller
   
   private function get_total_leave_days($type, $year, $month)
   {
-		$days = DB::table('leaverequest_of_employee')
-								->where('id', Auth::id())
-								->whereYear('leave_date', $year)
-								->whereMonth('leave_date', $month)
-								->where('leave_type', $type)
-								->whereIn('status', ['Accepted', 'Pending'])
-								->count();
-	  return $days;
+		// $days = DB::table('leaverequest_of_employee')
+		// 						->where('id', Auth::id())
+		// 						->whereYear('leave_date', $year)
+		// 						->whereMonth('leave_date', $month)
+		// 						->where('leave_type', $type)
+		// 						->whereIn('status', ['Accepted', 'Pending'])
+		// 						->count();
+		// return $days;
+		$hours = DB::table('leaverequest_of_employee')
+			->selectRaw('SUM(totalHours) as hours')
+			->where('id', Auth::id())
+			->whereYear('leave_date', $year)
+			->whereMonth('leave_date', $month)
+			->where('leave_type', $type)
+			->whereIn('status', ['Accepted', 'Pending'])
+			->get();
+	  	return $hours[0]->hours / 8;
   }
 }
