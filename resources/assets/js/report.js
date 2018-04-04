@@ -66,7 +66,10 @@ new Vue({
     },
     download() {
       if(this.type == 'Timesheet') {
-        window.location = '/report/export-timesheet?year=' + this.selectedYear + '&month=' + this.selectedMonth + '&project=' + this.selectedProject.substr(0, 8)
+        window.location = '/report/export-timesheet?year=' + this.selectedYear + '&month=' + this.selectedMonth + '&project=' + this.selectedProject.substr(0, 8) + '&type=Timesheet'
+      }
+      else if (this.type == 'Timesheet (Special)'){
+        window.location = '/report/export-timesheet?year=' + this.selectedYear + '&month=' + this.selectedMonth + '&project=' + this.selectedProject.substr(0, 8) + '&type=Timesheet(Special)'
       }
       else if(this.type == 'Summary Timesheet') {
         window.location = '/report/export-summary-timesheet?year=' + this.selectedYear + '&type=Summary Timesheet'

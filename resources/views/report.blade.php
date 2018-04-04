@@ -16,6 +16,7 @@
               <label>Report type</label>
               <select class="form-control" v-model="type">
                 <option>Timesheet</option>
+                <option>Timesheet (Special)</option>
                 @if(Auth::user()->isAdmin())
                   <option>Summary Timesheet</option>
                 @endif
@@ -29,7 +30,7 @@
                 <option v-for="year in years">@{{ year }}</option>
               </select>
             </div>
-            <div class="col-md-4" v-show="type=='Timesheet'">
+            <div class="col-md-4" v-show="type=='Timesheet'|| type=='Timesheet (Special)'">
               <label>Month</label>
               <select class="form-control" v-model="selectedMonth">
                 <option v-for="month in months">@{{ month }}</option>
@@ -37,7 +38,7 @@
             </div>
           </div>
           <div class="row">
-            <div class="col-md-8" v-show="type=='Timesheet'">
+            <div class="col-md-8" v-show="type=='Timesheet'|| type=='Timesheet (Special)'">
               <label>Project</label>
               <select class="form-control" v-model="selectedProject">
                 <option v-for="project in projects">@{{ project.prj_no }} - @{{ project.prj_name }}</option>

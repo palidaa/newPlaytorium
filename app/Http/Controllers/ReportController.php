@@ -130,7 +130,16 @@ class ReportController extends Controller
 			array_push($timesheets, $timesheet);
 		}
 		//Load a template file from the server storage
-		$spreadsheet = IOFactory::load('storage/Playtorium_Timesheet_template.xlsx');
+		$spreadsheet=null;
+		
+		if($request->input('type')=='Timesheet(Special)')
+			{
+				$spreadsheet = IOFactory::load('storage/Playtorium_Timesheet_template(S).xlsx');
+			}
+		else if($request->input('type')=='Timesheet')
+			{
+				$spreadsheet = IOFactory::load('storage/Playtorium_Timesheet_template.xlsx');
+			}
 		//Select a sheet
 		$sheet = $spreadsheet->getActiveSheet();
 		//Fill data into a cell
@@ -192,8 +201,20 @@ class ReportController extends Controller
 		}
 		//Export
 		$writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
-		header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-		header('Content-Disposition: attachment; filename=Timesheet_' . $request->input('year') . '_' . $request->input('month') . '_' . $request->input('project') . '.xlsx');
+		if($request->input('type')=='Timesheet(Special)')
+		{
+			header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+			header('Content-Disposition: attachment; filename=Timesheet(Special)_' . $request->input('year') . '_' . $request->input('month') . '_' . $request->input('project') . '.xlsx');
+	
+		}
+	else if($request->input('type')=='Timesheet')
+		{
+			header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+			header('Content-Disposition: attachment; filename=Timesheet_' . $request->input('year') . '_' . $request->input('month') . '_' . $request->input('project') . '.xlsx');
+	
+		}
+		// header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+		// header('Content-Disposition: attachment; filename=Timesheet_' . $request->input('year') . '_' . $request->input('month') . '_' . $request->input('project') . '.xlsx');
     $writer->save('php://output');
   }
   
