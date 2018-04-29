@@ -93,7 +93,6 @@ class ReportController extends Controller
 										->whereYear('leave_date', $request->input('year'))
 										->whereMonth('leave_date', $request->input('month'))
 										->get();
-		//$leave_days = DB::table('')
 		$sick_leave = $this->get_total_leave_days('Sick Leave', $request->input('year'), $request->input('month'));
 		$annual_leave = $this->get_total_leave_days('Annual Leave', $request->input('year'), $request->input('month'));
 		$personal_leave = $this->get_total_leave_days('Personal Leave', $request->input('year'), $request->input('month'));
@@ -132,13 +131,13 @@ class ReportController extends Controller
 		//Load a template file from the server storage
 		$spreadsheet=null;
 		
-		if($request->input('type')=='Timesheet(Special)')
+		if($request->input('type')=='Timesheet (Special)')
 			{
-				$spreadsheet = IOFactory::load('storage/Playtorium_Timesheet_template(S).xlsx');
+				$spreadsheet = IOFactory::load('storage/Playtorium_Timesheet_Sepecial_ver4.xlsx');
 			}
-		else if($request->input('type')=='Timesheet')
+		else if($request->input('type')=='Timesheet (Normal)')
 			{
-				$spreadsheet = IOFactory::load('storage/Playtorium_Timesheet_template.xlsx');
+				$spreadsheet = IOFactory::load('storage/Playtorium_Timesheet_Normal_ver4.xlsx');
 			}
 		//Select a sheet
 		$sheet = $spreadsheet->getActiveSheet();
@@ -201,41 +200,32 @@ class ReportController extends Controller
 		}
 		//Export
 		$writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
-		if($request->input('type')=='Timesheet(Special)')
+	if($request->input('type')=='Timesheet (Special)')
 		{
 			header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
 			header('Content-Disposition: attachment; filename=Timesheet(Special)_' . $request->input('year') . '_' . $request->input('month') . '_' . $request->input('project') . '.xlsx');
 	
 		}
-	else if($request->input('type')=='Timesheet')
+	else if($request->input('type')=='Timesheet (Normal)')
 		{
 			header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-			header('Content-Disposition: attachment; filename=Timesheet_' . $request->input('year') . '_' . $request->input('month') . '_' . $request->input('project') . '.xlsx');
+			header('Content-Disposition: attachment; filename=Timesheet(Normal)_' . $request->input('year') . '_' . $request->input('month') . '_' . $request->input('project') . '.xlsx');
 	
 		}
-		// header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-		// header('Content-Disposition: attachment; filename=Timesheet_' . $request->input('year') . '_' . $request->input('month') . '_' . $request->input('project') . '.xlsx');
     $writer->save('php://output');
   }
   
   private function get_total_leave_days($type, $year, $month)
   {
-		// $days = DB::table('leaverequest_of_employee')
-		// 						->where('id', Auth::id())
-		// 						->whereYear('leave_date', $year)
-		// 						->whereMonth('leave_date', $month)
-		// 						->where('leave_type', $type)
-		// 						->whereIn('status', ['Accepted', 'Pending'])
-		// 						->count();
-		// return $days;
 		$hours = DB::table('leaverequest_of_employee')
-			->selectRaw('SUM(totalHours) as hours')
-			->where('id', Auth::id())
-			->whereYear('leave_date', $year)
-			->whereMonth('leave_date', $month)
-			->where('leave_type', $type)
-			->whereIn('status', ['Accepted', 'Pending'])
-			->get();
-	  	return $hours[0]->hours / 8;
+		                        ->selectRaw('SUM(totalHours) as hours')
+								->where('id', Auth::id())
+								->whereYear('leave_date', $year)
+								->whereMonth('leave_date', $month)
+								->where('leave_type', $type)
+								->whereIn('status', ['Accepted', 'Pending'])
+								->get();
+	    $days = $hours[0]->hours / 8;
+	    return $days;
   }
 }
