@@ -257,7 +257,7 @@ class LeaverequestController extends Controller
           break;
       }
 
-      if($year_leave - $leave[0]->leave_used < $leave_days[0]->leave_days){
+      if(($year_leave - $leave[0]->leave_used)*8 < ($leave_days[0]->leave_days)*$leave_times){
         \Session::flash('unsuccess_message','<strong>Unsuccess!</strong> Your remain leave day is not enough.');
       }
       else if($leave_days[0]->leave_days==0){
