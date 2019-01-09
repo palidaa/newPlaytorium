@@ -63,8 +63,7 @@
                 <td>@{{ leaveHistory.leave_to }}</td>
                 <td>@{{ leaveHistory.purpose }}</td>
                 <td style="color:#C4B20F;">@{{ leaveHistory.status }}</td>
-                <td v-if="leaveHistory.status=='Pending'"><a href="#" @click.prevent="remove(index)">Cancel</td>
-                <td v-else><a href =""></td>
+                <td v-if="leaveHistory.status=='Pending' && moment(leaveHistory.leave_to, 'YYYY-MM-DD').diff(moment().format('YYYY-MM-DD'), 'days') >= 0"><a href="#" @click.prevent="remove(index)">Cancel</td>                <td v-else><a href =""></td>
               </tr>
 
           </table>
